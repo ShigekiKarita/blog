@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>カリ工大 - karitech</title>
-  <meta name="description" content="blog on machine learning and computer science.
-">
+  <title>C++ の標準例外安全規則と強い保証</title>
+  <meta name="description" content="この前、 Exceptional C++ 読んだ時にメモしておこうと思って忘れてたので今度こそ。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://shigekikarita.github.io/">
+  <link rel="canonical" href="http://shigekikarita.github.io/2015/09/22/010.html">
   <link rel="alternate" type="application/rss+xml" title="カリ工大 - karitech" href="http://shigekikarita.github.io/feed.xml" />
   <!-- mathjax config similar to math.stackexchange -->
   <script type="text/x-mathjax-config">
@@ -71,169 +70,67 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">C++ の標準例外安全規則と強い保証</h1>
+    <p class="post-meta">Sep 22, 2015</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Aug 12, 2016</span>
+  <article class="post-content">
+    <p>この前、 Exceptional C++ 読んだ時にメモしておこうと思って忘れてたので今度こそ。</p>
 
-        <h2>
-          <a class="post-link" href="/2016/08/12/020.html">chainer で Auto Encoder</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Feb 27, 2016</span>
+<h3 id="section">例外安全における重要な保証</h3>
 
-        <h2>
-          <a class="post-link" href="/2016/02/27/018.html">numpy と cupy を簡単に使うデコレータ</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jan 2, 2016</span>
+<ol>
+  <li>基本的な保証 : リソースをリークしないこと。</li>
+  <li>強い保証 : 例外発生前の (参照やイテレータといった) プログラムの状態にロールバックできること。</li>
+  <li>nothrow 保証 : 完全に例外を投げないこと。とくにデストラクタや swap 関数はこれが必要。</li>
+</ol>
 
-        <h2>
-          <a class="post-link" href="/2016/01/02/017.html">64 bit 環境の GCC で 32 bit (i386) アセンブラをリンク</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Dec 23, 2015</span>
+<h3 id="section-1">標準例外規則</h3>
 
-        <h2>
-          <a class="post-link" href="/2015/12/23/016.html">D言語で unzip</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 16, 2015</span>
+<ol>
+  <li>デストラクタ・<code class="highlighter-rouge">operator delete</code>は例外を投げない。つまり <code class="highlighter-rouge">throw()</code> を指定すること。(補足：C++11以降は <code class="highlighter-rouge">noexcept</code> キーワードを使うとわかりやすい)</li>
+  <li>RAII イディオムを常用し、リソースの所有と管理を分離すること。</li>
+  <li>例外を投げる可能性がある箇所(リソース確保、コピーなど)を全て、別個の関数で安全に処理すること。</li>
+</ol>
 
-        <h2>
-          <a class="post-link" href="/2015/10/16/015.html">Haskell Accelerate で CUDA プログラミング (紹介と導入)</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 14, 2015</span>
+<p>以上は「例外安全」の説明です。これとは別に「例外中立」という概念もあります。それぞれの定義は</p>
 
-        <h2>
-          <a class="post-link" href="/2015/10/14/014.html">D言語でコンパイル時に「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 13, 2015</span>
+<ul>
+  <li>例外安全 : 例外が発生しても適切に処理する (メモリリーク無し、例外発生前と一貫性を保つ = ロールバックする)</li>
+  <li>例外中立 : 全ての例外を呼び出し側に伝える (捕捉して握りつぶさない)</li>
+</ul>
 
-        <h2>
-          <a class="post-link" href="/2015/10/13/013.html">Asus Zenbook UX303LN のトラックパッドを動かす (Ubuntu14.04)</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 11, 2015</span>
+<p>例外中立を実現するには try/catch を除去するリソース管理の技法(copy&amp;swapなど)が紹介されています。なお、例外安全と例外中立は、標準ライブラリのコンテナに保証される性質です。この本は例外処理以外にもいろんな規則 (Liskov Substitution Principle とか) やイディオム (pimpl とか) がでてきて、いかに C++ が複雑な言語か思い知らされる本です。補足として、現在ではこの本の中心となる nothrow  保証な swap 関数を実装する他に move semantics を利用する手もあります。</p>
 
-        <h2>
-          <a class="post-link" href="/2015/10/11/012.html">Boost.勉強会 に行った</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 2, 2015</span>
+<h3 id="section-2">参考</h3>
 
-        <h2>
-          <a class="post-link" href="/2015/10/02/011.html">Haskell のメモ</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Sep 22, 2015</span>
+<ul>
+  <li><a href="http://d.hatena.ne.jp/gintenlabo/20130604/1370362451">C++11時代のクラス設計に関する提案</a></li>
+  <li><a href="http://d.hatena.ne.jp/gintenlabo/20130620/1371734238">「 Copy して Swap 」 対 「 Copy して Move 代入」</a></li>
+</ul>
 
-        <h2>
-          <a class="post-link" href="/2015/09/22/010.html">C++ の標準例外安全規則と強い保証</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 27, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/08/27/009.html">ベイズ推定の基礎と応用</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 25, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/08/25/008.html">ATS2 の box と HEAD のビルド</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Aug 13, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/08/13/007.html">ATS 入門中</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jul 12, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/07/12/006.html">Exceptional C++ 読んだ</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 17, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/06/17/005.html">Coq のタクティック、章Polyまでのメモ</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 17, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/06/17/004.html">Ruby の digest でこける</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 14, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/06/14/003.html">便利な C++ ヘッダオンリライブラリ</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 14, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/06/14/002.html">Coq の Notation すごい</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Jun 13, 2015</span>
-
-        <h2>
-          <a class="post-link" href="/2015/06/13/001.html">Coq とかはじめました</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
-
+  </article>
 </div>
+
+<div class="comment">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'shigekikarita';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
 
       </div>
     </div>
