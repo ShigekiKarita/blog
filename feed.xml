@@ -6,9 +6,48 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 30 Nov 2016 00:30:16 +0900</pubDate>
-    <lastBuildDate>Wed, 30 Nov 2016 00:30:16 +0900</lastBuildDate>
+    <pubDate>Wed, 30 Nov 2016 00:53:14 +0900</pubDate>
+    <lastBuildDate>Wed, 30 Nov 2016 00:53:14 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>gh-pages引っ越し</title>
+        <description>&lt;p&gt;久々に更新しました。実は&lt;a href=&quot;/2016/08/12/020.html&quot;&gt;一つ前の日記&lt;/a&gt;をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが…、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;jekyll は静的ジェネレータなので、&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/gh-pages&quot;&gt;gh-pages (githubで特別にウェブページとして使われる名前) ブランチ&lt;/a&gt;に &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt; 生成したサイトをプッシュ&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/master&quot;&gt;master ブランチ&lt;/a&gt;は普通に Markdown のファイルなどソース置き場にする&lt;/li&gt;
+  &lt;li&gt;上記を(すごく雑に)自動化した。&lt;a href=&quot;https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh&quot;&gt;スクリプト&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;ついでに &lt;a href=&quot;http://shigekikarita.github.io&quot;&gt;shigekikarita.github.io&lt;/a&gt; 直下から &lt;code class=&quot;highlighter-rouge&quot;&gt;/blog&lt;/code&gt;サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います…(ここは未整理メモ置き場)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!sh&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;fname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tempfile&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;_site
+jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    cp -r _site &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git checkout gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    ls | xargs rm -r &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    cp -r &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    touch .nojekyll &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git add . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git commit -m &lt;span class=&quot;s2&quot;&gt;&quot;gen&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git push origin gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git checkout master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;未だよくわからないけど、まずまず動いたから良しとしたもの&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt;: baseurl とか url とかよくわからない…、 Markdown中の &lt;code class=&quot;highlighter-rouge&quot;&gt;/assets/*.png&lt;/code&gt; とかは全部ダメになっている気がする。&lt;code class=&quot;highlighter-rouge&quot;&gt;\{\{ site.url }}/assets/*.png&lt;/code&gt; みたいに書きなおすべきか…&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.nojekyll&lt;/code&gt;: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Wed, 30 Nov 2016 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>chainer で Auto Encoder</title>
@@ -589,49 +628,6 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Fri, 02 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/02/011.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/02/011.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>C++ の標準例外安全規則と強い保証</title>
-        <description>&lt;p&gt;この前、 Exceptional C++ 読んだ時にメモしておこうと思って忘れてたので今度こそ。&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;例外安全における重要な保証&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;基本的な保証 : リソースをリークしないこと。&lt;/li&gt;
-  &lt;li&gt;強い保証 : 例外発生前の (参照やイテレータといった) プログラムの状態にロールバックできること。&lt;/li&gt;
-  &lt;li&gt;nothrow 保証 : 完全に例外を投げないこと。とくにデストラクタや swap 関数はこれが必要。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;標準例外規則&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;デストラクタ・&lt;code class=&quot;highlighter-rouge&quot;&gt;operator delete&lt;/code&gt;は例外を投げない。つまり &lt;code class=&quot;highlighter-rouge&quot;&gt;throw()&lt;/code&gt; を指定すること。(補足：C++11以降は &lt;code class=&quot;highlighter-rouge&quot;&gt;noexcept&lt;/code&gt; キーワードを使うとわかりやすい)&lt;/li&gt;
-  &lt;li&gt;RAII イディオムを常用し、リソースの所有と管理を分離すること。&lt;/li&gt;
-  &lt;li&gt;例外を投げる可能性がある箇所(リソース確保、コピーなど)を全て、別個の関数で安全に処理すること。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;以上は「例外安全」の説明です。これとは別に「例外中立」という概念もあります。それぞれの定義は&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;例外安全 : 例外が発生しても適切に処理する (メモリリーク無し、例外発生前と一貫性を保つ = ロールバックする)&lt;/li&gt;
-  &lt;li&gt;例外中立 : 全ての例外を呼び出し側に伝える (捕捉して握りつぶさない)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;例外中立を実現するには try/catch を除去するリソース管理の技法(copy&amp;amp;swapなど)が紹介されています。なお、例外安全と例外中立は、標準ライブラリのコンテナに保証される性質です。この本は例外処理以外にもいろんな規則 (Liskov Substitution Principle とか) やイディオム (pimpl とか) がでてきて、いかに C++ が複雑な言語か思い知らされる本です。補足として、現在ではこの本の中心となる nothrow  保証な swap 関数を実装する他に move semantics を利用する手もあります。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;参考&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/gintenlabo/20130604/1370362451&quot;&gt;C++11時代のクラス設計に関する提案&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/gintenlabo/20130620/1371734238&quot;&gt;「 Copy して Swap 」 対 「 Copy して Move 代入」&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 22 Sep 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/09/22/010.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/09/22/010.html</guid>
         
         
       </item>
