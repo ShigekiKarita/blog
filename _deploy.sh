@@ -5,6 +5,7 @@ jekyll build && \
     git checkout gh-pages && \
     ls | xargs rm -r && \
     cp -r $fname/* . && \
+    touch .nojekyll && \
     git add . && \
     git commit -m "gen" && \
     git push origin gh-pages && \
