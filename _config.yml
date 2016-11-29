@@ -4,7 +4,7 @@ email: shigekikarita@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   blog on machine learning and computer science.
 #baseurl: "/blog/" # the subpath of your site, e.g. /blog/
-#url: "http://shigekikarita.github.io/blog" # the base hostname & protocol for your site
+url: "http://shigekikarita.github.io/blog" # the base hostname & protocol for your site
 baseurl: "http://shigekikarita.github.io/blog"
 twitter_username: kari_tech
 github_username:  ShigekiKarita
