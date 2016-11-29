@@ -4,10 +4,10 @@
     <title>カリ工大 - karitech</title>
     <description>blog on machine learning and computer science.
 </description>
-    <link>http://shigekikarita.github.io/blog/</link>
-    <atom:link href="http://shigekikarita.github.io/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 30 Nov 2016 00:08:45 +0900</pubDate>
-    <lastBuildDate>Wed, 30 Nov 2016 00:08:45 +0900</lastBuildDate>
+    <link>http://shigekikarita.github.io/blog/blog//</link>
+    <atom:link href="http://shigekikarita.github.io/blog/blog//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 30 Nov 2016 00:12:24 +0900</pubDate>
+    <lastBuildDate>Wed, 30 Nov 2016 00:12:24 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -119,8 +119,8 @@
 
 </description>
         <pubDate>Fri, 12 Aug 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2016/08/12/020.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2016/08/12/020.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2016/08/12/020.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2016/08/12/020.html</guid>
         
         
       </item>
@@ -187,8 +187,8 @@
 &lt;p&gt;最後に今回は挙げなかった &lt;code class=&quot;highlighter-rouge&quot;&gt;@host_device&lt;/code&gt; のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の&lt;code class=&quot;highlighter-rouge&quot;&gt;wrapper&lt;/code&gt; で &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら &lt;a href=&quot;https://github.com/pfnet/chainer/issues/new&quot;&gt;issue を報告&lt;/a&gt;した方がいいのかも&lt;/p&gt;
 </description>
         <pubDate>Sat, 27 Feb 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2016/02/27/018.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2016/02/27/018.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2016/02/27/018.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2016/02/27/018.html</guid>
         
         
       </item>
@@ -228,8 +228,8 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
 &lt;p&gt;ところで、バイナリ用語(略語)の elf (Executable &amp;amp; Linking Format) とか dwarf (Debug With Arbitrary Record Format) っていうオタクな感じがセンス良いですね。&lt;/p&gt;
 </description>
         <pubDate>Sat, 02 Jan 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2016/01/02/017.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2016/01/02/017.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2016/01/02/017.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2016/01/02/017.html</guid>
         
         
       </item>
@@ -304,8 +304,8 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
 
 </description>
         <pubDate>Wed, 23 Dec 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/12/23/016.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/12/23/016.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/12/23/016.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/12/23/016.html</guid>
         
         
       </item>
@@ -355,8 +355,8 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
 &lt;p&gt;もう少し Haskell や CUDA 関係のノウハウがたまったら、次回以降は Wiki 的なものにそれなりに体系だててメモしたいなと思います。そろそろこのブログ形式も見難くなってきました。汗&lt;/p&gt;
 </description>
         <pubDate>Fri, 16 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/10/16/015.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/10/16/015.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/10/16/015.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/10/16/015.html</guid>
         
         
       </item>
@@ -398,8 +398,8 @@ void main()
 
 </description>
         <pubDate>Wed, 14 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/10/14/014.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/10/14/014.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/10/14/014.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/10/14/014.html</guid>
         
         
       </item>
@@ -425,8 +425,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;さらに &lt;code class=&quot;highlighter-rouge&quot;&gt;PalmMinWidth=...&lt;/code&gt; というオプションで自分流に感度(1から7で指定)を調節可能&lt;/p&gt;
 </description>
         <pubDate>Tue, 13 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/10/13/013.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/10/13/013.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/10/13/013.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/10/13/013.html</guid>
         
         
       </item>
@@ -525,8 +525,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 11 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/10/11/012.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/10/11/012.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/10/11/012.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/10/11/012.html</guid>
         
         
       </item>
@@ -587,8 +587,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/FPAlgo&quot;&gt;https://github.com/ShigekiKarita/FPAlgo&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Fri, 02 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/10/02/011.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/10/02/011.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/10/02/011.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/10/02/011.html</guid>
         
         
       </item>
@@ -630,8 +630,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Tue, 22 Sep 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/2015/09/22/010.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/2015/09/22/010.html</guid>
+        <link>http://shigekikarita.github.io/blog/blog//2015/09/22/010.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog//2015/09/22/010.html</guid>
         
         
       </item>
