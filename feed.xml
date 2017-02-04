@@ -6,9 +6,23 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 30 Nov 2016 00:53:14 +0900</pubDate>
-    <lastBuildDate>Wed, 30 Nov 2016 00:53:14 +0900</lastBuildDate>
+    <pubDate>Sat, 04 Feb 2017 11:03:04 +0900</pubDate>
+    <lastBuildDate>Sat, 04 Feb 2017 11:03:04 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>D言語における Policy に基づく設計</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-nvrtc&quot;&gt;https://github.com/ShigekiKarita/d-nvrtc&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;NVRTC という CUDA カーネルをランタイムにコンパイルできるライブラリのD言語用ラッパーを作りました。この規模のコードを D 言語で書いたのは初めてだったのですが、ノウハウがそこそこ溜まったので久々に記事を書いています。&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 04 Feb 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>gh-pages引っ越し</title>
@@ -566,68 +580,6 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sun, 11 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/11/012.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/11/012.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Haskell のメモ</title>
-        <description>&lt;h2 id=&quot;haskell-&quot;&gt;Haskell の入門書&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://learnyouahaskell.com/chapters&quot;&gt;Learn You a Haskell for Great Good!&lt;/a&gt;&lt;/p&gt;
-
-    &lt;p&gt;原書は HTML で無料。翻訳書はオーム社で PDF などで買えます。文法解説など初心者向けだけど、後半は難しい&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;関数プログラミング 珠玉のアルゴリズムデザイン&lt;/p&gt;
-
-    &lt;p&gt;これもオーム社の本、かなり難しい。上の本だけではあまり分からない実用的な Haskell としての破壊的な変更や配列の使い方などがサクッと把握できるので良いです。そこそこ前後の章で依存してるのでつまみ食いしにくい&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;haskell--1&quot;&gt;Haskell のプロジェクト構築&lt;/h2&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;1.環境構築&lt;/h3&gt;
-
-&lt;p&gt;とりあえず HaskellPlatform で入れると良いと思う。 Ubuntu や Linux を使っているなら下記の方法で最新の環境(ghc+cabal)が手に入る。少なくとも GHC7.8 にしないと GHCi などで補完が効かないので辛い&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://gist.github.com/yantonov/10083524&quot;&gt;https://gist.github.com/yantonov/10083524&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;cabal&quot;&gt;2.Cabal&lt;/h3&gt;
-
-&lt;p&gt;プロジェクト管理ツール。ライブラリ依存関係の解決もしてくれるビルドツール。とにかくよく依存関係が壊れるので sandbox を使うと良い。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://alice345.hatenablog.com/entry/2015/02/05/084723&quot;&gt;Cabal sandboxを使ってHaskellのパッケージをいい感じに管理する&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;とくに引っかかるポイントはないと思う。最近は stack という人力で依存関係を整理してくれたデータベースを用いたツールも良いとされる&lt;/p&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;3.テストフレームワーク&lt;/h3&gt;
-
-&lt;p&gt;Haskell のデファクトスタンダートな開発環境 GHC-mod の作者の解説がわかりやすく、travis との連携についても解説されており良い。とにかく楽である。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/kazu-yamamoto/unit-test-example/blob/master/markdown/ja/tutorial.md&quot;&gt;Haskellの単体テスト最前線&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;QuickCheck のようなフレームワークは今やだいたいどの言語にもあるが、Haskell発祥らしい。テストスイートへの登録にラムダ式を使うのは OCaml の OUnit みたいだ。兄弟的な OCaml にも似たようなものがあると思ったが、現状あまり綺麗にはかけなさそうで残念に思う。&lt;/p&gt;
-
-&lt;h3 id=&quot;coverage-&quot;&gt;4.Coverage 計測&lt;/h3&gt;
-
-&lt;p&gt;これも既に標準的な方法があるそうで，HPC というものを使う。Coveralls と連携するならかなり便利なラッパーライブラリがある&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/guillaume-nargeot/hpc-coveralls&quot;&gt;https://github.com/guillaume-nargeot/hpc-coveralls&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;とくに理由がなければ Usage - Travis CI の中で sandbox を使う方法をとるのが良いと思います。あと Travis の ghc は 7.6 が2015.10.2現在の標準なのできちんと usage の通りに 7.8 を指定しないと失敗しました&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;最後に&lt;/h2&gt;
-
-&lt;p&gt;上記を実践したのが下記レポジトリ。個人的にすぐ忘れる Tips なども少しメモしています。増えたら整理したい&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/FPAlgo&quot;&gt;https://github.com/ShigekiKarita/FPAlgo&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Fri, 02 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/10/02/011.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/02/011.html</guid>
         
         
       </item>
