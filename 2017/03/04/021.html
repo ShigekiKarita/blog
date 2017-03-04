@@ -86,7 +86,9 @@
 
 <p>本稿では、そこに書いてない便利な使い方をまとめます。</p>
 
-<h2>ローカルにあるパッケージの利用</h2>
+<h2>ローカルにあるライブラリとの連携</h2>
+
+<h3>- dub パッケージの利用</h3>
 
 <p>DUB プロジェクトでは主に DUB リポジトリに登録されたリモートなパッケージをよく使うと思いますが、ローカルに用意した DUB パッケージを追加するときは、<code>dub.json</code>にバージョンではなくパスを書きます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="s">&quot;dependencies&quot;</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span>
@@ -99,6 +101,25 @@
 きちんとローカルのパッケージもバージョン管理をするためには、git submodule などを利用すると良いと思います。</p>
 
 <p><a href="https://github.com/ShigekiKarita/d-svm/tree/410f45281fbc1eb3eaebc7f7845b5c5fc5eb0812">fork して自前パッチを当てたmirパッケージを使用したd-svmパッケージの例</a></p>
+
+<h3>- ライブラリファイル(*.so等)の利用</h3>
+
+<p>例えばデータベースや CUDA ライブラリなどパスの通ったものを、
+リンカオプション<code>-lcuda</code>をつけて渡したいことがあります。
+そんなときは、<code>libs</code>オプションを使います。</p>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span><span class="s2">&quot;libs&quot;</span><span class="err">:</span> <span class="p">[</span>
+    <span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nvrtc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cudart&quot;</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>さらに複雑なオプションが必要なときは、<code>dflags</code>オプションでコンパイラに渡すこともできます。</p>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span><span class="s2">&quot;dflags&quot;</span> <span class="err">:</span> <span class="p">[</span>
+    <span class="s2">&quot;-J/usr/local/cuda/include/&quot;</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>ちなみに<code>-J</code>オプションはコンパイル時にファイルを読む<code>import(filename)</code>でパスを通すオプションで、
+コンパイル時にCヘッダーファイルを読んでD言語用のラッパーを生成するときなどに使います。</p>
 
 <h2>単体テストの実行</h2>
 

@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Mar 2017 02:51:53 +0900</pubDate>
-    <lastBuildDate>Sun, 05 Mar 2017 02:51:53 +0900</lastBuildDate>
+    <pubDate>Sun, 05 Mar 2017 03:05:06 +0900</pubDate>
+    <lastBuildDate>Sun, 05 Mar 2017 03:05:06 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -20,7 +20,9 @@
 
 &lt;p&gt;本稿では、そこに書いてない便利な使い方をまとめます。&lt;/p&gt;
 
-&lt;h2&gt;ローカルにあるパッケージの利用&lt;/h2&gt;
+&lt;h2&gt;ローカルにあるライブラリとの連携&lt;/h2&gt;
+
+&lt;h3&gt;- dub パッケージの利用&lt;/h3&gt;
 
 &lt;p&gt;DUB プロジェクトでは主に DUB リポジトリに登録されたリモートなパッケージをよく使うと思いますが、ローカルに用意した DUB パッケージを追加するときは、&lt;code&gt;dub.json&lt;/code&gt;にバージョンではなくパスを書きます。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;{&lt;/span&gt;
@@ -33,6 +35,25 @@
 きちんとローカルのパッケージもバージョン管理をするためには、git submodule などを利用すると良いと思います。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-svm/tree/410f45281fbc1eb3eaebc7f7845b5c5fc5eb0812&quot;&gt;fork して自前パッチを当てたmirパッケージを使用したd-svmパッケージの例&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;- ライブラリファイル(*.so等)の利用&lt;/h3&gt;
+
+&lt;p&gt;例えばデータベースや CUDA ライブラリなどパスの通ったものを、
+リンカオプション&lt;code&gt;-lcuda&lt;/code&gt;をつけて渡したいことがあります。
+そんなときは、&lt;code&gt;libs&lt;/code&gt;オプションを使います。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;libs&amp;quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;cuda&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;nvrtc&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;cudart&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;さらに複雑なオプションが必要なときは、&lt;code&gt;dflags&lt;/code&gt;オプションでコンパイラに渡すこともできます。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;dflags&amp;quot;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;-J/usr/local/cuda/include/&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ちなみに&lt;code&gt;-J&lt;/code&gt;オプションはコンパイル時にファイルを読む&lt;code&gt;import(filename)&lt;/code&gt;でパスを通すオプションで、
+コンパイル時にCヘッダーファイルを読んでD言語用のラッパーを生成するときなどに使います。&lt;/p&gt;
 
 &lt;h2&gt;単体テストの実行&lt;/h2&gt;
 
