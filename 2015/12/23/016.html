@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>D言語で unzip</title>
-  <meta name="description" content="D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません…。">
+  <meta name="description" content="D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません...。">
 
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2015/12/23/016.html">
@@ -78,72 +78,71 @@
   </header>
 
   <article class="post-content">
-    <p>D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません…。</p>
+    <p>D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません...。</p>
 
 <p>というわけで作りました。Range でもありませんし、非効率な実装ですが、D言語のメタプログラミングのしやすさが実感できました。</p>
 
-<figure class="highlight"><pre><code class="language-d" data-lang="d">import std.meta : AliasSeq;
-import std.traits : Unqual;
-import std.typecons : Tuple, tuple;
+<figure class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">meta</span> <span class="p">:</span> <span class="n">AliasSeq</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">traits</span> <span class="p">:</span> <span class="n">Unqual</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">typecons</span> <span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">tuple</span><span class="p">;</span>
 
-auto toListTypes(Ts...)()
-{
-    alias TypeList = AliasSeq!Ts;
-    string s;
-    foreach(t; TypeList)
-    {
-        s ~= Unqual!t.stringof ~ "[],";
-    }
-    return s[0..$-1];
-}
+<span class="k">auto</span> <span class="n">toListTypes</span><span class="p">(</span><span class="n">Ts</span><span class="p">...)()</span>
+<span class="p">{</span>
+    <span class="k">alias</span> <span class="n">TypeList</span> <span class="p">=</span> <span class="n">AliasSeq</span><span class="p">!</span><span class="n">Ts</span><span class="p">;</span>
+    <span class="nb">string</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="n">t</span><span class="p">;</span> <span class="n">TypeList</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">s</span> <span class="p">~=</span> <span class="n">Unqual</span><span class="p">!</span><span class="n">t</span><span class="p">.</span><span class="n">stringof</span> <span class="p">~</span> <span class="s">&quot;[],&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mf">0.</span><span class="p">.$-</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
 
-unittest
-{
-    enum result = toListTypes!(int, double, string)();
-    static assert(result == "int[],double[],string[]");
-}
+<span class="k">unittest</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="n">result</span> <span class="p">=</span> <span class="n">toListTypes</span><span class="p">!(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="nb">string</span><span class="p">)();</span>
+    <span class="k">static</span> <span class="k">assert</span><span class="p">(</span><span class="n">result</span> <span class="p">==</span> <span class="s">&quot;int[],double[],string[]&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 
-auto unzip(Ts...)(Tuple!(Ts)[] zipped)
-{
-    mixin("Tuple!(" ~ toListTypes!Ts ~ ") result;");
-    const n = zipped.length;
-    foreach (j, T; AliasSeq!Ts)
-    {
-        result[j].length = n;
-        foreach (i; 0 .. n)
-        {
-            result[j][i] = zipped[i][j];
-        }
-    }
-    return result;
-}
+<span class="k">auto</span> <span class="n">unzip</span><span class="p">(</span><span class="n">Ts</span><span class="p">...)(</span><span class="n">Tuple</span><span class="p">!(</span><span class="n">Ts</span><span class="p">)[]</span> <span class="n">zipped</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">mixin</span><span class="p">(</span><span class="s">&quot;Tuple!(&quot;</span> <span class="p">~</span> <span class="n">toListTypes</span><span class="p">!</span><span class="n">Ts</span> <span class="p">~</span> <span class="s">&quot;) result;&quot;</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">n</span> <span class="p">=</span> <span class="n">zipped</span><span class="p">.</span><span class="n">length</span><span class="p">;</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">T</span><span class="p">;</span> <span class="n">AliasSeq</span><span class="p">!</span><span class="n">Ts</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">].</span><span class="n">length</span> <span class="p">=</span> <span class="n">n</span><span class="p">;</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="n">i</span><span class="p">;</span> <span class="mi">0</span> <span class="p">..</span> <span class="n">n</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="n">zipped</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
 
-unittest
-{
-    import std.range : array, zip;
-    immutable a = [1, 2, 3];
-    immutable b = ["a", "b", "c"];
-    immutable c = [0.1, 0.2, 0.3];
-    static assert(unzip(zip(a, b, c).array) == tuple(a, b, c));
-}</code></pre></figure>
+<span class="k">unittest</span>
+<span class="p">{</span>
+    <span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">range</span> <span class="p">:</span> <span class="n">array</span><span class="p">,</span> <span class="n">zip</span><span class="p">;</span>
+    <span class="k">immutable</span> <span class="n">a</span> <span class="p">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+    <span class="k">immutable</span> <span class="n">b</span> <span class="p">=</span> <span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="s">&quot;c&quot;</span><span class="p">];</span>
+    <span class="k">immutable</span> <span class="n">c</span> <span class="p">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">];</span>
+    <span class="k">static</span> <span class="k">assert</span><span class="p">(</span><span class="n">unzip</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">).</span><span class="n">array</span><span class="p">)</span> <span class="p">==</span> <span class="n">tuple</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">));</span>
+<span class="p">}</span></code></pre></figure>
 
-<p><code class="highlighter-rouge">foreach (j, T; AliasSeq!Ts)</code> のところに、<code class="highlighter-rouge">enumerate</code> を使うとコンパイル通らないのがハマりどころです。
-あと<code class="highlighter-rouge">mixin(s);</code>するときは<code class="highlighter-rouge">pragma(msg, s)</code>とするとコンパイル時にprint debugできて楽ですね。
+<p><code>foreach (j, T; AliasSeq!Ts)</code> のところに、<code>enumerate</code> を使うとコンパイル通らないのがハマりどころです。
+あと<code>mixin(s);</code>するときは<code>pragma(msg, s)</code>とするとコンパイル時にprint debugできて楽ですね。
 次回(?)は、Phobos の Zip オブジェクトを参考に実装してみましょう。
 Unzip のときは中身の配列長がそれぞれ等しいので楽そうですね。</p>
 
-<h2 id="section">参考</h2>
+<h2>参考</h2>
 
 <ul>
-  <li><a href="https://github.com/D-Programming-Language/phobos/blob/64f43ce42cb133a63ff71a7a7e3bdf4076b98300/std/range/package.d#L3403">Phobos の zip 実装部分 (2015/12)</a></li>
+<li><a href="https://github.com/D-Programming-Language/phobos/blob/64f43ce42cb133a63ff71a7a7e3bdf4076b98300/std/range/package.d#L3403">Phobos の zip 実装部分 (2015/12)</a></li>
 </ul>
 
-<h2 id="section-1">追記</h2>
+<h2>追記</h2>
 
-<p>何度目かわかりませんが、ローカルの jekyll をアップデートした際に壊れてしまいました…。
+<p>何度目かわかりませんが、ローカルの jekyll をアップデートした際に壊れてしまいました...。
 そろそろこのフォーマットで書き散らかすのもキツいので、年内には MDwiki に移行する計画です。
 それに向けてブログ用として、小さなツールを D 言語で書いているこの頃です。</p>
-
 
   </article>
 </div>

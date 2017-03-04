@@ -78,23 +78,23 @@
   </header>
 
   <article class="post-content">
-    <p><img src="/assets/30os.png" alt="30os" /></p>
+    <p><img src="/assets/30os.png" alt="30os"></p>
 
-<figure class="highlight"><pre><code class="language-make" data-lang="make"><span class="c"># Makefile の設定
-</span><span class="nv">CC</span><span class="o">=</span>gcc -m32
+<figure class="highlight"><pre><code class="language-make" data-lang="make"><span></span><span class="c"># Makefile の設定</span>
+<span class="nv">CC</span><span class="o">=</span>gcc -m32
 <span class="nv">LD</span><span class="o">=</span>ld -m elf_i386 --oformat binary
 <span class="nv">AS</span><span class="o">=</span>as --32 -march<span class="o">=</span>i386
-<span class="nv">QEMU</span><span class="o">=</span><span class="err">qemu-system-i386 -m 32 -localtime -vga std -fda</span></code></pre></figure>
+<span class="nv">QEMU</span><span class="o">=</span>qemu-system-i386 -m <span class="m">32</span> -localtime -vga std -fda</code></pre></figure>
 
-<p>クロスコンパイルするので <code class="highlighter-rouge">sudo apt-get install gcc-multilib</code> が必要です。</p>
+<p>クロスコンパイルするので <code>sudo apt-get install gcc-multilib</code> が必要です。</p>
 
-<p>Cコンパイラとして <code class="highlighter-rouge">$(CC)</code>, リンカとして <code class="highlighter-rouge">$(LD)</code>, アセンブラとして <code class="highlighter-rouge">$(AS)</code> を使ってください。
+<p>Cコンパイラとして <code>$(CC)</code>, リンカとして <code>$(LD)</code>, アセンブラとして <code>$(AS)</code> を使ってください。
 gcc にも ld, as フロントエンドとして同じ機能がある筈ですが、該当オプションの渡し方が違うみたいで素直に ld, as 使いました。
-QEMU は自作 OS イメージ(*.img)のシミュレーション用で、<code class="highlighter-rouge">-m 32</code> は 32 bit 環境とかではなく 32 MB メモリを使うという意味です。</p>
+QEMU は自作 OS イメージ(*.img)のシミュレーション用で、<code>-m 32</code> は 32 bit 環境とかではなく 32 MB メモリを使うという意味です。</p>
 
-<p>…</p>
+<p>...</p>
 
-<h1 id="section">あけましておめでとうございます。</h1>
+<h1>あけましておめでとうございます。</h1>
 
 <p>という具合に私のプログラミング書き初め (?) は GNU アセンブラ でした。
 マイナビ出版の電子書籍が年末年始セールにて、

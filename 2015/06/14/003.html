@@ -81,32 +81,32 @@
     <p>とりあえず、何か CUI アプリケーションなり複雑な C++ プログラムを書くとき、私にとって標準ライブラリに足りないものとして</p>
 
 <ul>
-  <li>ロガー</li>
-  <li>コマンド引数パーサ</li>
-  <li>テストライブラリ</li>
+<li>ロガー</li>
+<li>コマンド引数パーサ</li>
+<li>テストライブラリ</li>
 </ul>
 
 <p>以上の主に3つがあります。それらで最近よく使うイカしたヘッダオンリライブラリがあるので紹介します。ヘッダオンリライブラリを使う理由は、ヘッダオンリライブラリを作るとき手軽に内包できるからです (もちろんヘッダオンリじゃなくても)。</p>
 
-<h3 id="easylogging">ロガー : Easylogging++</h3>
+<h3>ロガー : Easylogging++</h3>
 
 <p><a href="https://github.com/easylogging/easyloggingpp">https://github.com/easylogging/easyloggingpp</a></p>
 
 <p>たぶんヘッダオンリでなければ <a href="https://github.com/google/glog">glog</a> あたりが有名ですが、たぶんもっと高機能です。クロスプラットフォームでスレッドセーフです。GCC限定なら Stacktrace も吐けてテスト・デバッグ用途にも便利ですね。コンパイルが結構遅くなるのが欠点。</p>
 
-<h3 id="cmdline">コマンド引数パーサ : cmdline</h3>
+<h3>コマンド引数パーサ : cmdline</h3>
 
 <p><a href="https://github.com/tanakh/cmdline">https://github.com/tanakh/cmdline</a></p>
 
-<p>とても手軽かつミニマム、コード自体が読める規模なので弄りやすいライブラリで重宝します。ヘルプとかデフォルト値とか簡単にかけるのでとりあえずこれ書いてから始めるっていう。<code class="highlighter-rouge">std::string readable_typename&lt;T&gt;()</code>はデバッグで便利。</p>
+<p>とても手軽かつミニマム、コード自体が読める規模なので弄りやすいライブラリで重宝します。ヘルプとかデフォルト値とか簡単にかけるのでとりあえずこれ書いてから始めるっていう。<code>std::string readable_typename&lt;T&gt;()</code>はデバッグで便利。</p>
 
-<h3 id="catch">テストライブラリ : Catch</h3>
+<h3>テストライブラリ : Catch</h3>
 
 <p><a href="https://github.com/philsquared/Catch">https://github.com/philsquared/Catch</a></p>
 
-<p>前は全然ドキュメントが整備されてなかったけど、今見たら充実してたので色々紹介する手間が省けました。これも少しコンパイルが遅い。1 ファイルに<code class="highlighter-rouge">#define</code>マクロと<code class="highlighter-rouge">#include &lt;catch.hpp&gt;</code>して、それを使えば良いよって書いてある (<a href="https://github.com/philsquared/Catch/blob/master/docs/slow-compiles.md">docs</a>)。プリプロセスがかなり時間食うらしい。もう Boost 使うぞってプロジェクトなら Boost の minimaltest をよく使います。</p>
+<p>前は全然ドキュメントが整備されてなかったけど、今見たら充実してたので色々紹介する手間が省けました。これも少しコンパイルが遅い。1 ファイルに<code>#define</code>マクロと<code>#include &lt;catch.hpp&gt;</code>して、それを使えば良いよって書いてある (<a href="https://github.com/philsquared/Catch/blob/master/docs/slow-compiles.md">docs</a>)。プリプロセスがかなり時間食うらしい。もう Boost 使うぞってプロジェクトなら Boost の minimaltest をよく使います。</p>
 
-<h3 id="cotire">プリコンパイル済みヘッダ作成ツール : cotire</h3>
+<h3>プリコンパイル済みヘッダ作成ツール : cotire</h3>
 
 <p><a href="https://github.com/sakra/cotire">https://github.com/sakra/cotire</a></p>
 

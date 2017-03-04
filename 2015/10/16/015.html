@@ -78,45 +78,45 @@
   </header>
 
   <article class="post-content">
-    <h2 id="section">紹介</h2>
+    <h2>紹介</h2>
 
-<p>随分前から注目していた <a href="https://hackage.haskell.org/package/accelerate">Accelerate</a> というライブラリ、なんと Haskell 中の EDSL — Python でいう Copperhead みたいな本物の Haskell — で CUDA プログラミングが可能という代物です。</p>
+<p>随分前から注目していた <a href="https://hackage.haskell.org/package/accelerate">Accelerate</a> というライブラリ、なんと Haskell 中の EDSL --- Python でいう Copperhead みたいな本物の Haskell --- で CUDA プログラミングが可能という代物です。</p>
 
 <p>なんといってもトップページにある以下のベクトル内積を算出する極めてシンプルなコード</p>
 
-<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="n">dotp</span> <span class="o">::</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Vector</span> <span class="kt">Float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Vector</span> <span class="kt">Float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Scalar</span> <span class="kt">Float</span><span class="p">)</span>
-<span class="n">dotp</span> <span class="n">xs</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">fold</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">(</span><span class="n">zipWith</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">xs</span> <span class="n">ys</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span></span><span class="nf">dotp</span> <span class="ow">::</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Vector</span> <span class="kt">Float</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Vector</span> <span class="kt">Float</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Acc</span> <span class="p">(</span><span class="kt">Scalar</span> <span class="kt">Float</span><span class="p">)</span>
+<span class="nf">dotp</span> <span class="n">xs</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">fold</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">(</span><span class="n">zipWith</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">xs</span> <span class="n">ys</span><span class="p">)</span></code></pre></figure>
 
-<p><a href="https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product">これが CUBLAS に匹敵する性能を叩き出すという話です。</a>。 C++ の STL アルゴリズムを実装した thrust などでも <a href="http://www.orangeowlsolutions.com/archives/790">CUBLAS を使うほうが速い</a> のが通説ですが、これはにわかには信じられない…。</p>
+<p><a href="https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product">これが CUBLAS に匹敵する性能を叩き出すという話です。</a>。 C++ の STL アルゴリズムを実装した thrust などでも <a href="http://www.orangeowlsolutions.com/archives/790">CUBLAS を使うほうが速い</a> のが通説ですが、これはにわかには信じられない...。</p>
 
-<h2 id="section-1">導入</h2>
+<h2>導入</h2>
 
 <p>結局ベンチマークは CUBLAS の FFI ライブラリがまだ動かせてないので試してないんですが、簡単なサンプルだけ動かしてみました。</p>
 
 <p><a href="https://github.com/ShigekiKarita/first-accelerate">ShigekiKarita/first-accelerate</a></p>
 
-<p>動かすときに詰まったのは、 <code class="highlighter-rouge">accelerate-cuda</code> がインラインの C コード で <code class="highlighter-rouge"><span class="p">{</span></code> の次にかかれた<code class="highlighter-rouge">/* コメント */</code>がパースに失敗してコケる点でした。そこで最新版HEADにコメント部分を削除しただけのパッチを当てました。ビルドツールに <a href="http://qiita.com/tanakh/items/6866d0f570d0547df026">stack</a> を使ってる場合は</p>
+<p>動かすときに詰まったのは、 <code>accelerate-cuda</code> がインラインの C コード で <code>{</code> の次にかかれた<code>/* コメント */</code>がパースに失敗してコケる点でした。そこで最新版HEADにコメント部分を削除しただけのパッチを当てました。ビルドツールに <a href="http://qiita.com/tanakh/items/6866d0f570d0547df026">stack</a> を使ってる場合は</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">packages</span><span class="pi">:</span>
-<span class="pi">-</span> <span class="s">location</span><span class="pi">:</span>
-    <span class="s">git</span> <span class="pi">:</span> <span class="s">git@github.com:ShigekiKarita/accelerate-cuda.git</span>
-    <span class="s">commit</span> <span class="pi">:</span> <span class="s">648e683d191d0c402c217174d44f85650cbf3f66</span>
-<span class="pi">-</span> <span class="s">location</span><span class="pi">:</span>
-    <span class="s">git</span> <span class="pi">:</span> <span class="s">git@github.com:AccelerateHS/accelerate.git</span>
-    <span class="s">commit</span> <span class="pi">:</span> <span class="s">15aedff344232893c89e513c1caf4bcf699a2b86</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">packages</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">location</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">git</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">git@github.com:ShigekiKarita/accelerate-cuda.git</span>
+    <span class="l l-Scalar l-Scalar-Plain">commit</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">648e683d191d0c402c217174d44f85650cbf3f66</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">location</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">git</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">git@github.com:AccelerateHS/accelerate.git</span>
+    <span class="l l-Scalar l-Scalar-Plain">commit</span> <span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">15aedff344232893c89e513c1caf4bcf699a2b86</span></code></pre></figure>
 
-<p>と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを <code class="highlighter-rouge">cabal sandbox add-source DLしたフォルダ</code> で cabal sandbox に教えると使ってくれます。</p>
+<p>と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを <code>cabal sandbox add-source DLしたフォルダ</code> で cabal sandbox に教えると使ってくれます。</p>
 
-<h2 id="section-2">開発環境</h2>
+<h2>開発環境</h2>
 
 <p>ghc-mod は cabal と連携して Emacs やその他エディタを IDE にしてくれる Haskell 開発にはかかせないツールですが、いまのところ stack や CUDA とは動作しません。なので私は次のように stack と cabal を使い分けています</p>
 
 <ul>
-  <li>cabal : <code class="highlighter-rouge">accelerate-cuda</code> を <code class="highlighter-rouge">dependencies</code> から外して <code class="highlighter-rouge">Data.Array.Accelerate.Interpreter</code> (CUDAなしで計算をエミュレートするモード) を使い ghc-mod でのコーディングに使う</li>
-  <li>stack : <code class="highlighter-rouge">accelerate-cuda</code> を <code class="highlighter-rouge">dependencies</code> に追加して <code class="highlighter-rouge">Data.Array.Accelerate.CUDA</code> (CUDAで計算するモード) を使い端末から動作やテストするときに使う</li>
+<li>cabal : <code>accelerate-cuda</code> を <code>dependencies</code> から外して <code>Data.Array.Accelerate.Interpreter</code> (CUDAなしで計算をエミュレートするモード) を使い ghc-mod でのコーディングに使う</li>
+<li>stack : <code>accelerate-cuda</code> を <code>dependencies</code> に追加して <code>Data.Array.Accelerate.CUDA</code> (CUDAで計算するモード) を使い端末から動作やテストするときに使う</li>
 </ul>
 
-<h3 id="section-3">追記</h3>
+<h3>追記</h3>
 
 <p>もう少し Haskell や CUDA 関係のノウハウがたまったら、次回以降は Wiki 的なものにそれなりに体系だててメモしたいなと思います。そろそろこのブログ形式も見難くなってきました。汗</p>
 

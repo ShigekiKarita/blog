@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>chainer で Auto Encoder</title>
-  <meta name="description" content="久々の投稿です…、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと…。">
+  <meta name="description" content="久々の投稿です...、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと...。">
 
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2016/08/12/020.html">
@@ -78,25 +78,25 @@
   </header>
 
   <article class="post-content">
-    <p>久々の投稿です…、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。
-今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと…。</p>
+    <p>久々の投稿です...、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。
+今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと...。</p>
 
 <p><a href="https://github.com/ShigekiKarita/chainer-autoencoders">https://github.com/ShigekiKarita/chainer-autoencoders</a></p>
 
 <p>元ネタは <a href="https://blog.keras.io/building-autoencoders-in-keras.html">https://blog.keras.io/building-autoencoders-in-keras.html</a>。 chainer も Trainer とか入って Keras っぽくなりましたけど、まだ Keras の方が楽そうですね。今回は少しややこしい学習をするので Trainer を使いませんでした。目的関数 (binary cross entropy) の学習経過です。</p>
 
-<p><img src="/blog/assets/autoencoders/score.png" alt="score" /></p>
+<p><img src="/blog/assets/autoencoders/score.png" alt="score"></p>
 
-<p>chainer は <code class="highlighter-rouge">Chain</code> の持つ <code class="highlighter-rouge">add_link</code> メソッドを使うと簡単にパラメタが追加できて便利です。他のライブラリなら一度シリアライズして、新しいモデルを作って初期値に読み込んで…といったディスクIOや構築のオーバーヘッドをなくせます。上の図の<code class="highlighter-rouge">deep</code>は以下のコードです</p>
+<p>chainer は <code>Chain</code> の持つ <code>add_link</code> メソッドを使うと簡単にパラメタが追加できて便利です。他のライブラリなら一度シリアライズして、新しいモデルを作って初期値に読み込んで...といったディスクIOや構築のオーバーヘッドをなくせます。上の図の<code>deep</code>は以下のコードです</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">DeepAutoEncoder</span><span class="p">(</span><span class="n">AutoEncoderBase</span><span class="p">):</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">class</span> <span class="nc">DeepAutoEncoder</span><span class="p">(</span><span class="n">AutoEncoderBase</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_in</span><span class="p">,</span> <span class="n">n_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_units</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DeepAutoEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_in</span><span class="p">,</span> <span class="n">n_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_units</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DeepAutoEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_in</span> <span class="o">=</span> <span class="n">n_in</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_units</span> <span class="o">=</span> <span class="n">n_units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">encode_label</span> <span class="o">=</span> <span class="s">"encode</span><span class="si">%</span><span class="s">d"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">decode_label</span> <span class="o">=</span> <span class="s">"decode</span><span class="si">%</span><span class="s">d"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encode_label</span> <span class="o">=</span> <span class="s2">&quot;encode</span><span class="si">%d</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decode_label</span> <span class="o">=</span> <span class="s2">&quot;decode</span><span class="si">%d</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_depth</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_layers</span><span class="p">(</span><span class="n">n_depth</span><span class="p">)</span>
 
@@ -132,20 +132,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_label</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_depth</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_depth</span> <span class="o">+=</span> <span class="mi">1</span></code></pre></figure>
 
-<p><code class="highlighter-rouge">add_layer</code> を呼ぶと、エンコードとデコード用で2層追加します。GPUを使っている場合は <code class="highlighter-rouge">to_gpu()</code> を更に呼ばないと怒られます (雑)。
-あと、ちょっと前に職場で、学習過程の一連の図を動画にしたい…と言われて <code class="highlighter-rouge">imageio</code> というライブラリを紹介したんですが、あまりネットに情報がなかったのでコード片をメモすると</p>
+<p><code>add_layer</code> を呼ぶと、エンコードとデコード用で2層追加します。GPUを使っている場合は <code>to_gpu()</code> を更に呼ばないと怒られます (雑)。
+あと、ちょっと前に職場で、学習過程の一連の図を動画にしたい...と言われて <code>imageio</code> というライブラリを紹介したんですが、あまりネットに情報がなかったのでコード片をメモすると</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
 <span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
 <span class="kn">import</span> <span class="nn">imageio</span>
 
 <span class="k">def</span> <span class="nf">plot_movie</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="c"># path には 001.png, 002.png ...  みたいな画像がある</span>
-    <span class="n">ps</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s">"/*.png"</span><span class="p">)</span>
+    <span class="c1"># path には 001.png, 002.png ...  みたいな画像がある</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/*.png&quot;</span><span class="p">)</span>
     <span class="n">ps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ps</span><span class="p">)</span>
     <span class="n">imgs</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">,</span> <span class="n">ps</span><span class="p">)</span>
-    <span class="c"># 内部の ffmpeg 等がサポートしている幅広い動画フォーマットが使える</span>
-    <span class="n">writer</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s">"/test.gif"</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 内部の ffmpeg 等がサポートしている幅広い動画フォーマットが使える</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/test.gif&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">append_data</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></figure>
@@ -153,7 +153,7 @@
 <p>ところで、gif動画って昔からありますけど、凄いサイズ大きいんですね。Twitterとかgif動画あげるとmp4にされますし、もうベストはmp4で良いんでしょうか。
 さて学習の結果ですが、これが真値 (未学習データ)</p>
 
-<p><img src="http://shigekikarita.github.io/blog/assets/autoencoders/test.png" alt="test" /></p>
+<p><img src="http://shigekikarita.github.io/blog/assets/autoencoders/test.png" alt="test"></p>
 
 <p>に対して、2層の AE だと、少しザラザラした感じがします</p>
 
@@ -179,10 +179,9 @@
 </video>
 </p>
 
-<p>今回 AE は Python で OOP する良い題材になるかと思ったのですが、動的型付だとメソッド持ってればいいし、コンテナに入れる時も困らないのでis-a 関係などがフワっとして単なる差分プログラミングになってしまいました…。そもそもOOPって動的型付け言語(smalltalk)発祥だったのに、全然ベストプラクティスわからないし、文法が気持ち悪いのでなんだか smalltalk にちょっと興味出てきました^^;</p>
+<p>今回 AE は Python で OOP する良い題材になるかと思ったのですが、動的型付だとメソッド持ってればいいし、コンテナに入れる時も困らないのでis-a 関係などがフワっとして単なる差分プログラミングになってしまいました...。そもそもOOPって動的型付け言語(smalltalk)発祥だったのに、全然ベストプラクティスわからないし、文法が気持ち悪いのでなんだか smalltalk にちょっと興味出てきました^^;</p>
 
-<p>Python に関しては<code class="highlighter-rouge">type(a) is A</code>と<code class="highlighter-rouge">isinstance(a, A)</code>って一緒だっけとか。出力に疎な罰則を加えたり、入力に雑音乗せるのは継承で別クラス作らなくても、関数用意してやればいい？？…とか難しいです。それと久々にPython書くとスコープのシステムが最悪で、関数とモジュールしか作らないとか、色んな落とし穴踏み抜いて辛いです。</p>
-
+<p>Python に関しては<code>type(a) is A</code>と<code>isinstance(a, A)</code>って一緒だっけとか。出力に疎な罰則を加えたり、入力に雑音乗せるのは継承で別クラス作らなくても、関数用意してやればいい？？...とか難しいです。それと久々にPython書くとスコープのシステムが最悪で、関数とモジュールしか作らないとか、色んな落とし穴踏み抜いて辛いです。</p>
 
   </article>
 </div>

@@ -80,36 +80,36 @@
   <article class="post-content">
     <p>この前、 Exceptional C++ 読んだ時にメモしておこうと思って忘れてたので今度こそ。</p>
 
-<h3 id="section">例外安全における重要な保証</h3>
+<h3>例外安全における重要な保証</h3>
 
 <ol>
-  <li>基本的な保証 : リソースをリークしないこと。</li>
-  <li>強い保証 : 例外発生前の (参照やイテレータといった) プログラムの状態にロールバックできること。</li>
-  <li>nothrow 保証 : 完全に例外を投げないこと。とくにデストラクタや swap 関数はこれが必要。</li>
+<li>基本的な保証 : リソースをリークしないこと。</li>
+<li>強い保証 : 例外発生前の (参照やイテレータといった) プログラムの状態にロールバックできること。</li>
+<li>nothrow 保証 : 完全に例外を投げないこと。とくにデストラクタや swap 関数はこれが必要。</li>
 </ol>
 
-<h3 id="section-1">標準例外規則</h3>
+<h3>標準例外規則</h3>
 
 <ol>
-  <li>デストラクタ・<code class="highlighter-rouge">operator delete</code>は例外を投げない。つまり <code class="highlighter-rouge">throw()</code> を指定すること。(補足：C++11以降は <code class="highlighter-rouge">noexcept</code> キーワードを使うとわかりやすい)</li>
-  <li>RAII イディオムを常用し、リソースの所有と管理を分離すること。</li>
-  <li>例外を投げる可能性がある箇所(リソース確保、コピーなど)を全て、別個の関数で安全に処理すること。</li>
+<li>デストラクタ・<code>operator delete</code>は例外を投げない。つまり <code>throw()</code> を指定すること。(補足：C++11以降は <code>noexcept</code> キーワードを使うとわかりやすい)</li>
+<li>RAII イディオムを常用し、リソースの所有と管理を分離すること。</li>
+<li>例外を投げる可能性がある箇所(リソース確保、コピーなど)を全て、別個の関数で安全に処理すること。</li>
 </ol>
 
 <p>以上は「例外安全」の説明です。これとは別に「例外中立」という概念もあります。それぞれの定義は</p>
 
 <ul>
-  <li>例外安全 : 例外が発生しても適切に処理する (メモリリーク無し、例外発生前と一貫性を保つ = ロールバックする)</li>
-  <li>例外中立 : 全ての例外を呼び出し側に伝える (捕捉して握りつぶさない)</li>
+<li>例外安全 : 例外が発生しても適切に処理する (メモリリーク無し、例外発生前と一貫性を保つ = ロールバックする)</li>
+<li>例外中立 : 全ての例外を呼び出し側に伝える (捕捉して握りつぶさない)</li>
 </ul>
 
 <p>例外中立を実現するには try/catch を除去するリソース管理の技法(copy&amp;swapなど)が紹介されています。なお、例外安全と例外中立は、標準ライブラリのコンテナに保証される性質です。この本は例外処理以外にもいろんな規則 (Liskov Substitution Principle とか) やイディオム (pimpl とか) がでてきて、いかに C++ が複雑な言語か思い知らされる本です。補足として、現在ではこの本の中心となる nothrow  保証な swap 関数を実装する他に move semantics を利用する手もあります。</p>
 
-<h3 id="section-2">参考</h3>
+<h3>参考</h3>
 
 <ul>
-  <li><a href="http://d.hatena.ne.jp/gintenlabo/20130604/1370362451">C++11時代のクラス設計に関する提案</a></li>
-  <li><a href="http://d.hatena.ne.jp/gintenlabo/20130620/1371734238">「 Copy して Swap 」 対 「 Copy して Move 代入」</a></li>
+<li><a href="http://d.hatena.ne.jp/gintenlabo/20130604/1370362451">C++11時代のクラス設計に関する提案</a></li>
+<li><a href="http://d.hatena.ne.jp/gintenlabo/20130620/1371734238">「 Copy して Swap 」 対 「 Copy して Move 代入」</a></li>
 </ul>
 
   </article>

@@ -80,45 +80,45 @@
   <article class="post-content">
     <p>これ、読んでます</p>
 
-<h3 id="atshttpjats-ugmetasepiorgdocats2int2proginatsbook1html"><a href="http://jats-ug.metasepi.org/doc/ATS2/INT2PROGINATS/book1.html">ATSプログラミング入門</a></h3>
+<h3><a href="http://jats-ug.metasepi.org/doc/ATS2/INT2PROGINATS/book1.html">ATSプログラミング入門</a></h3>
 
-<p>入門する前に知りたかった情報として、今は ATS2 と呼ばれるバージョンになり、コンパイラは <code class="highlighter-rouge">atscc</code>ではなく <code class="highlighter-rouge">patscc</code> になっているそうです。入門しながら<a href="http://d.hatena.ne.jp/osiire/comment/20140106">この記事</a>を見ると落とし穴(インクルードやリンカエラー)にはまらずにすみます。</p>
+<p>入門する前に知りたかった情報として、今は ATS2 と呼ばれるバージョンになり、コンパイラは <code>atscc</code>ではなく <code>patscc</code> になっているそうです。入門しながら<a href="http://d.hatena.ne.jp/osiire/comment/20140106">この記事</a>を見ると落とし穴(インクルードやリンカエラー)にはまらずにすみます。</p>
 
-<p>ATS の所感、C言語を生成する感じは初期のC++と思想として同じですが、型推論が微妙なのもありテンプレートが随分と使いにくい…？それと別にMLっぽい多相関数があるのも変な感じがしています。F#とかScalaみたいに関数型以外のパラダイムな部分で型推論や部分適用が効かないのと同じ理由でしょうか。うーん、Rustなどは一体どうやっているんでしょうか？</p>
+<p>ATS の所感、C言語を生成する感じは初期のC++と思想として同じですが、型推論が微妙なのもありテンプレートが随分と使いにくい...？それと別にMLっぽい多相関数があるのも変な感じがしています。F#とかScalaみたいに関数型以外のパラダイムな部分で型推論や部分適用が効かないのと同じ理由でしょうか。うーん、Rustなどは一体どうやっているんでしょうか？</p>
 
 <p>それにしてもC言語が直接かけるのは実に強力で、なんとOpenCLのコードも動きました。とりあえず、この言語の一番おもしろそうな証明の部分までじわじわ進めたいです。そのために少し前まで Coq を触ってたのです。</p>
 
-<h3 id="emacs-">Emacs の設定</h3>
+<h3>Emacs の設定</h3>
 
-<p><img src="/assets/emacs_ats.png" alt="png_img" /></p>
+<p><img src="/assets/emacs_ats.png" alt="png_img"></p>
 
-<p><code class="highlighter-rouge">ats2-mode.el</code> と <code class="highlighter-rouge">flycheck-ats.el</code> を導入すると超読みにくいエラーメッセージ(下ペイン)がエディタ上でハイライト(上バッファ)されて少なくとも発生場所は明確になって嬉しいです。</p>
+<p><code>ats2-mode.el</code> と <code>flycheck-ats.el</code> を導入すると超読みにくいエラーメッセージ(下ペイン)がエディタ上でハイライト(上バッファ)されて少なくとも発生場所は明確になって嬉しいです。</p>
 
-<figure class="highlight"><pre><code class="language-elisp" data-lang="elisp"><span class="p">(</span><span class="nv">setenv</span> <span class="s">"PATSHOME"</span> <span class="s">"/path/to/ats/ATS2-Postiats-x.y.z"</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-elisp" data-lang="elisp"><span></span><span class="p">(</span><span class="nv">setenv</span> <span class="s">&quot;PATSHOME&quot;</span> <span class="s">&quot;/path/to/ats/ATS2-Postiats-x.y.z&quot;</span><span class="p">)</span>
 
 <span class="c1">;; wget -O load-path/ats-mode.el https://raw.githubusercontent.com/mrd/ats2-mode/master/ats2-mode.el</span>
-<span class="p">(</span><span class="nb">require</span> <span class="ss">'ats-mode</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;ats-mode</span><span class="p">)</span>
 <span class="c1">;; wget -O load-path/ats-flycheck.el https://raw.githubusercontent.com/drvink/flycheck-ats2/master/flycheck-ats2.el</span>
-<span class="p">(</span><span class="nb">require</span> <span class="ss">'ats2-flycheck</span><span class="p">)</span>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;ats2-flycheck</span><span class="p">)</span>
 
 
 <span class="p">(</span><span class="k">setq</span> <span class="nv">auto-mode-alist</span>
-      <span class="p">(</span><span class="nb">append</span> <span class="o">'</span><span class="p">((</span><span class="s">"\\.dats$"</span> <span class="o">.</span> <span class="nv">ats-mode</span><span class="p">))</span>
+      <span class="p">(</span><span class="nf">append</span> <span class="o">&#39;</span><span class="p">((</span><span class="s">&quot;\\.dats$&quot;</span> <span class="o">.</span> <span class="nv">ats-mode</span><span class="p">))</span>
               <span class="nv">auto-mode-alist</span><span class="p">))</span>
 
-<span class="p">(</span><span class="nv">add-hook</span> <span class="ss">'ats-mode-hook</span>
-          <span class="o">'</span><span class="p">(</span><span class="k">lambda</span> <span class="p">()</span>
-             <span class="p">(</span><span class="nb">require</span> <span class="ss">'smart-compile</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-hook</span> <span class="ss">&#39;ats-mode-hook</span>
+          <span class="o">&#39;</span><span class="p">(</span><span class="nb">lambda</span> <span class="p">()</span>
+             <span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;smart-compile</span><span class="p">)</span>
              <span class="p">(</span><span class="k">setq</span> <span class="nv">smart-compile-alist</span>
-                   <span class="p">(</span><span class="nb">append</span> <span class="nv">smart-compile-alist</span>
-                           <span class="o">'</span><span class="p">((</span><span class="s">"\\.dats$"</span> <span class="o">.</span>
-                              <span class="s">"patscc %f -o %n -DATS_MEMALLOC_LIBC &amp;&amp; ./%n"</span><span class="p">))))</span>
-             <span class="p">(</span><span class="nv">with-eval-after-load</span> <span class="ss">'flycheck</span>
+                   <span class="p">(</span><span class="nf">append</span> <span class="nv">smart-compile-alist</span>
+                           <span class="o">&#39;</span><span class="p">((</span><span class="s">&quot;\\.dats$&quot;</span> <span class="o">.</span>
+                              <span class="s">&quot;patscc %f -o %n -DATS_MEMALLOC_LIBC &amp;&amp; ./%n&quot;</span><span class="p">))))</span>
+             <span class="p">(</span><span class="nb">with-eval-after-load</span> <span class="ss">&#39;flycheck</span>
                <span class="p">(</span><span class="nv">flycheck-ats2-setup</span><span class="p">))</span>
-             <span class="p">(</span><span class="nb">require</span> <span class="ss">'flycheck</span><span class="p">)</span>
+             <span class="p">(</span><span class="nb">require</span> <span class="ss">&#39;flycheck</span><span class="p">)</span>
              <span class="p">(</span><span class="nv">flycheck-mode</span><span class="p">)))</span></code></pre></figure>
 
-<p>どっちの拡張もファイル名と provide されるモード名が違うせいか怒られたので一致させて、<code class="highlighter-rouge">ats2-mode.el</code> の方は <code class="highlighter-rouge">smart-compile</code> で邪魔なので <code class="highlighter-rouge">compile-command</code> を指定する箇所を消しました。やはり REPL 的に試せる環境があれば言語習得が早くなりますね。</p>
+<p>どっちの拡張もファイル名と provide されるモード名が違うせいか怒られたので一致させて、<code>ats2-mode.el</code> の方は <code>smart-compile</code> で邪魔なので <code>compile-command</code> を指定する箇所を消しました。やはり REPL 的に試せる環境があれば言語習得が早くなりますね。</p>
 
   </article>
 </div>

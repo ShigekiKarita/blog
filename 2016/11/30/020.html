@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>gh-pages引っ越し</title>
-  <meta name="description" content="久々に更新しました。実は一つ前の日記をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが…、悔しいのでリベンジしました。...">
+  <meta name="description" content="久々に更新しました。実は一つ前の日記をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが...、悔しいのでリベンジしまし...">
 
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2016/11/30/020.html">
@@ -78,35 +78,34 @@
   </header>
 
   <article class="post-content">
-    <p>久々に更新しました。実は<a href="/2016/08/12/020.html">一つ前の日記</a>をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが…、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。</p>
+    <p>久々に更新しました。実は<a href="/2016/08/12/020.html">一つ前の日記</a>をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが...、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。</p>
 
 <ol>
-  <li>jekyll は静的ジェネレータなので、<a href="https://github.com/ShigekiKarita/blog/tree/gh-pages">gh-pages (githubで特別にウェブページとして使われる名前) ブランチ</a>に <code class="highlighter-rouge">jekyll build</code> 生成したサイトをプッシュ</li>
-  <li><a href="https://github.com/ShigekiKarita/blog/tree/master">master ブランチ</a>は普通に Markdown のファイルなどソース置き場にする</li>
-  <li>上記を(すごく雑に)自動化した。<a href="https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh">スクリプト</a></li>
-  <li>ついでに <a href="http://shigekikarita.github.io">shigekikarita.github.io</a> 直下から <code class="highlighter-rouge">/blog</code>サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います…(ここは未整理メモ置き場)</li>
+<li>jekyll は静的ジェネレータなので、<a href="https://github.com/ShigekiKarita/blog/tree/gh-pages">gh-pages (githubで特別にウェブページとして使われる名前) ブランチ</a>に <code>jekyll build</code> 生成したサイトをプッシュ</li>
+<li><a href="https://github.com/ShigekiKarita/blog/tree/master">master ブランチ</a>は普通に Markdown のファイルなどソース置き場にする</li>
+<li>上記を(すごく雑に)自動化した。<a href="https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh">スクリプト</a></li>
+<li>ついでに <a href="http://shigekikarita.github.io">shigekikarita.github.io</a> 直下から <code>/blog</code>サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います...(ここは未整理メモ置き場)</li>
 </ol>
 
-<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="c">#!sh</span>
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span></span><span class="ch">#!sh</span>
 <span class="nv">fname</span><span class="o">=</span><span class="sb">`</span>tempfile<span class="sb">`</span>_site
 jekyll build <span class="o">&amp;&amp;</span> <span class="se">\</span>
     cp -r _site <span class="nv">$fname</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
     git checkout gh-pages <span class="o">&amp;&amp;</span> <span class="se">\</span>
-    ls | xargs rm -r <span class="o">&amp;&amp;</span> <span class="se">\</span>
-    cp -r <span class="nv">$fname</span>/<span class="k">*</span> . <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    ls <span class="p">|</span> xargs rm -r <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    cp -r <span class="nv">$fname</span>/* . <span class="o">&amp;&amp;</span> <span class="se">\</span>
     touch .nojekyll <span class="o">&amp;&amp;</span> <span class="se">\</span>
     git add . <span class="o">&amp;&amp;</span> <span class="se">\</span>
-    git commit -m <span class="s2">"gen"</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    git commit -m <span class="s2">&quot;gen&quot;</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
     git push origin gh-pages <span class="o">&amp;&amp;</span> <span class="se">\</span>
     git checkout master</code></pre></figure>
 
 <p>未だよくわからないけど、まずまず動いたから良しとしたもの</p>
 
 <ul>
-  <li><code class="highlighter-rouge">_config.yml</code>: baseurl とか url とかよくわからない…、 Markdown中の <code class="highlighter-rouge">/assets/*.png</code> とかは全部ダメになっている気がする。<code class="highlighter-rouge">\{\{ site.url }}/assets/*.png</code> みたいに書きなおすべきか…</li>
-  <li><code class="highlighter-rouge">.nojekyll</code>: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった</li>
+<li><code>_config.yml</code>: baseurl とか url とかよくわからない...、 Markdown中の <code>/assets/*.png</code> とかは全部ダメになっている気がする。<code>\{\{ site.url }}/assets/*.png</code> みたいに書きなおすべきか...</li>
+<li><code>.nojekyll</code>: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった</li>
 </ul>
-
 
   </article>
 </div>

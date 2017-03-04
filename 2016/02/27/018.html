@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>numpy と cupy を簡単に使うデコレータ</title>
-  <meta name="description" content="久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました…^^;">
+  <meta name="description" content="久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました...^^;">
 
   <link rel="stylesheet" href="/blog/css/main.css">
   <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2016/02/27/018.html">
@@ -78,47 +78,47 @@
   </header>
 
   <article class="post-content">
-    <p>久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました…^^;</p>
+    <p>久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました...^^;</p>
 
-<p>ところで、python で高速な数値計算を実現する numpy、それと大体互換性のある <a href="http://docs.chainer.org/en/stable/cupy-reference">cupy</a> というGPU用ライブラリが便利で愛用してます。しかし、ちょっとした関数を書くとき、引数が numpy の array か、 cupy なのか教えてくれる (より正確には cupy の array があれば cupy モジュールを、それ以外は numpy を返す) <code class="highlighter-rouge">cupy.get_array_module</code> という関数名を思い出して、タイプするのは、ほぼボイラープレートなので面倒でした。そこで多くの場合、私はデコレータを使って、関数の”見えない”引数である <code class="highlighter-rouge">xp</code> により  numpy と cupy を切り替えてます。</p>
+<p>ところで、python で高速な数値計算を実現する numpy、それと大体互換性のある <a href="http://docs.chainer.org/en/stable/cupy-reference">cupy</a> というGPU用ライブラリが便利で愛用してます。しかし、ちょっとした関数を書くとき、引数が numpy の array か、 cupy なのか教えてくれる (より正確には cupy の array があれば cupy モジュールを、それ以外は numpy を返す) <code>cupy.get_array_module</code> という関数名を思い出して、タイプするのは、ほぼボイラープレートなので面倒でした。そこで多くの場合、私はデコレータを使って、関数の&quot;見えない&quot;引数である <code>xp</code> により  numpy と cupy を切り替えてます。</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">host_device</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">host_device</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">functools</span>
     <span class="kn">import</span> <span class="nn">cupy</span>
     <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">xp</span> <span class="o">=</span> <span class="n">cupy</span><span class="o">.</span><span class="n">get_array_module</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c"># ボイラープレート</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="n">cupy</span><span class="o">.</span><span class="n">get_array_module</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># ボイラープレート</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
 
 <span class="nd">@host_device</span>
 <span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="s">"""
-    &gt;&gt;&gt; import numpy, cupy
-    &gt;&gt;&gt; i = numpy.random.randn(2,3,4)
-    &gt;&gt;&gt; n = cupy.asarray(sigmoid(i))
-    &gt;&gt;&gt; c = sigmoid(cupy.asarray(i))
-    &gt;&gt;&gt; cupy.testing.assert_array_equal(n, c)
-    """</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; import numpy, cupy</span>
+<span class="sd">    &gt;&gt;&gt; i = numpy.random.randn(2,3,4)</span>
+<span class="sd">    &gt;&gt;&gt; n = cupy.asarray(sigmoid(i))</span>
+<span class="sd">    &gt;&gt;&gt; c = sigmoid(cupy.asarray(i))</span>
+<span class="sd">    &gt;&gt;&gt; cupy.testing.assert_array_equal(n, c)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">xp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
 
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">doctest</span>
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span></code></pre></figure>
 
 <p>例示しやすいので doctest で書きましたが、要素毎の操作する関数などテストパターンを共通化してもいいかもしれません。それもデコレータで書いてみましょう</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">test_elementwise</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">test_elementwise</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">__debug__</span><span class="p">:</span>
-        <span class="c"># 最適化オプション(-O)無し、定義時の一度だけ実行</span>
+        <span class="c1"># 最適化オプション(-O)無し、定義時の一度だけ実行</span>
         <span class="kn">import</span> <span class="nn">numpy</span><span class="o">,</span> <span class="nn">cupy</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">cupy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">cupy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="n">cupy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">"&lt;{}&gt; is ok"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&lt;{}&gt; is ok&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">func</span>
 
 
@@ -127,15 +127,15 @@
     <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
 
 
-<span class="nd">@test_elementwise</span> <span class="c"># 順番に注意</span>
+<span class="nd">@test_elementwise</span> <span class="c1"># 順番に注意</span>
 <span class="nd">@host_device</span>
 <span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">xp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span></code></pre></figure>
 
-<p>ipython 等で使ってみると、assert はデコレータ内で debug 時に一度だけ実行されて以降は呼ばれないことが <code class="highlighter-rouge">print</code> により確認できます (単体テストは一瞬で終わるべきと思っている私はこの些細な debug 時オーバーヘッドを気にしません)。
+<p>ipython 等で使ってみると、assert はデコレータ内で debug 時に一度だけ実行されて以降は呼ばれないことが <code>print</code> により確認できます (単体テストは一瞬で終わるべきと思っている私はこの些細な debug 時オーバーヘッドを気にしません)。
 ちなみにデコレータは後に記述されたものから順に適用されます。その理由は一番下の関数本体から定義されるからだと推測しますが、控えめに言ってデコレータ記法って言語設計ミスだと思います。</p>
 
-<p>最後に今回は挙げなかった <code class="highlighter-rouge">@host_device</code> のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の<code class="highlighter-rouge">wrapper</code> で <code class="highlighter-rouge">return</code> する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら <a href="https://github.com/pfnet/chainer/issues/new">issue を報告</a>した方がいいのかも</p>
+<p>最後に今回は挙げなかった <code>@host_device</code> のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の<code>wrapper</code> で <code>return</code> する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら <a href="https://github.com/pfnet/chainer/issues/new">issue を報告</a>した方がいいのかも</p>
 
   </article>
 </div>

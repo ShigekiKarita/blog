@@ -80,37 +80,36 @@
   <article class="post-content">
     <p>元ネタ <a href="http://blog.64p.org/entry/2015/05/27/095844">Perl6で「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた</a></p>
 
-<p>D言語にはコンパイル時 eval という mixin があるので使ってみた。コードをみれば分かるが、とくに mixin を使う必要はないけど使いたかったから…</p>
+<p>D言語にはコンパイル時 eval という mixin があるので使ってみた。コードをみれば分かるが、とくに mixin を使う必要はないけど使いたかったから...</p>
 
-<figure class="highlight"><pre><code class="language-d" data-lang="d">import std.conv : to;
-import std.stdio : write;
+<figure class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">conv</span> <span class="p">:</span> <span class="n">to</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">stdio</span> <span class="p">:</span> <span class="n">write</span><span class="p">;</span>
 
-string[] calc(string b = "1", int n = 1)() pure
-{
-    static if (n == 9)
-    {
-        return (mixin(b) == 100) ? [b] : [];
-    }
-    else
-    {
-        enum m = n + 1;
-        enum s = to!string(m);
-        return
-            calc!(b ~ "+" ~ s, m)() ~
-            calc!(b ~ "-" ~ s, m)() ~
-            calc!(b ~       s, m)();
-    }
-}
+<span class="nb">string</span><span class="p">[]</span> <span class="n">calc</span><span class="p">(</span><span class="nb">string</span> <span class="n">b</span> <span class="p">=</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="mi">1</span><span class="p">)()</span> <span class="k">pure</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="p">==</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">mixin</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="p">==</span> <span class="mi">100</span><span class="p">)</span> <span class="p">?</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="p">:</span> <span class="p">[];</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="k">enum</span> <span class="n">m</span> <span class="p">=</span> <span class="n">n</span> <span class="p">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">enum</span> <span class="n">s</span> <span class="p">=</span> <span class="n">to</span><span class="p">!</span><span class="nb">string</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+        <span class="k">return</span>
+            <span class="n">calc</span><span class="p">!(</span><span class="n">b</span> <span class="p">~</span> <span class="s">&quot;+&quot;</span> <span class="p">~</span> <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">)()</span> <span class="p">~</span>
+            <span class="n">calc</span><span class="p">!(</span><span class="n">b</span> <span class="p">~</span> <span class="s">&quot;-&quot;</span> <span class="p">~</span> <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">)()</span> <span class="p">~</span>
+            <span class="n">calc</span><span class="p">!(</span><span class="n">b</span> <span class="p">~</span>       <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">)();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-void main()
-{
-    write(calc());
-}</code></pre></figure>
+<span class="kt">void</span> <span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">write</span><span class="p">(</span><span class="n">calc</span><span class="p">());</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><a href="http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb">http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb</a></p>
 
 <p>実際元ネタの perl 5 の方が速い (ダメ)。竹内関数みたいな形なのでコンパイル時引数に lazy 的な細工すれば早くなるかも</p>
-
 
   </article>
 </div>

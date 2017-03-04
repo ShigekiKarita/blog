@@ -80,23 +80,23 @@
   <article class="post-content">
     <p>ピアソンが丸善になったりで、現在C++ in-Depthシリーズは入手困難ですが、大学の図書館にあったので読みました。全然知らなかったことや、逆にC++11/14 だとこう書けるかなという部分もあると思ったので少しメモします。</p>
 
-<h3 id="autoptr">項目37 : AUTO_PTR</h3>
+<h3>項目37 : AUTO_PTR</h3>
 
-<p><code class="highlighter-rouge">std::auto_ptr&lt;T&gt;</code> を使うように書かれていますが、非推奨なのでやめましょう。現在ではもっと良いスマートポインタが用意されています。例えば本文中で紹介されるPimplへのポインタにはコピーを禁止する<code class="highlighter-rouge">std::unique_ptr&lt;T&gt;</code>を使います。</p>
+<p><code>std::auto_ptr&lt;T&gt;</code> を使うように書かれていますが、非推奨なのでやめましょう。現在ではもっと良いスマートポインタが用意されています。例えば本文中で紹介されるPimplへのポインタにはコピーを禁止する<code>std::unique_ptr&lt;T&gt;</code>を使います。</p>
 
 <p>他にも本文では、コピーや代入を回避する強い例外安全なテクニックとしてスマートポインタを用いた動的確保を推奨しています。</p>
 
-<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;memory&gt;
-#include &lt;iostream&gt;
-</span>
-<span class="k">auto</span> <span class="n">f</span><span class="p">()</span> <span class="n">noexcept</span>
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span></span><span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+
+<span class="k">auto</span> <span class="nf">f</span><span class="p">()</span> <span class="k">noexcept</span>
 <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">result</span><span class="p">(</span><span class="k">new</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"hoge"</span><span class="p">));</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"aaa"</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">result</span><span class="p">(</span><span class="k">new</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&quot;hoge&quot;</span><span class="p">));</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;aaa&quot;</span><span class="p">;</span>
     <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
 <span class="p">}</span></code></pre></figure>
 
-<h3 id="c-">C++ の設計と進化</h3>
+<h3>C++ の設計と進化</h3>
 
 <p>「例外処理」の目的や(理想的な)実装は上記の本が詳しい。これも絶版なのが残念。常にC言語や過去のC++との互換性に悩まされてきた歴史が面白い。</p>
 

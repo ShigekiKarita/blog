@@ -80,7 +80,7 @@
   <article class="post-content">
     <p>原因 : 14.04 (Trusty) にfocaltech (トラックパッドのベンダ) のドライバが入ってなかった</p>
 
-<figure class="highlight"><pre><code class="language-sh" data-lang="sh">sudo apt-get install linux-generic-lts-vivid
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span></span>sudo apt-get install linux-generic-lts-vivid
 sudo reboot
 
 sudo add-apt-repository ppa:hanipouspilot/focaltech-dkms
@@ -92,9 +92,9 @@ sudo modprobe psmouse</code></pre></figure>
 
 <p>ちなみに以下で入力中か判別させることができる</p>
 
-<figure class="highlight"><pre><code class="language-sh" data-lang="sh">synclient <span class="nv">PalmDetect</span><span class="o">=</span>1 <span class="nv">PalmMinZ</span><span class="o">=</span>0</code></pre></figure>
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span></span>synclient <span class="nv">PalmDetect</span><span class="o">=</span><span class="m">1</span> <span class="nv">PalmMinZ</span><span class="o">=</span><span class="m">0</span></code></pre></figure>
 
-<p>さらに <code class="highlighter-rouge">PalmMinWidth=...</code> というオプションで自分流に感度(1から7で指定)を調節可能</p>
+<p>さらに <code>PalmMinWidth=...</code> というオプションで自分流に感度(1から7で指定)を調節可能</p>
 
   </article>
 </div>

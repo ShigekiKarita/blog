@@ -6,148 +6,198 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 17 Feb 2017 02:07:03 +0900</pubDate>
-    <lastBuildDate>Fri, 17 Feb 2017 02:07:03 +0900</lastBuildDate>
+    <pubDate>Sun, 05 Mar 2017 02:51:53 +0900</pubDate>
+    <lastBuildDate>Sun, 05 Mar 2017 02:51:53 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
-        <title>Python で Immutable な値クラスを作るデコレータ</title>
-        <description>&lt;p&gt;Lombokにありそうな、こういうやつです。
-&lt;script src=&quot;https://gist.github.com/ShigekiKarita/e9cde77a93a3785c6c6d7d5a51f521af.js&quot;&gt;&lt;/script&gt;
-(なぜか Pygments が死ぬので gist に張りました)&lt;/p&gt;
+        <title>DUB による D 言語開発 Tips</title>
+        <description>&lt;p&gt;DUB とはD 言語のためのパッケージ管理ツールです。
+多分 Clojure の &lt;code&gt;lein&lt;/code&gt; や Scala の &lt;code&gt;sbt&lt;/code&gt; に近いです。
+基本的な使い方は、このページによくまとまっています&lt;/p&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;解説&lt;/h2&gt;
-&lt;p&gt;Python で変更や再代入不可能な値クラスを作る簡単な方法に、&lt;code class=&quot;highlighter-rouge&quot;&gt;namedtuple&lt;/code&gt;があります。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://qiita.com/yasei_no_otoko/items/2724eebab10f5cd0a02f&quot;&gt;D言語でビルドツールDUBを用いて便利なライブラリをより簡単に利用する&lt;/a&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;In&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;collections&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;namedtuple&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;In&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;namedtuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Point&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;In&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;In&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;In&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;AttributeError&lt;/span&gt;                            &lt;span class=&quot;n&quot;&gt;Traceback&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;most&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ipython&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;54&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b6a9d37b64&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;----&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
+&lt;p&gt;本稿では、そこに書いてない便利な使い方をまとめます。&lt;/p&gt;
 
-&lt;span class=&quot;nb&quot;&gt;AttributeError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;can&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;t set attribute&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;h2&gt;ローカルにあるパッケージの利用&lt;/h2&gt;
 
-&lt;p&gt;これにメソッドを追加するには継承したクラスにメソッドを追加します。&lt;/p&gt;
+&lt;p&gt;DUB プロジェクトでは主に DUB リポジトリに登録されたリモートなパッケージをよく使うと思いますが、ローカルに用意した DUB パッケージを追加するときは、&lt;code&gt;dub.json&lt;/code&gt;にバージョンではなくパスを書きます。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;mir&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;path&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;./mir&amp;quot;&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;ggplotd&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;&amp;gt;=0.4.5&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p p-Indicator&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;これで、再帰的にきちんと依存解決してくれます、便利。
+きちんとローカルのパッケージもバージョン管理をするためには、git submodule などを利用すると良いと思います。&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;norm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-svm/tree/410f45281fbc1eb3eaebc7f7845b5c5fc5eb0812&quot;&gt;fork して自前パッチを当てたmirパッケージを使用したd-svmパッケージの例&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;今回作った&lt;code class=&quot;highlighter-rouge&quot;&gt;@value&lt;/code&gt; デコレータは、これらのnamedtuple定義と継承を一度にやってくれるので便利です。ググっても出てこなかったのでメモ&lt;/p&gt;
+&lt;h2&gt;単体テストの実行&lt;/h2&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;追記&lt;/h2&gt;
+&lt;p&gt;D 言語には言語機能として、単体テスト(unittest)やカバレッジ計測がサポートされています。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-D&quot; data-lang=&quot;D&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndslice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;p&gt;このパターンの弱点として、引数が増えたときにしんどい。
-そこで、やっぱりLombokにありそうなビルダーパターンをサポートしたバージョンも作りました。&lt;/p&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sk&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;$,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;$]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;$,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;$];&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;diagonal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;collections&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;namedtuple&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//  -------&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// | 0 1 2 |&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// | 3 4 5 |&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;//  -------&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iota&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;canonical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;diag&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;diag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;diag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;コマンド &lt;code&gt;dub test&lt;/code&gt;や&lt;code&gt;dub test -b unittest-cov&lt;/code&gt;で、パッケージ内全体のテスト実行やカバレッジ計測(結果は&lt;code&gt;*.lst&lt;/code&gt;ファイルに出力)できます。これだけでも十分に便利ですが、外部のサービスと連携するとさらに便利です。&lt;/p&gt;
 
+&lt;h2&gt;外部サービスとの連携&lt;/h2&gt;
 
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wrapper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;class_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;namedtuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;value_class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{})&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;nb&quot;&gt;setattr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;p&gt;BitbucketやGitHubリポジトリのREADMEによく、このようなバッジ&lt;/p&gt;
 
-            &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;p&gt;&lt;a href=&quot;https://travis-ci.org/ShigekiKarita/numir&quot;&gt;&lt;img src=&quot;https://travis-ci.org/ShigekiKarita/numir.svg?branch=master&quot; alt=&quot;Build Status&quot;&gt;&lt;/a&gt;
+&lt;a href=&quot;https://coveralls.io/github/ShigekiKarita/numir?branch=master&quot;&gt;&lt;img src=&quot;https://coveralls.io/repos/github/ShigekiKarita/numir/badge.svg?branch=master&quot; alt=&quot;Coverage Status&quot;&gt;&lt;/a&gt;
+&lt;a href=&quot;https://code.dlang.org/packages/numir&quot; title=&quot;Go to numir&quot;&gt;&lt;img src=&quot;https://img.shields.io/dub/v/numir.svg&quot; alt=&quot;Dub version&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
-            &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;p&gt;を見かけると思います。具体的にはTravisという自動で様々な環境(OS, コンパイラ...)でテストを行うCIと、
+テストのカバレッジを見やすくしてくれる Coveralls というサービスをよく使います。
+さらに他の人からも簡単に使えるように、dubのWebページに登録することも多いでしょう。&lt;/p&gt;
 
-            &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                    &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;
-                    &lt;span class=&quot;c&quot;&gt;# if self.ready():&lt;/span&gt;
-                    &lt;span class=&quot;c&quot;&gt;#     return self.build()&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;set_value&lt;/span&gt;
+&lt;h3&gt;- Travis CI, Coveralls&lt;/h3&gt;
 
-        &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()):&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;valid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; \
-                        &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value_class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                            &lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;
-                        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;RuntimeError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;unsupported args {} and kwargs {}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrapper&lt;/span&gt;
+&lt;p&gt;&lt;a href=&quot;https://travis-ci.org/&quot;&gt;Travis CI&lt;/a&gt;, &lt;a href=&quot;https://coveralls.io/&quot;&gt;Coveralls&lt;/a&gt;
+にGitHubなどのアカウントでログインして既存のリポジトリを追加できます。
+あまり知られていませんが、TravisではLinuxだけでなくOSXも動きます。
+Coverallsとの連携には doveralls というツールがおすすめです。
+次のような&lt;code&gt;.travis.yml&lt;/code&gt;ファイルをGitリポジトリの配下におくといい感じにやってくれます。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;linux&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;osx&lt;/span&gt;
 
+&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;d&lt;/span&gt;
 
-&lt;span class=&quot;c&quot;&gt;# test&lt;/span&gt;
-&lt;span class=&quot;nd&quot;&gt;@value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__eq__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;isinstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__class__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
+&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;ldc-1.1.0&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dmd&lt;/span&gt;
 
+&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;install&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dub fetch doveralls&lt;/span&gt;
 
-&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dub test -b unittest-cov&lt;/span&gt;
+  &lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;dub run doveralls&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;もし、プライベートであったり、GPGPUなどTravisでは実行できないようなライブラリを作っている場合は、
+ローカルでテストを実行して、カバレッジ計測だけCoverallsを利用したいということがあると思います。
+その場合は、ローカルで次のようなシェルコマンドを打つと良いでしょう。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;$ dub fetch doveralls
+$ dub &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; -b unittest-cov
+$ dub run doveralls -- -t &amp;lt;coverallsのrepo_token&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;- DUB レポジトリの登録&lt;/h3&gt;
 
-&lt;p&gt;毎回、&lt;code class=&quot;highlighter-rouge&quot;&gt;build()&lt;/code&gt;を呼ぶのが面倒な人は&lt;code class=&quot;highlighter-rouge&quot;&gt;setter&lt;/code&gt;内のコメントを外してください
-(私は違う型が帰ってくるのが嫌なのですが)。
-コレ書いてて、&lt;code class=&quot;highlighter-rouge&quot;&gt;setattr&lt;/code&gt;で&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt;作るとselfまでキャプチャするクロージャになってしまうのと、&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt;で代入がかけない(ただし&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt;内の関数で代入はOK???)制約がある意味不明な挙動で躓きました。&lt;/p&gt;
+&lt;p&gt;DUB ではアカウントを作って下記のページから自作パッケージを追加できます。
+GitHubとBitbucketに登録されているリポジトリから登録できます。&lt;/p&gt;
 
-&lt;p&gt;Pythonはクソ&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://code.dlang.org/my_packages&quot;&gt;https://code.dlang.org/my_packages&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;git の tag を打つ必要があります、GitHubのリリースページなどから打つとよいでしょう。
+これで、他のパッケージから簡単に登録したパッケージのモジュールを&lt;code&gt;import&lt;/code&gt;して呼び出せます。
+一つの完結したプロジェクトではあまり使いませんが、D言語には&lt;code&gt;public import&lt;/code&gt; や &lt;code&gt;package.d&lt;/code&gt; という便利な機能があります。外部から呼ばれるパッケージでは、それらを駆使すると良いでしょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://dlang.org/spec/module.html&quot;&gt;https://dlang.org/spec/module.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;ドキュメントの生成&lt;/h2&gt;
+
+&lt;p&gt;D 言語には Javadoc みたいなコード中のコメント(ddoc)によるドキュメント生成が、unittestみたいに言語機能としてサポートされています。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.kmonos.net/alang/d/ddoc.html&quot;&gt;http://www.kmonos.net/alang/d/ddoc.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://dlang.org/spec/ddoc.html&quot;&gt;http://dlang.org/spec/ddoc.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://stackoverflow.com/questions/29762668/using-dub-to-build-documentation&quot;&gt;http://stackoverflow.com/questions/29762668/using-dub-to-build-documentation&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;dub でサポートされた方法は2つあります, &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;dmd コンパイラの機能を使う: &lt;code&gt;dub build --build=docs&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;標準ライブラリPhobos のドキュメント生成に使われる ddox: &lt;code&gt;dub build --build=ddox&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;ところで、ddox は筆者の環境ではビルドできませんでしたので、dmdコンパイラの機能を使っています。こんな感じで &lt;code&gt;/++ +/&lt;/code&gt; (詳細を書く) や &lt;code&gt;///&lt;/code&gt; (自動生成) を使ってドキュメントを書くと&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/++&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;construct new uninitialized slice with specified shape and element type&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;Params:&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;    length = elements of shape&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;Returns:&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;    new uninitialized slice&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;+/&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uninitializedSlice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;///&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DeepElementType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;いい感じに unittest を Examples として表示してくれたりします。&lt;/p&gt;
+
+&lt;p&gt;例: &lt;a href=&quot;https://shigekikarita.github.io/numir/&quot;&gt;https://shigekikarita.github.io/numir/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ちなみにGithub では Pages という設定で、&lt;code&gt;docs&lt;/code&gt;ディレクトリにhtmlファイルを置くと
+ウェブページをホストしてくれるので便利です。&lt;/p&gt;
+
+&lt;h2&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。やっぱりD言語本体で便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)でサポートされていて、C++等と対象的ですごいですね。&lt;/p&gt;
 </description>
-        <pubDate>Thu, 16 Feb 2017 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2017/02/16/021.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/02/16/021.html</guid>
+        <pubDate>Sat, 04 Mar 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/03/04/021.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/03/04/021.html</guid>
         
         
       </item>
     
       <item>
         <title>gh-pages引っ越し</title>
-        <description>&lt;p&gt;久々に更新しました。実は&lt;a href=&quot;/2016/08/12/020.html&quot;&gt;一つ前の日記&lt;/a&gt;をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが…、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。&lt;/p&gt;
+        <description>&lt;p&gt;久々に更新しました。実は&lt;a href=&quot;/2016/08/12/020.html&quot;&gt;一つ前の日記&lt;/a&gt;をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが...、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;jekyll は静的ジェネレータなので、&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/gh-pages&quot;&gt;gh-pages (githubで特別にウェブページとして使われる名前) ブランチ&lt;/a&gt;に &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt; 生成したサイトをプッシュ&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/master&quot;&gt;master ブランチ&lt;/a&gt;は普通に Markdown のファイルなどソース置き場にする&lt;/li&gt;
-  &lt;li&gt;上記を(すごく雑に)自動化した。&lt;a href=&quot;https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh&quot;&gt;スクリプト&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;ついでに &lt;a href=&quot;http://shigekikarita.github.io&quot;&gt;shigekikarita.github.io&lt;/a&gt; 直下から &lt;code class=&quot;highlighter-rouge&quot;&gt;/blog&lt;/code&gt;サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います…(ここは未整理メモ置き場)&lt;/li&gt;
+&lt;li&gt;jekyll は静的ジェネレータなので、&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/gh-pages&quot;&gt;gh-pages (githubで特別にウェブページとして使われる名前) ブランチ&lt;/a&gt;に &lt;code&gt;jekyll build&lt;/code&gt; 生成したサイトをプッシュ&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/master&quot;&gt;master ブランチ&lt;/a&gt;は普通に Markdown のファイルなどソース置き場にする&lt;/li&gt;
+&lt;li&gt;上記を(すごく雑に)自動化した。&lt;a href=&quot;https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh&quot;&gt;スクリプト&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;ついでに &lt;a href=&quot;http://shigekikarita.github.io&quot;&gt;shigekikarita.github.io&lt;/a&gt; 直下から &lt;code&gt;/blog&lt;/code&gt;サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います...(ここは未整理メモ置き場)&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!sh&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;ch&quot;&gt;#!sh&lt;/span&gt;
 &lt;span class=&quot;nv&quot;&gt;fname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tempfile&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;_site
 jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     cp -r _site &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     git checkout gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    ls | xargs rm -r &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    cp -r &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    ls &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; xargs rm -r &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    cp -r &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt;/* . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     touch .nojekyll &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     git add . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git commit -m &lt;span class=&quot;s2&quot;&gt;&quot;gen&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    git commit -m &lt;span class=&quot;s2&quot;&gt;&amp;quot;gen&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     git push origin gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
     git checkout master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;未だよくわからないけど、まずまず動いたから良しとしたもの&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt;: baseurl とか url とかよくわからない…、 Markdown中の &lt;code class=&quot;highlighter-rouge&quot;&gt;/assets/*.png&lt;/code&gt; とかは全部ダメになっている気がする。&lt;code class=&quot;highlighter-rouge&quot;&gt;\{\{ site.url }}/assets/*.png&lt;/code&gt; みたいに書きなおすべきか…&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.nojekyll&lt;/code&gt;: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;_config.yml&lt;/code&gt;: baseurl とか url とかよくわからない...、 Markdown中の &lt;code&gt;/assets/*.png&lt;/code&gt; とかは全部ダメになっている気がする。&lt;code&gt;\{\{ site.url }}/assets/*.png&lt;/code&gt; みたいに書きなおすべきか...&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.nojekyll&lt;/code&gt;: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった&lt;/li&gt;
 &lt;/ul&gt;
-
 </description>
         <pubDate>Wed, 30 Nov 2016 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</link>
@@ -158,25 +208,25 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
     
       <item>
         <title>chainer で Auto Encoder</title>
-        <description>&lt;p&gt;久々の投稿です…、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。
-今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと…。&lt;/p&gt;
+        <description>&lt;p&gt;久々の投稿です...、久々に研究の方に戻ってきたので、リハビリがてらブログの方もまた少しずつプログラムのこととか書いていきます。
+今回もまた chainer ネタが続きますが、いままで Auto Encoder を使ったことがなかったので、試しにどんなものかなと...。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/chainer-autoencoders&quot;&gt;https://github.com/ShigekiKarita/chainer-autoencoders&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;元ネタは &lt;a href=&quot;https://blog.keras.io/building-autoencoders-in-keras.html&quot;&gt;https://blog.keras.io/building-autoencoders-in-keras.html&lt;/a&gt;。 chainer も Trainer とか入って Keras っぽくなりましたけど、まだ Keras の方が楽そうですね。今回は少しややこしい学習をするので Trainer を使いませんでした。目的関数 (binary cross entropy) の学習経過です。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/blog/assets/autoencoders/score.png&quot; alt=&quot;score&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/blog/assets/autoencoders/score.png&quot; alt=&quot;score&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;chainer は &lt;code class=&quot;highlighter-rouge&quot;&gt;Chain&lt;/code&gt; の持つ &lt;code class=&quot;highlighter-rouge&quot;&gt;add_link&lt;/code&gt; メソッドを使うと簡単にパラメタが追加できて便利です。他のライブラリなら一度シリアライズして、新しいモデルを作って初期値に読み込んで…といったディスクIOや構築のオーバーヘッドをなくせます。上の図の&lt;code class=&quot;highlighter-rouge&quot;&gt;deep&lt;/code&gt;は以下のコードです&lt;/p&gt;
+&lt;p&gt;chainer は &lt;code&gt;Chain&lt;/code&gt; の持つ &lt;code&gt;add_link&lt;/code&gt; メソッドを使うと簡単にパラメタが追加できて便利です。他のライブラリなら一度シリアライズして、新しいモデルを作って初期値に読み込んで...といったディスクIOや構築のオーバーヘッドをなくせます。上の図の&lt;code&gt;deep&lt;/code&gt;は以下のコードです&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DeepAutoEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AutoEncoderBase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DeepAutoEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AutoEncoderBase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
 
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_units&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DeepAutoEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;fm&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_units&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DeepAutoEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;fm&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_in&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_in&lt;/span&gt;
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_units&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_units&lt;/span&gt;
-        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;encode&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d&quot;&lt;/span&gt;
-        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;decode&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d&quot;&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;encode&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%d&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;decode&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%d&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_init_layers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
@@ -212,20 +262,20 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Linear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
         &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_depth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;add_layer&lt;/code&gt; を呼ぶと、エンコードとデコード用で2層追加します。GPUを使っている場合は &lt;code class=&quot;highlighter-rouge&quot;&gt;to_gpu()&lt;/code&gt; を更に呼ばないと怒られます (雑)。
-あと、ちょっと前に職場で、学習過程の一連の図を動画にしたい…と言われて &lt;code class=&quot;highlighter-rouge&quot;&gt;imageio&lt;/code&gt; というライブラリを紹介したんですが、あまりネットに情報がなかったのでコード片をメモすると&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;add_layer&lt;/code&gt; を呼ぶと、エンコードとデコード用で2層追加します。GPUを使っている場合は &lt;code&gt;to_gpu()&lt;/code&gt; を更に呼ばないと怒られます (雑)。
+あと、ちょっと前に職場で、学習過程の一連の図を動画にしたい...と言われて &lt;code&gt;imageio&lt;/code&gt; というライブラリを紹介したんですが、あまりネットに情報がなかったのでコード片をメモすると&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;glob&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;glob&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;imageio&lt;/span&gt;
 
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;plot_movie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# path には 001.png, 002.png ...  みたいな画像がある&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;glob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/*.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# path には 001.png, 002.png ...  みたいな画像がある&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;glob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/*.png&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;ps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sorted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;imgs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imageio&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# 内部の ffmpeg 等がサポートしている幅広い動画フォーマットが使える&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;imageio&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_writer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/test.gif&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 内部の ffmpeg 等がサポートしている幅広い動画フォーマットが使える&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;imageio&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_writer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/test.gif&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;imgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
@@ -233,7 +283,7 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
 &lt;p&gt;ところで、gif動画って昔からありますけど、凄いサイズ大きいんですね。Twitterとかgif動画あげるとmp4にされますし、もうベストはmp4で良いんでしょうか。
 さて学習の結果ですが、これが真値 (未学習データ)&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://shigekikarita.github.io/blog/assets/autoencoders/test.png&quot; alt=&quot;test&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://shigekikarita.github.io/blog/assets/autoencoders/test.png&quot; alt=&quot;test&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;に対して、2層の AE だと、少しザラザラした感じがします&lt;/p&gt;
 
@@ -259,10 +309,9 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
 &lt;/video&gt;
 &lt;/p&gt;
 
-&lt;p&gt;今回 AE は Python で OOP する良い題材になるかと思ったのですが、動的型付だとメソッド持ってればいいし、コンテナに入れる時も困らないのでis-a 関係などがフワっとして単なる差分プログラミングになってしまいました…。そもそもOOPって動的型付け言語(smalltalk)発祥だったのに、全然ベストプラクティスわからないし、文法が気持ち悪いのでなんだか smalltalk にちょっと興味出てきました^^;&lt;/p&gt;
+&lt;p&gt;今回 AE は Python で OOP する良い題材になるかと思ったのですが、動的型付だとメソッド持ってればいいし、コンテナに入れる時も困らないのでis-a 関係などがフワっとして単なる差分プログラミングになってしまいました...。そもそもOOPって動的型付け言語(smalltalk)発祥だったのに、全然ベストプラクティスわからないし、文法が気持ち悪いのでなんだか smalltalk にちょっと興味出てきました^^;&lt;/p&gt;
 
-&lt;p&gt;Python に関しては&lt;code class=&quot;highlighter-rouge&quot;&gt;type(a) is A&lt;/code&gt;と&lt;code class=&quot;highlighter-rouge&quot;&gt;isinstance(a, A)&lt;/code&gt;って一緒だっけとか。出力に疎な罰則を加えたり、入力に雑音乗せるのは継承で別クラス作らなくても、関数用意してやればいい？？…とか難しいです。それと久々にPython書くとスコープのシステムが最悪で、関数とモジュールしか作らないとか、色んな落とし穴踏み抜いて辛いです。&lt;/p&gt;
-
+&lt;p&gt;Python に関しては&lt;code&gt;type(a) is A&lt;/code&gt;と&lt;code&gt;isinstance(a, A)&lt;/code&gt;って一緒だっけとか。出力に疎な罰則を加えたり、入力に雑音乗せるのは継承で別クラス作らなくても、関数用意してやればいい？？...とか難しいです。それと久々にPython書くとスコープのシステムが最悪で、関数とモジュールしか作らないとか、色んな落とし穴踏み抜いて辛いです。&lt;/p&gt;
 </description>
         <pubDate>Fri, 12 Aug 2016 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2016/08/12/020.html</link>
@@ -273,47 +322,47 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
     
       <item>
         <title>numpy と cupy を簡単に使うデコレータ</title>
-        <description>&lt;p&gt;久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました…^^;&lt;/p&gt;
+        <description>&lt;p&gt;久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました...^^;&lt;/p&gt;
 
-&lt;p&gt;ところで、python で高速な数値計算を実現する numpy、それと大体互換性のある &lt;a href=&quot;http://docs.chainer.org/en/stable/cupy-reference&quot;&gt;cupy&lt;/a&gt; というGPU用ライブラリが便利で愛用してます。しかし、ちょっとした関数を書くとき、引数が numpy の array か、 cupy なのか教えてくれる (より正確には cupy の array があれば cupy モジュールを、それ以外は numpy を返す) &lt;code class=&quot;highlighter-rouge&quot;&gt;cupy.get_array_module&lt;/code&gt; という関数名を思い出して、タイプするのは、ほぼボイラープレートなので面倒でした。そこで多くの場合、私はデコレータを使って、関数の”見えない”引数である &lt;code class=&quot;highlighter-rouge&quot;&gt;xp&lt;/code&gt; により  numpy と cupy を切り替えてます。&lt;/p&gt;
+&lt;p&gt;ところで、python で高速な数値計算を実現する numpy、それと大体互換性のある &lt;a href=&quot;http://docs.chainer.org/en/stable/cupy-reference&quot;&gt;cupy&lt;/a&gt; というGPU用ライブラリが便利で愛用してます。しかし、ちょっとした関数を書くとき、引数が numpy の array か、 cupy なのか教えてくれる (より正確には cupy の array があれば cupy モジュールを、それ以外は numpy を返す) &lt;code&gt;cupy.get_array_module&lt;/code&gt; という関数名を思い出して、タイプするのは、ほぼボイラープレートなので面倒でした。そこで多くの場合、私はデコレータを使って、関数の&amp;quot;見えない&amp;quot;引数である &lt;code&gt;xp&lt;/code&gt; により  numpy と cupy を切り替えてます。&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;host_device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;host_device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;functools&lt;/span&gt;
     &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cupy&lt;/span&gt;
     &lt;span class=&quot;nd&quot;&gt;@functools.wraps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wrapper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_array_module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# ボイラープレート&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_array_module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# ボイラープレート&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrapper&lt;/span&gt;
 
 
 &lt;span class=&quot;nd&quot;&gt;@host_device&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
-    &amp;gt;&amp;gt;&amp;gt; import numpy, cupy
-    &amp;gt;&amp;gt;&amp;gt; i = numpy.random.randn(2,3,4)
-    &amp;gt;&amp;gt;&amp;gt; n = cupy.asarray(sigmoid(i))
-    &amp;gt;&amp;gt;&amp;gt; c = sigmoid(cupy.asarray(i))
-    &amp;gt;&amp;gt;&amp;gt; cupy.testing.assert_array_equal(n, c)
-    &quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; import numpy, cupy&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; i = numpy.random.randn(2,3,4)&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; n = cupy.asarray(sigmoid(i))&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; c = sigmoid(cupy.asarray(i))&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; cupy.testing.assert_array_equal(n, c)&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
 
 
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vm&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
     &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;doctest&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;doctest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testmod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;例示しやすいので doctest で書きましたが、要素毎の操作する関数などテストパターンを共通化してもいいかもしれません。それもデコレータで書いてみましょう&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test_elementwise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test_elementwise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__debug__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;c&quot;&gt;# 最適化オプション(-O)無し、定義時の一度だけ実行&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# 最適化オプション(-O)無し、定義時の一度だけ実行&lt;/span&gt;
         &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cupy&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assert_array_almost_equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&amp;lt;{}&amp;gt; is ok&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;lt;{}&amp;gt; is ok&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;vm&quot;&gt;__name__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;
 
 
@@ -322,15 +371,15 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
 
-&lt;span class=&quot;nd&quot;&gt;@test_elementwise&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 順番に注意&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@test_elementwise&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 順番に注意&lt;/span&gt;
 &lt;span class=&quot;nd&quot;&gt;@host_device&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;ipython 等で使ってみると、assert はデコレータ内で debug 時に一度だけ実行されて以降は呼ばれないことが &lt;code class=&quot;highlighter-rouge&quot;&gt;print&lt;/code&gt; により確認できます (単体テストは一瞬で終わるべきと思っている私はこの些細な debug 時オーバーヘッドを気にしません)。
+&lt;p&gt;ipython 等で使ってみると、assert はデコレータ内で debug 時に一度だけ実行されて以降は呼ばれないことが &lt;code&gt;print&lt;/code&gt; により確認できます (単体テストは一瞬で終わるべきと思っている私はこの些細な debug 時オーバーヘッドを気にしません)。
 ちなみにデコレータは後に記述されたものから順に適用されます。その理由は一番下の関数本体から定義されるからだと推測しますが、控えめに言ってデコレータ記法って言語設計ミスだと思います。&lt;/p&gt;
 
-&lt;p&gt;最後に今回は挙げなかった &lt;code class=&quot;highlighter-rouge&quot;&gt;@host_device&lt;/code&gt; のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の&lt;code class=&quot;highlighter-rouge&quot;&gt;wrapper&lt;/code&gt; で &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら &lt;a href=&quot;https://github.com/pfnet/chainer/issues/new&quot;&gt;issue を報告&lt;/a&gt;した方がいいのかも&lt;/p&gt;
+&lt;p&gt;最後に今回は挙げなかった &lt;code&gt;@host_device&lt;/code&gt; のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の&lt;code&gt;wrapper&lt;/code&gt; で &lt;code&gt;return&lt;/code&gt; する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら &lt;a href=&quot;https://github.com/pfnet/chainer/issues/new&quot;&gt;issue を報告&lt;/a&gt;した方がいいのかも&lt;/p&gt;
 </description>
         <pubDate>Sat, 27 Feb 2016 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2016/02/27/018.html</link>
@@ -341,23 +390,23 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
     
       <item>
         <title>64 bit 環境の GCC で 32 bit (i386) アセンブラをリンク</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/assets/30os.png&quot; alt=&quot;30os&quot; /&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;/assets/30os.png&quot; alt=&quot;30os&quot;&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-make&quot; data-lang=&quot;make&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Makefile の設定
-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gcc -m32
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-make&quot; data-lang=&quot;make&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# Makefile の設定&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gcc -m32
 &lt;span class=&quot;nv&quot;&gt;LD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ld -m elf_i386 --oformat binary
 &lt;span class=&quot;nv&quot;&gt;AS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;as --32 -march&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;i386
-&lt;span class=&quot;nv&quot;&gt;QEMU&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;qemu-system-i386 -m 32 -localtime -vga std -fda&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;nv&quot;&gt;QEMU&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;qemu-system-i386 -m &lt;span class=&quot;m&quot;&gt;32&lt;/span&gt; -localtime -vga std -fda&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;クロスコンパイルするので &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo apt-get install gcc-multilib&lt;/code&gt; が必要です。&lt;/p&gt;
+&lt;p&gt;クロスコンパイルするので &lt;code&gt;sudo apt-get install gcc-multilib&lt;/code&gt; が必要です。&lt;/p&gt;
 
-&lt;p&gt;Cコンパイラとして &lt;code class=&quot;highlighter-rouge&quot;&gt;$(CC)&lt;/code&gt;, リンカとして &lt;code class=&quot;highlighter-rouge&quot;&gt;$(LD)&lt;/code&gt;, アセンブラとして &lt;code class=&quot;highlighter-rouge&quot;&gt;$(AS)&lt;/code&gt; を使ってください。
+&lt;p&gt;Cコンパイラとして &lt;code&gt;$(CC)&lt;/code&gt;, リンカとして &lt;code&gt;$(LD)&lt;/code&gt;, アセンブラとして &lt;code&gt;$(AS)&lt;/code&gt; を使ってください。
 gcc にも ld, as フロントエンドとして同じ機能がある筈ですが、該当オプションの渡し方が違うみたいで素直に ld, as 使いました。
-QEMU は自作 OS イメージ(*.img)のシミュレーション用で、&lt;code class=&quot;highlighter-rouge&quot;&gt;-m 32&lt;/code&gt; は 32 bit 環境とかではなく 32 MB メモリを使うという意味です。&lt;/p&gt;
+QEMU は自作 OS イメージ(*.img)のシミュレーション用で、&lt;code&gt;-m 32&lt;/code&gt; は 32 bit 環境とかではなく 32 MB メモリを使うという意味です。&lt;/p&gt;
 
-&lt;p&gt;…&lt;/p&gt;
+&lt;p&gt;...&lt;/p&gt;
 
-&lt;h1 id=&quot;section&quot;&gt;あけましておめでとうございます。&lt;/h1&gt;
+&lt;h1&gt;あけましておめでとうございます。&lt;/h1&gt;
 
 &lt;p&gt;という具合に私のプログラミング書き初め (?) は GNU アセンブラ でした。
 マイナビ出版の電子書籍が年末年始セールにて、
@@ -382,72 +431,71 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
     
       <item>
         <title>D言語で unzip</title>
-        <description>&lt;p&gt;D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません…。&lt;/p&gt;
+        <description>&lt;p&gt;D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません...。&lt;/p&gt;
 
 &lt;p&gt;というわけで作りました。Range でもありませんし、非効率な実装ですが、D言語のメタプログラミングのしやすさが実感できました。&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;import std.meta : AliasSeq;
-import std.traits : Unqual;
-import std.typecons : Tuple, tuple;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;traits&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;typecons&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-auto toListTypes(Ts...)()
-{
-    alias TypeList = AliasSeq!Ts;
-    string s;
-    foreach(t; TypeList)
-    {
-        s ~= Unqual!t.stringof ~ &quot;[],&quot;;
-    }
-    return s[0..$-1];
-}
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...)()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TypeList&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TypeList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;[],&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.$-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-unittest
-{
-    enum result = toListTypes!(int, double, string)();
-    static assert(result == &quot;int[],double[],string[]&quot;);
-}
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;int[],double[],string[]&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-auto unzip(Ts...)(Tuple!(Ts)[] zipped)
-{
-    mixin(&quot;Tuple!(&quot; ~ toListTypes!Ts ~ &quot;) result;&quot;);
-    const n = zipped.length;
-    foreach (j, T; AliasSeq!Ts)
-    {
-        result[j].length = n;
-        foreach (i; 0 .. n)
-        {
-            result[j][i] = zipped[i][j];
-        }
-    }
-    return result;
-}
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unzip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;mixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Tuple!(&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;) result;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-unittest
-{
-    import std.range : array, zip;
-    immutable a = [1, 2, 3];
-    immutable b = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
-    immutable c = [0.1, 0.2, 0.3];
-    static assert(unzip(zip(a, b, c).array) == tuple(a, b, c));
-}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;c&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unzip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;foreach (j, T; AliasSeq!Ts)&lt;/code&gt; のところに、&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerate&lt;/code&gt; を使うとコンパイル通らないのがハマりどころです。
-あと&lt;code class=&quot;highlighter-rouge&quot;&gt;mixin(s);&lt;/code&gt;するときは&lt;code class=&quot;highlighter-rouge&quot;&gt;pragma(msg, s)&lt;/code&gt;とするとコンパイル時にprint debugできて楽ですね。
+&lt;p&gt;&lt;code&gt;foreach (j, T; AliasSeq!Ts)&lt;/code&gt; のところに、&lt;code&gt;enumerate&lt;/code&gt; を使うとコンパイル通らないのがハマりどころです。
+あと&lt;code&gt;mixin(s);&lt;/code&gt;するときは&lt;code&gt;pragma(msg, s)&lt;/code&gt;とするとコンパイル時にprint debugできて楽ですね。
 次回(?)は、Phobos の Zip オブジェクトを参考に実装してみましょう。
 Unzip のときは中身の配列長がそれぞれ等しいので楽そうですね。&lt;/p&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;参考&lt;/h2&gt;
+&lt;h2&gt;参考&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/D-Programming-Language/phobos/blob/64f43ce42cb133a63ff71a7a7e3bdf4076b98300/std/range/package.d#L3403&quot;&gt;Phobos の zip 実装部分 (2015/12)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/D-Programming-Language/phobos/blob/64f43ce42cb133a63ff71a7a7e3bdf4076b98300/std/range/package.d#L3403&quot;&gt;Phobos の zip 実装部分 (2015/12)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;追記&lt;/h2&gt;
+&lt;h2&gt;追記&lt;/h2&gt;
 
-&lt;p&gt;何度目かわかりませんが、ローカルの jekyll をアップデートした際に壊れてしまいました…。
+&lt;p&gt;何度目かわかりませんが、ローカルの jekyll をアップデートした際に壊れてしまいました...。
 そろそろこのフォーマットで書き散らかすのもキツいので、年内には MDwiki に移行する計画です。
 それに向けてブログ用として、小さなツールを D 言語で書いているこの頃です。&lt;/p&gt;
-
 </description>
         <pubDate>Wed, 23 Dec 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/12/23/016.html</link>
@@ -458,45 +506,45 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
     
       <item>
         <title>Haskell Accelerate で CUDA プログラミング (紹介と導入)</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;紹介&lt;/h2&gt;
+        <description>&lt;h2&gt;紹介&lt;/h2&gt;
 
-&lt;p&gt;随分前から注目していた &lt;a href=&quot;https://hackage.haskell.org/package/accelerate&quot;&gt;Accelerate&lt;/a&gt; というライブラリ、なんと Haskell 中の EDSL — Python でいう Copperhead みたいな本物の Haskell — で CUDA プログラミングが可能という代物です。&lt;/p&gt;
+&lt;p&gt;随分前から注目していた &lt;a href=&quot;https://hackage.haskell.org/package/accelerate&quot;&gt;Accelerate&lt;/a&gt; というライブラリ、なんと Haskell 中の EDSL --- Python でいう Copperhead みたいな本物の Haskell --- で CUDA プログラミングが可能という代物です。&lt;/p&gt;
 
 &lt;p&gt;なんといってもトップページにある以下のベクトル内積を算出する極めてシンプルなコード&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-haskell&quot; data-lang=&quot;haskell&quot;&gt;&lt;span class=&quot;n&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Scalar&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fold&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zipWith&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-haskell&quot; data-lang=&quot;haskell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Scalar&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fold&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zipWith&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product&quot;&gt;これが CUBLAS に匹敵する性能を叩き出すという話です。&lt;/a&gt;。 C++ の STL アルゴリズムを実装した thrust などでも &lt;a href=&quot;http://www.orangeowlsolutions.com/archives/790&quot;&gt;CUBLAS を使うほうが速い&lt;/a&gt; のが通説ですが、これはにわかには信じられない…。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product&quot;&gt;これが CUBLAS に匹敵する性能を叩き出すという話です。&lt;/a&gt;。 C++ の STL アルゴリズムを実装した thrust などでも &lt;a href=&quot;http://www.orangeowlsolutions.com/archives/790&quot;&gt;CUBLAS を使うほうが速い&lt;/a&gt; のが通説ですが、これはにわかには信じられない...。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;導入&lt;/h2&gt;
+&lt;h2&gt;導入&lt;/h2&gt;
 
 &lt;p&gt;結局ベンチマークは CUBLAS の FFI ライブラリがまだ動かせてないので試してないんですが、簡単なサンプルだけ動かしてみました。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/first-accelerate&quot;&gt;ShigekiKarita/first-accelerate&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;動かすときに詰まったのは、 &lt;code class=&quot;highlighter-rouge&quot;&gt;accelerate-cuda&lt;/code&gt; がインラインの C コード で &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;/code&gt; の次にかかれた&lt;code class=&quot;highlighter-rouge&quot;&gt;/* コメント */&lt;/code&gt;がパースに失敗してコケる点でした。そこで最新版HEADにコメント部分を削除しただけのパッチを当てました。ビルドツールに &lt;a href=&quot;http://qiita.com/tanakh/items/6866d0f570d0547df026&quot;&gt;stack&lt;/a&gt; を使ってる場合は&lt;/p&gt;
+&lt;p&gt;動かすときに詰まったのは、 &lt;code&gt;accelerate-cuda&lt;/code&gt; がインラインの C コード で &lt;code&gt;{&lt;/code&gt; の次にかかれた&lt;code&gt;/* コメント */&lt;/code&gt;がパースに失敗してコケる点でした。そこで最新版HEADにコメント部分を削除しただけのパッチを当てました。ビルドツールに &lt;a href=&quot;http://qiita.com/tanakh/items/6866d0f570d0547df026&quot;&gt;stack&lt;/a&gt; を使ってる場合は&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;s&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;git@github.com:ShigekiKarita/accelerate-cuda.git&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;648e683d191d0c402c217174d44f85650cbf3f66&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;git@github.com:AccelerateHS/accelerate.git&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;15aedff344232893c89e513c1caf4bcf699a2b86&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git@github.com:ShigekiKarita/accelerate-cuda.git&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;648e683d191d0c402c217174d44f85650cbf3f66&lt;/span&gt;
+&lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git@github.com:AccelerateHS/accelerate.git&lt;/span&gt;
+    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;15aedff344232893c89e513c1caf4bcf699a2b86&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを &lt;code class=&quot;highlighter-rouge&quot;&gt;cabal sandbox add-source DLしたフォルダ&lt;/code&gt; で cabal sandbox に教えると使ってくれます。&lt;/p&gt;
+&lt;p&gt;と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを &lt;code&gt;cabal sandbox add-source DLしたフォルダ&lt;/code&gt; で cabal sandbox に教えると使ってくれます。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;開発環境&lt;/h2&gt;
+&lt;h2&gt;開発環境&lt;/h2&gt;
 
 &lt;p&gt;ghc-mod は cabal と連携して Emacs やその他エディタを IDE にしてくれる Haskell 開発にはかかせないツールですが、いまのところ stack や CUDA とは動作しません。なので私は次のように stack と cabal を使い分けています&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;cabal : &lt;code class=&quot;highlighter-rouge&quot;&gt;accelerate-cuda&lt;/code&gt; を &lt;code class=&quot;highlighter-rouge&quot;&gt;dependencies&lt;/code&gt; から外して &lt;code class=&quot;highlighter-rouge&quot;&gt;Data.Array.Accelerate.Interpreter&lt;/code&gt; (CUDAなしで計算をエミュレートするモード) を使い ghc-mod でのコーディングに使う&lt;/li&gt;
-  &lt;li&gt;stack : &lt;code class=&quot;highlighter-rouge&quot;&gt;accelerate-cuda&lt;/code&gt; を &lt;code class=&quot;highlighter-rouge&quot;&gt;dependencies&lt;/code&gt; に追加して &lt;code class=&quot;highlighter-rouge&quot;&gt;Data.Array.Accelerate.CUDA&lt;/code&gt; (CUDAで計算するモード) を使い端末から動作やテストするときに使う&lt;/li&gt;
+&lt;li&gt;cabal : &lt;code&gt;accelerate-cuda&lt;/code&gt; を &lt;code&gt;dependencies&lt;/code&gt; から外して &lt;code&gt;Data.Array.Accelerate.Interpreter&lt;/code&gt; (CUDAなしで計算をエミュレートするモード) を使い ghc-mod でのコーディングに使う&lt;/li&gt;
+&lt;li&gt;stack : &lt;code&gt;accelerate-cuda&lt;/code&gt; を &lt;code&gt;dependencies&lt;/code&gt; に追加して &lt;code&gt;Data.Array.Accelerate.CUDA&lt;/code&gt; (CUDAで計算するモード) を使い端末から動作やテストするときに使う&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-3&quot;&gt;追記&lt;/h3&gt;
+&lt;h3&gt;追記&lt;/h3&gt;
 
 &lt;p&gt;もう少し Haskell や CUDA 関係のノウハウがたまったら、次回以降は Wiki 的なものにそれなりに体系だててメモしたいなと思います。そろそろこのブログ形式も見難くなってきました。汗&lt;/p&gt;
 </description>
@@ -511,37 +559,36 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
         <title>D言語でコンパイル時に「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた</title>
         <description>&lt;p&gt;元ネタ &lt;a href=&quot;http://blog.64p.org/entry/2015/05/27/095844&quot;&gt;Perl6で「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;D言語にはコンパイル時 eval という mixin があるので使ってみた。コードをみれば分かるが、とくに mixin を使う必要はないけど使いたかったから…&lt;/p&gt;
+&lt;p&gt;D言語にはコンパイル時 eval という mixin があるので使ってみた。コードをみれば分かるが、とくに mixin を使う必要はないけど使いたかったから...&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;import std.conv : to;
-import std.stdio : write;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conv&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdio&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-string[] calc(string b = &quot;1&quot;, int n = 1)() pure
-{
-    static if (n == 9)
-    {
-        return (mixin(b) == 100) ? [b] : [];
-    }
-    else
-    {
-        enum m = n + 1;
-        enum s = to!string(m);
-        return
-            calc!(b ~ &quot;+&quot; ~ s, m)() ~
-            calc!(b ~ &quot;-&quot; ~ s, m)() ~
-            calc!(b ~       s, m)();
-    }
-}
+&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;pure&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;+&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-void main()
-{
-    write(calc());
-}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb&quot;&gt;http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;実際元ネタの perl 5 の方が速い (ダメ)。竹内関数みたいな形なのでコンパイル時引数に lazy 的な細工すれば早くなるかも&lt;/p&gt;
-
 </description>
         <pubDate>Wed, 14 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/14/014.html</link>
@@ -554,7 +601,7 @@ void main()
         <title>Asus Zenbook UX303LN のトラックパッドを動かす (Ubuntu14.04)</title>
         <description>&lt;p&gt;原因 : 14.04 (Trusty) にfocaltech (トラックパッドのベンダ) のドライバが入ってなかった&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;sudo apt-get install linux-generic-lts-vivid
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install linux-generic-lts-vivid
 sudo reboot
 
 sudo add-apt-repository ppa:hanipouspilot/focaltech-dkms
@@ -566,9 +613,9 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;ちなみに以下で入力中か判別させることができる&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;synclient &lt;span class=&quot;nv&quot;&gt;PalmDetect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 &lt;span class=&quot;nv&quot;&gt;PalmMinZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;synclient &lt;span class=&quot;nv&quot;&gt;PalmDetect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;PalmMinZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;さらに &lt;code class=&quot;highlighter-rouge&quot;&gt;PalmMinWidth=...&lt;/code&gt; というオプションで自分流に感度(1から7で指定)を調節可能&lt;/p&gt;
+&lt;p&gt;さらに &lt;code&gt;PalmMinWidth=...&lt;/code&gt; というオプションで自分流に感度(1から7で指定)を調節可能&lt;/p&gt;
 </description>
         <pubDate>Tue, 13 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/13/013.html</link>
@@ -582,92 +629,92 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <description>&lt;p&gt;&lt;a href=&quot;http://boostjp.github.io/study_meeting/study18.html&quot;&gt;Boost.勉強会 #18&lt;/a&gt; が大阪で開催されたので行ってみた。
 最近 C++ 書いてなかったけど、とくにメタプログラミング系が楽しみだった。以下、雑感 (適当)&lt;/p&gt;
 
-&lt;h3 id=&quot;section&quot;&gt;会場&lt;/h3&gt;
+&lt;h3&gt;会場&lt;/h3&gt;
 
 &lt;p&gt;グランフロント大阪の &lt;em&gt;Aiming&lt;/em&gt; というゲーム制作会社のセミナー室でした。エレベータがめちゃくちゃでかくて驚いた。下の階ではショールームや商業施設も兼ねているだけあって綺麗なオフィスビルだった&lt;/p&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;区間演算ライブラリ&lt;/h3&gt;
+&lt;h3&gt;区間演算ライブラリ&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://www.slideshare.net/Enum_hack/cranberries-interval-library&quot;&gt;http://www.slideshare.net/Enum_hack/cranberries-interval-library&lt;/a&gt;&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Levy3 デモが面白い。HSPかなにかで描画してた?&lt;/li&gt;
-  &lt;li&gt;あまり前半の話は理解できていないが、区間を使って精度を保証した大域的最適解(最小値,最大値)の探索がおもしろそう。数理計画法を詳しく勉強したいので C++ プログラムを見てみたい&lt;/li&gt;
-  &lt;li&gt;4 種類の Ordering 初めて聞いた, 全順序といった単語は論理と計算のしくみでしか見たことなかったが、なるほど区間に当てはまるなと思った。圏論の本でも Pre-Order が圏の例ででてきてた、順序おもしろい&lt;/li&gt;
-  &lt;li&gt;スライド冒頭の 「C++ の会」 (Slack) に入った。とくに制約なく幅広く会員募集中の模様&lt;/li&gt;
+&lt;li&gt;Levy3 デモが面白い。HSPかなにかで描画してた?&lt;/li&gt;
+&lt;li&gt;あまり前半の話は理解できていないが、区間を使って精度を保証した大域的最適解(最小値,最大値)の探索がおもしろそう。数理計画法を詳しく勉強したいので C++ プログラムを見てみたい&lt;/li&gt;
+&lt;li&gt;4 種類の Ordering 初めて聞いた, 全順序といった単語は論理と計算のしくみでしか見たことなかったが、なるほど区間に当てはまるなと思った。圏論の本でも Pre-Order が圏の例ででてきてた、順序おもしろい&lt;/li&gt;
+&lt;li&gt;スライド冒頭の 「C++ の会」 (Slack) に入った。とくに制約なく幅広く会員募集中の模様&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;pre-kona&quot;&gt;pre-Kona&lt;/h3&gt;
+&lt;h3&gt;pre-Kona&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://ezoeryou.github.io/boost-benkyo-18/#/&quot;&gt;最新のC++標準化委員会の文書&lt;/a&gt;&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;C++17 で register 指定子を廃止
-    &lt;ul&gt;
-      &lt;li&gt;Duff’s device のコード例でしか見たことなかった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;TS (tech spec) ?&lt;/li&gt;
-  &lt;li&gt;[[unused]] [[nodiscard]] はやく欲しい
-    &lt;ul&gt;
-      &lt;li&gt;debug モードのときしか使わない変数は release 時に警告でてしまうので欲しい。&lt;/li&gt;
-      &lt;li&gt;gcc の &lt;code class=&quot;highlighter-rouge&quot;&gt;__attibute__((unused))&lt;/code&gt; って長すぎないですか。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;multi-range-based for loop テンソル演算とかによさそう。STL2 のレンジ演算ライブラリも欲しい&lt;/li&gt;
-  &lt;li&gt;lambda の this キャプチャあたらしい文法が微妙。ラムダ周りの文法はもろもろ設計ミスだと思う&lt;/li&gt;
+&lt;li&gt;C++17 で register 指定子を廃止
+
+&lt;ul&gt;
+&lt;li&gt;Duff&amp;#39;s device のコード例でしか見たことなかった&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;TS (tech spec) ?&lt;/li&gt;
+&lt;li&gt;[[unused]] [[nodiscard]] はやく欲しい
+
+&lt;ul&gt;
+&lt;li&gt;debug モードのときしか使わない変数は release 時に警告でてしまうので欲しい。&lt;/li&gt;
+&lt;li&gt;gcc の &lt;code&gt;__attibute__((unused))&lt;/code&gt; って長すぎないですか。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;multi-range-based for loop テンソル演算とかによさそう。STL2 のレンジ演算ライブラリも欲しい&lt;/li&gt;
+&lt;li&gt;lambda の this キャプチャあたらしい文法が微妙。ラムダ周りの文法はもろもろ設計ミスだと思う&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-2&quot;&gt;タグ付き共用体&lt;/h3&gt;
+&lt;h3&gt;タグ付き共用体&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://www.slideshare.net/digitalghost/ss-53762226&quot;&gt;ナウなヤングにバカうけのイカしたタグ付き共用体&lt;/a&gt;&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;簡単に再帰的に定義できる&lt;/li&gt;
-  &lt;li&gt;static_if の実装
-    &lt;ul&gt;
-      &lt;li&gt;不動点コンビネータ使う&lt;/li&gt;
-      &lt;li&gt;Boost.Hana の話と結構かぶるとこあってよかった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;内部の storage は std::aligned_union ?  知らなかった。昔variantつくろうとしたとき再発明してた…&lt;/li&gt;
-  &lt;li&gt;ラムダを使ったパターンマッチ (SFINAE) おもしろい
-    &lt;ul&gt;
-      &lt;li&gt;auto 引数のラムダで otherwise できる&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;補足メモ：先週見た別の (C++11) variant 実装 https://github.com/abau/variant&lt;/li&gt;
-  &lt;li&gt;補足メモ：また別の boost::variant のパターンマッチ方法(不動点コンビネータ) https://gist.github.com/plasma-effect/13c471f3822d89ea0ac8&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;boosthana&quot;&gt;Boost.Hana&lt;/h3&gt;
+&lt;li&gt;簡単に再帰的に定義できる&lt;/li&gt;
+&lt;li&gt;static_if の実装
 
 &lt;ul&gt;
-  &lt;li&gt;事実上、既存Boostからは独立したライブラリ&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://melpon.org/wandbox/permlink/MZqKhMF7tiaNZdJg&quot;&gt;Wandbox で試せる&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;swallow を使ったパラメータパックの評価順序指定&lt;/li&gt;
-  &lt;li&gt;Applicative とか Foldable といったヘッダから利用者層が伺える&lt;/li&gt;
-  &lt;li&gt;コンパイル時間が圧倒的に速いので積極的に使いたい
-    &lt;ul&gt;
-      &lt;li&gt;tuple や integral_constant も高速な独自実装&lt;/li&gt;
-      &lt;li&gt;constexpr なしの型レベル計算&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;補足メモ : 別の高速な tuple 実装例 shiro&lt;/li&gt;
-  &lt;li&gt;Tuple って継承で実装するんだっけ&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;proxygen&quot;&gt;Proxygen&lt;/h3&gt;
+&lt;li&gt;不動点コンビネータ使う&lt;/li&gt;
+&lt;li&gt;Boost.Hana の話と結構かぶるとこあってよかった&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;内部の storage は std::aligned_union ?  知らなかった。昔variantつくろうとしたとき再発明してた...&lt;/li&gt;
+&lt;li&gt;ラムダを使ったパターンマッチ (SFINAE) おもしろい
 
 &lt;ul&gt;
-  &lt;li&gt;facebook 製の web フレームワーク&lt;/li&gt;
-  &lt;li&gt;珍しい C++ 製 (NVI の要求で生ポインタあり、不便? ), めっちゃ速い
-    &lt;ul&gt;
-      &lt;li&gt;Boost.Asio 的なもの (Folly ?) が独自実装されてる&lt;/li&gt;
-      &lt;li&gt;文字列のパースは利用者側が頑張る (Boost.Spirit, Karma 使ってた…)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;http -&amp;gt; SPDY -&amp;gt; http/2 の進化が面白かった&lt;/li&gt;
+&lt;li&gt;auto 引数のラムダで otherwise できる&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;補足メモ：先週見た別の (C++11) variant 実装 https://github.com/abau/variant&lt;/li&gt;
+&lt;li&gt;補足メモ：また別の boost::variant のパターンマッチ方法(不動点コンビネータ) https://gist.github.com/plasma-effect/13c471f3822d89ea0ac8&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Boost.Hana&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;事実上、既存Boostからは独立したライブラリ&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://melpon.org/wandbox/permlink/MZqKhMF7tiaNZdJg&quot;&gt;Wandbox で試せる&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;swallow を使ったパラメータパックの評価順序指定&lt;/li&gt;
+&lt;li&gt;Applicative とか Foldable といったヘッダから利用者層が伺える&lt;/li&gt;
+&lt;li&gt;コンパイル時間が圧倒的に速いので積極的に使いたい
+
+&lt;ul&gt;
+&lt;li&gt;tuple や integral_constant も高速な独自実装&lt;/li&gt;
+&lt;li&gt;constexpr なしの型レベル計算&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;補足メモ : 別の高速な tuple 実装例 shiro &lt;/li&gt;
+&lt;li&gt;Tuple って継承で実装するんだっけ&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Proxygen&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;facebook 製の web フレームワーク&lt;/li&gt;
+&lt;li&gt;珍しい C++ 製 (NVI の要求で生ポインタあり、不便? ), めっちゃ速い
+
+&lt;ul&gt;
+&lt;li&gt;Boost.Asio 的なもの (Folly ?) が独自実装されてる&lt;/li&gt;
+&lt;li&gt;文字列のパースは利用者側が頑張る (Boost.Spirit, Karma 使ってた...)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;http -&amp;gt; SPDY -&amp;gt; http/2 の進化が面白かった&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 11 Oct 2015 00:00:00 +0900</pubDate>

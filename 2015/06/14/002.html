@@ -82,28 +82,28 @@
 
 <p>Coq の教材<a href="http://proofcafe.org/sf/">「ソフトウェアの基礎」</a>、 2 回目もやりました。そろそろ機能紹介が主になってきたような、練習問題で定理証明も少なくなるのかな？ Coq の記述言語 Gallina が随分と自由度が高く思えてきます。例えば次のように糖衣構文を自在に定義できます。</p>
 
-<figure class="highlight"><pre><code class="language-coq" data-lang="coq">(* リストの糖衣構文 *)
-Notation "x :: l" := (cons x l) (at level 60, right associativity).
-Notation "[ ]" := nil.
-Notation "[ x , .. , y ]" := (cons x .. (cons y nil) ..).
+<figure class="highlight"><pre><code class="language-coq" data-lang="coq"><span></span><span class="c">(* リストの糖衣構文 *)</span>
+<span class="kn">Notation</span> <span class="s2">&quot;x :: l&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">cons</span> <span class="n">x</span> <span class="n">l</span><span class="o">)</span> <span class="o">(</span><span class="n">at</span> <span class="n">level</span> <span class="mi">60</span><span class="o">,</span> <span class="k">right</span> <span class="n">associativity</span><span class="o">).</span>
+<span class="kn">Notation</span> <span class="s2">&quot;[ ]&quot;</span> <span class="o">:=</span> <span class="n">nil</span><span class="o">.</span>
+<span class="kn">Notation</span> <span class="s2">&quot;[ x , .. , y ]&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">cons</span> <span class="n">x</span> <span class="o">..</span> <span class="o">(</span><span class="n">cons</span> <span class="n">y</span> <span class="n">nil</span><span class="o">)</span> <span class="o">..).</span>
 
-(* リストの結合 *)
-Fixpoint app (lhs rhs: natlist): natlist :=
-  match lhs with
-    | nil =&gt; rhs
-    | head :: tail =&gt; head :: (app tail rhs)
-  end.
+<span class="c">(* リストの結合 *)</span>
+<span class="kn">Fixpoint</span> <span class="n">app</span> <span class="o">(</span><span class="n">lhs</span> <span class="n">rhs</span><span class="o">:</span> <span class="n">natlist</span><span class="o">):</span> <span class="n">natlist</span> <span class="o">:=</span>
+  <span class="k">match</span> <span class="n">lhs</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="n">nil</span> <span class="o">=&gt;</span> <span class="n">rhs</span>
+    <span class="o">|</span> <span class="n">head</span> <span class="o">::</span> <span class="n">tail</span> <span class="o">=&gt;</span> <span class="n">head</span> <span class="o">::</span> <span class="o">(</span><span class="n">app</span> <span class="n">tail</span> <span class="n">rhs</span><span class="o">)</span>
+  <span class="k">end</span><span class="o">.</span>
 
-Notation "x ++ y" := (app x y) (at level 60, right associativity).</code></pre></figure>
+<span class="kn">Notation</span> <span class="s2">&quot;x ++ y&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">app</span> <span class="n">x</span> <span class="n">y</span><span class="o">)</span> <span class="o">(</span><span class="n">at</span> <span class="n">level</span> <span class="mi">60</span><span class="o">,</span> <span class="k">right</span> <span class="n">associativity</span><span class="o">).</span></code></pre></figure>
 
 <p>似たような Haskell だとリストの結合はこんな感じ <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#recursive-data-structures">出典 Learn You a Haskell for Great Good!</a></p>
 
-<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">infixr</span> <span class="mi">5</span>  <span class="o">++</span>
-<span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="o">::</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
-<span class="kt">[]</span>     <span class="o">++</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">ys</span>
-<span class="p">(</span><span class="n">x</span><span class="o">:</span><span class="n">xs</span><span class="p">)</span> <span class="o">++</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">x</span> <span class="o">:</span> <span class="p">(</span><span class="n">xs</span> <span class="o">++</span> <span class="n">ys</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span></span><span class="kr">infixr</span> <span class="mi">5</span>  <span class="o">++</span>
+<span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">::</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<span class="kt">[]</span>     <span class="o">++</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">ys</span>
+<span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="o">++</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="p">(</span><span class="n">xs</span> <span class="o">++</span> <span class="n">ys</span><span class="p">)</span></code></pre></figure>
 
-<p>Coq の <code class="highlighter-rouge">at level .. associativity</code> というのは Haskell の <code class="highlighter-rouge">infixr, infixl</code> と同じで結合の強さを指定するんですが、随分と大きい値ですね。そんなに沢山の演算子を併用するんでしょうか。それにしても、<code class="highlighter-rouge">"[ x , .. , y ]"</code> のような直感的な書き方で字句を拡張できるなんて…。ユーザが扱える表現力が高いのは良いことだと思います。</p>
+<p>Coq の <code>at level .. associativity</code> というのは Haskell の <code>infixr, infixl</code> と同じで結合の強さを指定するんですが、随分と大きい値ですね。そんなに沢山の演算子を併用するんでしょうか。それにしても、<code>&quot;[ x , .. , y ]&quot;</code> のような直感的な書き方で字句を拡張できるなんて...。ユーザが扱える表現力が高いのは良いことだと思います。</p>
 
   </article>
 </div>
