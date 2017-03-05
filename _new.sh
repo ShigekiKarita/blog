@@ -4,8 +4,10 @@ n=`ls _posts | wc -w | xargs expr 1 + | xargs printf %03g`
 
 cat <<EOF > _posts/${d}-${n}.md
 ---
+author: karita
 layout: post
-title:
+title: Untitled
+tags: unknown
 comments: true
 ---
 EOF

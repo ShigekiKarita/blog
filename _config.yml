@@ -11,7 +11,9 @@ twitter_username: kari_tech
 github_username:  ShigekiKarita
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet
+
+highlighter: pygments
 
 gems:
     - jekyll-gist
