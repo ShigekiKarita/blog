@@ -11,16 +11,9 @@ twitter_username: kari_tech
 github_username:  ShigekiKarita
 
 # Build settings
-# markdown: kramdown
 markdown: redcarpet
 
 highlighter: pygments
-
-# kramdown:
-#   input: GFM
-#   hard_wrap: false
-#   enable_coderay: false
-#   syntax_highlighter: rouge
 
 gems:
     - jekyll-gist
