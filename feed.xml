@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Mar 2017 03:05:06 +0900</pubDate>
-    <lastBuildDate>Sun, 05 Mar 2017 03:05:06 +0900</lastBuildDate>
+    <pubDate>Sun, 05 Mar 2017 13:52:21 +0900</pubDate>
+    <lastBuildDate>Sun, 05 Mar 2017 13:52:21 +0900</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -151,7 +151,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 &lt;li&gt;標準ライブラリPhobos のドキュメント生成に使われる ddox: &lt;code&gt;dub build --build=ddox&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;ところで、ddox は筆者の環境ではビルドできませんでしたので、dmdコンパイラの機能を使っています。こんな感じで &lt;code&gt;/++ +/&lt;/code&gt; (詳細を書く) や &lt;code&gt;///&lt;/code&gt; (自動生成) を使ってドキュメントを書くと&lt;/p&gt;
+&lt;p&gt;ところで、ddox は筆者の環境ではビルドできませんでしたので、dmdコンパイラの機能を使っています。こんな感じで &lt;code&gt;/++ +/&lt;/code&gt; (複数行) や &lt;code&gt;///&lt;/code&gt; (一行) を使ってドキュメントを書くと(正確にはかかなくても多少自動生成されます)、&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/++&lt;/span&gt;
 &lt;span class=&quot;cm&quot;&gt;construct new uninitialized slice with specified shape and element type&lt;/span&gt;
 
@@ -171,7 +171,8 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
   &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DeepElementType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;いい感じに unittest を Examples として表示してくれたりします。&lt;/p&gt;
+&lt;p&gt;いい感じに unittest なども Examples として表示してくれたりします。
+この辺はBDDなどの考え方と相性が良いのではないでしょうか?&lt;/p&gt;
 
 &lt;p&gt;例: &lt;a href=&quot;https://shigekikarita.github.io/numir/&quot;&gt;https://shigekikarita.github.io/numir/&lt;/a&gt;&lt;/p&gt;
 
@@ -180,11 +181,13 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 
 &lt;h2&gt;まとめ&lt;/h2&gt;
 
-&lt;p&gt;DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。やっぱりD言語本体で便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)でサポートされていて、C++等と対象的ですごいですね。&lt;/p&gt;
+&lt;p&gt;DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。DUBはパッケージマネージャとしては優秀ですが、ビルドシステムとしてはMakeなどと比べると制限がつよくて、シェルスクリプトなどが&lt;code&gt;dub.json&lt;/code&gt;にかけると便利かなとは思います。D言語は言語機能として便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)がサポートされているのは最高ですね。&lt;/p&gt;
 </description>
         <pubDate>Sat, 04 Mar 2017 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2017/03/04/021.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/03/04/021.html</guid>
+        
+        <category>D</category>
         
         
       </item>
@@ -223,6 +226,8 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         <pubDate>Wed, 30 Nov 2016 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</guid>
+        
+        <category>Jekyll</category>
         
         
       </item>
@@ -338,6 +343,10 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         <link>http://shigekikarita.github.io/blog/blog/2016/08/12/020.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/08/12/020.html</guid>
         
+        <category>Python</category>
+        
+        <category>MachineLearning</category>
+        
         
       </item>
     
@@ -406,6 +415,10 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         <link>http://shigekikarita.github.io/blog/blog/2016/02/27/018.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/02/27/018.html</guid>
         
+        <category>Python</category>
+        
+        <category>CUDA</category>
+        
         
       </item>
     
@@ -446,6 +459,8 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
         <pubDate>Sat, 02 Jan 2016 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2016/01/02/017.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/01/02/017.html</guid>
+        
+        <category>GCC</category>
         
         
       </item>
@@ -502,9 +517,7 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;code&gt;foreach (j, T; AliasSeq!Ts)&lt;/code&gt; のところに、&lt;code&gt;enumerate&lt;/code&gt; を使うとコンパイル通らないのがハマりどころです。
-あと&lt;code&gt;mixin(s);&lt;/code&gt;するときは&lt;code&gt;pragma(msg, s)&lt;/code&gt;とするとコンパイル時にprint debugできて楽ですね。
-次回(?)は、Phobos の Zip オブジェクトを参考に実装してみましょう。
-Unzip のときは中身の配列長がそれぞれ等しいので楽そうですね。&lt;/p&gt;
+あと&lt;code&gt;mixin(s);&lt;/code&gt;するときは&lt;code&gt;pragma(msg, s)&lt;/code&gt;とするとコンパイル時にprint debugできて楽ですね。&lt;/p&gt;
 
 &lt;h2&gt;参考&lt;/h2&gt;
 
@@ -521,6 +534,8 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
         <pubDate>Wed, 23 Dec 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/12/23/016.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/12/23/016.html</guid>
+        
+        <category>D</category>
         
         
       </item>
@@ -572,6 +587,10 @@ Unzip のときは中身の配列長がそれぞれ等しいので楽そうで�
         <pubDate>Fri, 16 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/16/015.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/16/015.html</guid>
+        
+        <category>Haskell</category>
+        
+        <category>CUDA</category>
         
         
       </item>
@@ -641,6 +660,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Tue, 13 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/13/013.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/13/013.html</guid>
+        
+        <category>PC</category>
         
         
       </item>
@@ -741,6 +762,8 @@ sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sun, 11 Oct 2015 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2015/10/11/012.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/11/012.html</guid>
+        
+        <category>C++</category>
         
         
       </item>

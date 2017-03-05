@@ -51,13 +51,17 @@
       <div class="trigger">
         
           
-          <a class="page-link" href="/blog/about/">about me</a>
+          <a class="page-link" href="/blog/about/">about</a>
           
         
           
         
           
         
+          
+        
+          
+          <a class="page-link" href="/blog/tags.html">tags</a>
           
         
       </div>
@@ -74,7 +78,14 @@
 
   <header class="post-header">
     <h1 class="post-title">D言語で unzip</h1>
-    <p class="post-meta">Dec 23, 2015</p>
+    <p class="post-meta">
+        Dec 23, 2015
+        
+        
+        
+          <a href="/blog/tags.html#tag_D">D</a>
+        
+    </p>
   </header>
 
   <article class="post-content">
@@ -128,9 +139,7 @@
 <span class="p">}</span></code></pre></figure>
 
 <p><code>foreach (j, T; AliasSeq!Ts)</code> のところに、<code>enumerate</code> を使うとコンパイル通らないのがハマりどころです。
-あと<code>mixin(s);</code>するときは<code>pragma(msg, s)</code>とするとコンパイル時にprint debugできて楽ですね。
-次回(?)は、Phobos の Zip オブジェクトを参考に実装してみましょう。
-Unzip のときは中身の配列長がそれぞれ等しいので楽そうですね。</p>
+あと<code>mixin(s);</code>するときは<code>pragma(msg, s)</code>とするとコンパイル時にprint debugできて楽ですね。</p>
 
 <h2>参考</h2>
 

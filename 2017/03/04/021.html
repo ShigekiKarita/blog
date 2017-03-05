@@ -51,13 +51,17 @@
       <div class="trigger">
         
           
-          <a class="page-link" href="/blog/about/">about me</a>
+          <a class="page-link" href="/blog/about/">about</a>
           
         
           
         
           
         
+          
+        
+          
+          <a class="page-link" href="/blog/tags.html">tags</a>
           
         
       </div>
@@ -74,7 +78,14 @@
 
   <header class="post-header">
     <h1 class="post-title">DUB による D 言語開発 Tips</h1>
-    <p class="post-meta">Mar 4, 2017</p>
+    <p class="post-meta">
+        Mar 4, 2017
+         • karita
+        
+        
+          <a href="/blog/tags.html#tag_D">D</a>
+        
+    </p>
   </header>
 
   <article class="post-content">
@@ -217,7 +228,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 <li>標準ライブラリPhobos のドキュメント生成に使われる ddox: <code>dub build --build=ddox</code></li>
 </ol>
 
-<p>ところで、ddox は筆者の環境ではビルドできませんでしたので、dmdコンパイラの機能を使っています。こんな感じで <code>/++ +/</code> (詳細を書く) や <code>///</code> (自動生成) を使ってドキュメントを書くと</p>
+<p>ところで、ddox は筆者の環境ではビルドできませんでしたので、dmdコンパイラの機能を使っています。こんな感じで <code>/++ +/</code> (複数行) や <code>///</code> (一行) を使ってドキュメントを書くと(正確にはかかなくても多少自動生成されます)、</p>
 <div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="cm">/++</span>
 <span class="cm">construct new uninitialized slice with specified shape and element type</span>
 
@@ -237,7 +248,8 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
   <span class="k">static</span> <span class="k">assert</span><span class="p">(</span><span class="k">is</span><span class="p">(</span><span class="n">DeepElementType</span><span class="p">!(</span><span class="k">typeof</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="p">==</span> <span class="kt">int</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>いい感じに unittest を Examples として表示してくれたりします。</p>
+<p>いい感じに unittest なども Examples として表示してくれたりします。
+この辺はBDDなどの考え方と相性が良いのではないでしょうか?</p>
 
 <p>例: <a href="https://shigekikarita.github.io/numir/">https://shigekikarita.github.io/numir/</a></p>
 
@@ -246,7 +258,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 
 <h2>まとめ</h2>
 
-<p>DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。やっぱりD言語本体で便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)でサポートされていて、C++等と対象的ですごいですね。</p>
+<p>DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。DUBはパッケージマネージャとしては優秀ですが、ビルドシステムとしてはMakeなどと比べると制限がつよくて、シェルスクリプトなどが<code>dub.json</code>にかけると便利かなとは思います。D言語は言語機能として便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)がサポートされているのは最高ですね。</p>
 
   </article>
 </div>
