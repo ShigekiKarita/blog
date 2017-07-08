@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Jul 2017 17:29:57 +0900</pubDate>
-    <lastBuildDate>Sat, 08 Jul 2017 17:29:57 +0900</lastBuildDate>
+    <pubDate>Sat, 08 Jul 2017 17:38:46 +0900</pubDate>
+    <lastBuildDate>Sat, 08 Jul 2017 17:38:46 +0900</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -16,7 +16,7 @@
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/tensorflow/haskell&quot;&gt;https://github.com/tensorflow/haskell&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;基本的には、READMEに書いてあるようにstack dockerを使ってやれば良いのですが、このDockerfileではCPUでしか動かずGPUで動かしたい...。という欲求がでてきました。ちなみに stack で docker を使うためには sudo 無しで動かす例の設定変更が必要です(私は変更後に再起動が必要でした)&lt;/p&gt;
+&lt;p&gt;基本的には、READMEに書いてあるようにstack dockerを使ってやれば良いのですが、このDockerfileではCPUでしか動かないので、GPUで動かしたい...という欲求がでてきました。ちなみに stack で docker を使うためには sudo 無しで動かす例の設定変更が必要です(私は変更後に再起動が必要でした)&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&quot;&gt;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&lt;/a&gt;&lt;/p&gt;
 
@@ -58,7 +58,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 
 &lt;h3&gt;nvidia-docker の使い方&lt;/h3&gt;
 
-&lt;p&gt;こちらの解説 &lt;a href=&quot;http://qiita.com/toshitanian/items/8aaca6b867099ebd442d&quot;&gt;「nvidia-dockerは何をしているのか」&lt;/a&gt; によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `&lt;code&gt;--docker-run-args&lt;/code&gt;を使うと nvidia-smi 相当のことができます。&lt;/p&gt;
+&lt;p&gt;こちらの解説 &lt;a href=&quot;http://qiita.com/toshitanian/items/8aaca6b867099ebd442d&quot;&gt;「nvidia-dockerは何をしているのか」&lt;/a&gt; によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `&lt;code&gt;--docker-run-args&lt;/code&gt;を使うと nvidia-docker 相当のことができます。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;stack --docker --docker-run-args &amp;quot;$(curl -s http://localhost:3476/docker/cli)&amp;quot; --docker-image=$IMAGE_NAME build --exec Main
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;無事、実マシン側のGPUが認識されてGPUで実行しています。&lt;/p&gt;

@@ -93,7 +93,7 @@
 
 <p><a href="https://github.com/tensorflow/haskell">https://github.com/tensorflow/haskell</a></p>
 
-<p>基本的には、READMEに書いてあるようにstack dockerを使ってやれば良いのですが、このDockerfileではCPUでしか動かずGPUで動かしたい...。という欲求がでてきました。ちなみに stack で docker を使うためには sudo 無しで動かす例の設定変更が必要です(私は変更後に再起動が必要でした)</p>
+<p>基本的には、READMEに書いてあるようにstack dockerを使ってやれば良いのですが、このDockerfileではCPUでしか動かないので、GPUで動かしたい...という欲求がでてきました。ちなみに stack で docker を使うためには sudo 無しで動かす例の設定変更が必要です(私は変更後に再起動が必要でした)</p>
 
 <p><a href="https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md">https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md</a></p>
 
@@ -135,7 +135,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 
 <h3>nvidia-docker の使い方</h3>
 
-<p>こちらの解説 <a href="http://qiita.com/toshitanian/items/8aaca6b867099ebd442d">「nvidia-dockerは何をしているのか」</a> によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `<code>--docker-run-args</code>を使うと nvidia-smi 相当のことができます。</p>
+<p>こちらの解説 <a href="http://qiita.com/toshitanian/items/8aaca6b867099ebd442d">「nvidia-dockerは何をしているのか」</a> によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `<code>--docker-run-args</code>を使うと nvidia-docker 相当のことができます。</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>stack --docker --docker-run-args &quot;$(curl -s http://localhost:3476/docker/cli)&quot; --docker-image=$IMAGE_NAME build --exec Main
 </code></pre></div>
 <p>無事、実マシン側のGPUが認識されてGPUで実行しています。</p>
