@@ -6,9 +6,83 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Mar 2017 15:09:43 +0900</pubDate>
-    <lastBuildDate>Sun, 05 Mar 2017 15:09:43 +0900</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
+    <pubDate>Sat, 08 Jul 2017 17:29:40 +0900</pubDate>
+    <lastBuildDate>Sat, 08 Jul 2017 17:29:40 +0900</lastBuildDate>
+    <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Haskell で Tensorflow (GPU) を使う</title>
+        <description>&lt;p&gt;Google本家から非公式(?)に出ているやつを使います。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/tensorflow/haskell&quot;&gt;https://github.com/tensorflow/haskell&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;基本的には、READMEに書いてあるようにstack dockerを使ってやれば良いのですが、このDockerfileではCPUでしか動かずGPUで動かしたい...。という欲求がでてきました。ちなみに stack で docker を使うためには sudo 無しで動かす例の設定変更が必要です(私は変更後に再起動が必要でした)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&quot;&gt;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;Dockerfileの変更&lt;/h3&gt;
+
+&lt;p&gt;tensorflow-haskellの&lt;a href=&quot;https://github.com/tensorflow/haskell/blob/master/docker/Dockerfile&quot;&gt;Dockerfile&lt;/a&gt;では、CPU用のイメージとビルド済みライブラリを使っています。書き換えた後のdiff はこんな感じで、&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-diff&quot; data-lang=&quot;diff&quot;&gt;&lt;span&gt;&lt;/span&gt;3c3
+&amp;lt; FROM tensorflow/tensorflow:1.0.0
+&lt;span class=&quot;gd&quot;&gt;---&lt;/span&gt;
+&amp;gt; FROM tensorflow/tensorflow:1.0.0-gpu
+28,29c28,29
+&amp;lt;     curl -O https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-1.0.0.tar.gz &amp;amp;&amp;amp; \
+&amp;lt;     tar zxf libtensorflow-cpu-linux-x86_64-1.0.0.tar.gz -C /usr/local &amp;amp;&amp;amp; \
+&lt;span class=&quot;gd&quot;&gt;---&lt;/span&gt;
+&amp;gt;     curl -O https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.0.0.tar.gz &amp;amp;&amp;amp; \
+&amp;gt;     tar zxf libtensorflow-gpu-linux-x86_64-1.0.0.tar.gz -C /usr/local &amp;amp;&amp;amp; \
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;いろんなところに&lt;code&gt;-gpu&lt;/code&gt;を足すだけです。ver1.0.0から変わっていたら合わせてください。あとはREADMEにあるようにDocker Imageをビルドします。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;tensorflow/haskell:v0
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; docker build -t &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; docker
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;無事Docker Imageができたので、このまま README にあるように MNIST を動かすと&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ./tensorflow-mnist
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; stack --docker --docker-image&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; build --exec Main
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;以下のようなエラーがでて&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;E tensorflow/stream_executor/cuda/cuda_driver.cc:509] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device is present: /dev/nvidia0 does not exist
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;CPUで実行されてしまいました。これはGPU デバイスが見つからなかったということです。&lt;/p&gt;
+
+&lt;h3&gt;nvidia-docker の準備&lt;/h3&gt;
+
+&lt;p&gt;というわけで、&lt;code&gt;nvidia-docker&lt;/code&gt;を使います。nvidia-docker は docker 上のコンテナ(仮想OS)で、実OS側のGPUを使える凄いやつです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/NVIDIA/nvidia-docker&quot;&gt;https://github.com/NVIDIA/nvidia-docker&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;やはりREADMEに書いてあるような数行のインストールをします。&lt;code&gt;nvidia-docker run --rm nvidia/cuda nvidia-smi&lt;/code&gt;でホスト側のデバイスがでてくれば成功です。&lt;/p&gt;
+
+&lt;h3&gt;nvidia-docker の使い方&lt;/h3&gt;
+
+&lt;p&gt;こちらの解説 &lt;a href=&quot;http://qiita.com/toshitanian/items/8aaca6b867099ebd442d&quot;&gt;「nvidia-dockerは何をしているのか」&lt;/a&gt; によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `&lt;code&gt;--docker-run-args&lt;/code&gt;を使うと nvidia-smi 相当のことができます。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;stack --docker --docker-run-args &amp;quot;$(curl -s http://localhost:3476/docker/cli)&amp;quot; --docker-image=$IMAGE_NAME build --exec Main
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;無事、実マシン側のGPUが認識されてGPUで実行しています。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:910] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties: 
+name: GeForce GTX 760
+major: 3 minor: 0 memoryClockRate (GHz) 1.124
+pciBusID 0000:01:00.0
+Total memory: 1.95GiB
+Free memory: 1.07GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -&amp;gt; (device: 0, name: GeForce GTX 760, pci bus id: 0000:01:00.0)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;以上です。気が向けばAPIについてもメモしようと思います。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Jul 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/07/08/023.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/07/08/023.html</guid>
+        
+        <category>haskell</category>
+        
+        
+      </item>
     
       <item>
         <title>DUB による D 言語開発 Tips</title>
@@ -717,35 +791,6 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/14/014.html</guid>
         
         <category>D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Asus Zenbook UX303LN のトラックパッドを動かす (Ubuntu14.04)</title>
-        <description>&lt;p&gt;原因 : 14.04 (Trusty) にfocaltech (トラックパッドのベンダ) のドライバが入ってなかった&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install linux-generic-lts-vivid
-sudo reboot
-
-sudo add-apt-repository ppa:hanipouspilot/focaltech-dkms
-sudo apt-get update
-sudo apt-get install focaltech-dkms
-
-sudo modprobe -r psmouse
-sudo modprobe psmouse&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;ちなみに以下で入力中か判別させることができる&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;synclient &lt;span class=&quot;nv&quot;&gt;PalmDetect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;PalmMinZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;さらに &lt;code&gt;PalmMinWidth=...&lt;/code&gt; というオプションで自分流に感度(1から7で指定)を調節可能&lt;/p&gt;
-</description>
-        <pubDate>Tue, 13 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/10/13/013.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/13/013.html</guid>
-        
-        <category>PC</category>
         
         
       </item>
