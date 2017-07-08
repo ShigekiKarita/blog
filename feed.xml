@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Jul 2017 17:38:46 +0900</pubDate>
-    <lastBuildDate>Sat, 08 Jul 2017 17:38:46 +0900</lastBuildDate>
+    <pubDate>Sat, 08 Jul 2017 20:26:32 +0900</pubDate>
+    <lastBuildDate>Sat, 08 Jul 2017 20:26:32 +0900</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -73,7 +73,14 @@ I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -&amp;gt; (device: 0, name: GeForce GTX 760, pci bus id: 0000:01:00.0)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;以上です。気が向けばAPIについてもメモしようと思います。&lt;/p&gt;
+&lt;h3&gt;GPUをオフにしたい&lt;/h3&gt;
+
+&lt;p&gt;GPUを使わないときなど、一々dockerイメージを切り替えるのも不便です。
+Tensorflow自体あまり詳しくないのですが、&lt;code&gt;CUDA_VISIBLE_DEVICES&lt;/code&gt;環境変数を&lt;code&gt;NO_DEVICE&lt;/code&gt;にセットすることで、GPUの利用を禁止できます。
+stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/code&gt; を設定すればOKです。&lt;/p&gt;
+
+&lt;p&gt;それにしてもstackとnvidia-dockerのおかげで、GHCやTensorflowだけでなくCUDAやCUDNNのバージョン管理もライブラリ開発者と同じものを簡単に再現できて便利になってきましたね。
+それでは以上です。気が向けばAPIについてもメモしようと思います。&lt;/p&gt;
 </description>
         <pubDate>Sat, 08 Jul 2017 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2017/07/08/023.html</link>

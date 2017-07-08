@@ -150,7 +150,14 @@ I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -&gt; (device: 0, name: GeForce GTX 760, pci bus id: 0000:01:00.0)
 </code></pre></div>
-<p>以上です。気が向けばAPIについてもメモしようと思います。</p>
+<h3>GPUをオフにしたい</h3>
+
+<p>GPUを使わないときなど、一々dockerイメージを切り替えるのも不便です。
+Tensorflow自体あまり詳しくないのですが、<code>CUDA_VISIBLE_DEVICES</code>環境変数を<code>NO_DEVICE</code>にセットすることで、GPUの利用を禁止できます。
+stack の引数に <code>--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE</code> を設定すればOKです。</p>
+
+<p>それにしてもstackとnvidia-dockerのおかげで、GHCやTensorflowだけでなくCUDAやCUDNNのバージョン管理もライブラリ開発者と同じものを簡単に再現できて便利になってきましたね。
+それでは以上です。気が向けばAPIについてもメモしようと思います。</p>
 
   </article>
 </div>
