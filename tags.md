@@ -11,7 +11,7 @@ title: tags
           <h1 id="tag_{{ tag[0] }}">{{ tag[0] }}</h1>
           <ul>
               {% for post in tag[1] %}
-              <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+              <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
               {% endfor %}
           </ul>
       </article>

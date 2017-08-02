@@ -8,5 +8,5 @@ jekyll build && \
     touch .nojekyll && \
     git add . && \
     git commit -m "gen" && \
-    git push origin gh-pages && \
+    git push -f origin gh-pages && \
     git checkout master
