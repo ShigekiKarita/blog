@@ -12,6 +12,7 @@ github_username:  ShigekiKarita
 
 # Build settings
 markdown: redcarpet
+#markdown: kra
 
 highlighter: pygments
 
