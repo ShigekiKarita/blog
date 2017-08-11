@@ -6,9 +6,129 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Jul 2017 20:29:22 +0900</pubDate>
-    <lastBuildDate>Sat, 08 Jul 2017 20:29:22 +0900</lastBuildDate>
+    <pubDate>Sat, 12 Aug 2017 00:31:04 +0900</pubDate>
+    <lastBuildDate>Sat, 12 Aug 2017 00:31:04 +0900</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Theano + PyMC3 で Variational Auto Encoder</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/t712/blob/master/example/pymc_vae.ipynb&quot;&gt;全体のコードと実行結果 - pymc_vae.ipynb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;前回は少しだけ、VAEの話をしましたが、PyMC3というライブラリを使って遊んでみました。思いっきり自作のtheano系ライブラリを使っていますが、本家の例では&lt;code&gt;keras&lt;/code&gt;を使っており、モデルの&lt;code&gt;theano.shared&lt;/code&gt;変数を全部集めて&lt;code&gt;pymc3.fit&lt;/code&gt;に渡す方法があれば、どんな&lt;code&gt;theano&lt;/code&gt;系ライブラリでも活用できると思います。&lt;/p&gt;
+
+&lt;p&gt;備忘録として、簡単にPyMC3の解説をすると、&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# building model&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;n_latent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;n_batch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;vae&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ConvVAE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_latent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# theano で作ったNN &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tensor4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;xs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;test_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;float32&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;zs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Normal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;zs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_latent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                   &lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theano&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floatX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;xs_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Normal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;xs_&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vae&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;observed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theano&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floatX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;total_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;data&lt;/code&gt;はMNISTの学習セット全てが入った多次元配列(データ数, 1, 28, 28)です。あとは&lt;a href=&quot;(/blog/2017/08/02/024.html)&quot;&gt;前回のVAE&lt;/a&gt;にでてくる$x, z$をそのまま&lt;code&gt;xs&lt;/code&gt;, &lt;code&gt;zs&lt;/code&gt;としています。&lt;code&gt;pm.Model()&lt;/code&gt;の中で有向グラフのような、確率変数がどういう分布(今回は$\text{xs} \sim \text{Normal}(\mu, \text{sd})$)から生成されているのかを記述します。注意点としては観測変数には&lt;code&gt;xs.tag.test_value&lt;/code&gt;として適当な大きさの入力を代入しておかないと、PyMC3内部のアサーションに引っかかってコンパイルできません。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# fitting model&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stddev&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vae&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;local_RVs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderedDict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stddev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)})&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# encoded stochastic variable q(z|x)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;xs_minibatch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Minibatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;approx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;local_rv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;local_RVs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;obj_optimizer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;adam&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;learning_rate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1e-4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;more_obj_params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vae&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()),&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;more_replacements&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs_minibatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ここで RV とは Random Variable (確率変数) のことだそうです。scikit-learnなどによくある &lt;code&gt;fit&lt;/code&gt; 関数と違ってユーザが設定する損失などはなく、&lt;code&gt;pm.fit()&lt;/code&gt;は変分ベイズ法なので&lt;code&gt;observed=xs&lt;/code&gt;とした実際の観測データ&lt;code&gt;xs&lt;/code&gt;に対する&lt;a href=&quot;/blog/2017/08/02/024.html&quot;&gt;前回導出した周辺尤度の下限&lt;/a&gt;(i.e., ELBO, 変分下限)を最大化するように&lt;code&gt;pm.floatX&lt;/code&gt;で設定したパラメタや&lt;code&gt;theano.shared&lt;/code&gt;変数を更新します。今回はニューラルネットを含んでいるので単純な勾配法(+Adamによる更新則)で最適化していますが、いくつかの分布ではもっと良い手法も使えるようです。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://pymc-devs.github.io/pymc3/notebooks/api_quickstart.html#3.3-Variational-inference&quot;&gt;3.3 Variational inference&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://pymc-devs.github.io/pymc3/notebooks/variational_api_quickstart.html&quot;&gt;Variational api quickstart&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ただこの感じだと、前回導出したような事前分布のKLダイバージェンスを分割できているのかとか、そもそもサンプリングの回数とか指定できるのか(たぶん &lt;code&gt;pm.sample()&lt;/code&gt; を併用するんじゃないでしょうか？)。まだわかりません...。&lt;/p&gt;
+
+&lt;p&gt;次回に続くといいですね...(?)&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Aug 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/08/10/025.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/08/10/025.html</guid>
+        
+        <category>MachineLearning</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>周辺尤度下界(ELBO)の導出</title>
+        <description>&lt;p&gt;周辺尤度(Marginal log-likelihood, Evidence)はパラメタの良さを測るときに使われる重要な尤度です(経験ベイズや、変分ベイズなど)。いまいち、導出の道筋がよくわかっていなかったので、メモしています。&lt;/p&gt;
+
+&lt;p&gt;独立同分布(i.i.d.)なデータセット $x^{(1)}, \dots, x^{(I)}$ に対してパラメタ$\theta$を持つ生成モデル$p_{\theta}(x)$の周辺尤度は$\log p_{\theta} (x^{(1)}, \dots, x^{(I)}) = \sum_{i} \log p_{\theta}(x^{(i)}) $と表すことができます。任意のパラメタ$\phi$を持つ確率分布$ \int_z q_\phi(z) dz = 1 $ に対して各因子は次のようになります。&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) &amp;amp;= \log p_{\theta}(x^{(i)}) \int_{z} q(z) dz \\
+  &amp;amp;= \mathrm{KL}(q_\phi(z) || p_\theta(z|x^{(i)}) ) + \int_z q_\phi(z) \log \frac{p_\theta(z|x^{(i)})}{q_\phi(z)} dz  + \int_{z} q(z)  \log p(x^{(i)}) dz \\
+  &amp;amp;= \mathrm{KL}(q_\phi(z) || p_\theta(z|x^{(i)}) ) + \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+\end{align}
+$$&lt;/p&gt;
+
+&lt;p&gt;いきなりでてきた確率変数$z$は潜在変数と呼ばれ、観測できない$z$(文字認識だと認識したいテキストとか、とくに意味のない特徴量など)によって観測データ$x$(文字認識だとテキストの写ってる画像とか)が生成されるという説明が多い気がします。今回は連続値として記載していますが離散値でも$\sum_z$に記法を変えれば全く同じ議論ができます。&lt;/p&gt;
+
+&lt;p&gt;同じくいきなり出てきた確率分布間の非類似度であるKLダイバージェンス $\mathrm{KL}(q || p) =  \int_z q(z) \log \frac{p(z)}{q(z)} dz$ は解析的に計算できる分布は限られています。そこで、Gibbsの不等式(Jensen の不等式に由来)とよばれるKLダイバージェンスが非負である性質によって得られる、期待値のみで表した周辺尤度下界(ELBO)&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) 
+  &amp;amp;= \mathrm{KL}(q_\phi(z) || p_{\theta}(z | x^{(i)})) + \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+  &amp;amp;\geq \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right]
+\end{align}
+$$&lt;/p&gt;
+
+&lt;p&gt;を用いて、期待値の中身の分布からランダムにサンプリングした平均値による近似計算(Monte-Carloサンプリングと呼ばれる)するといったテクニックがよく使われます(任意の分布が計算できるMCサンプリングを使うために、期待値だけの式にしたかったからKLダイバージェンスの項を取り出したとも言える)。&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) &amp;amp;\geq \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+  &amp;amp;\approx \frac{1}{J} \sum_{j=1}^{J}  \left\{ -\log q_\phi(z^{(j)}) + \log p_\theta(x^{(i)}, z^{(j)}) \right\}, \, z^{(j)} \sim  q_\phi(z)
+\end{align}
+$$&lt;/p&gt;
+
+&lt;h2&gt;最近の技術&lt;/h2&gt;
+
+&lt;p&gt;実際のところ、このままだとサンプリングによる近似の粗さ(分散の大きさ)が問題になります。近年、Variational autoencoder (VAE) などの手法では事前分布の$q_\phi(z), p_\theta(z)$をKLダイバージェンスが解析的に求まる分布(例. 正規分布, 多項分布など)に限定して、解析的に求まる項を導入することで対処します。&lt;/p&gt;
+
+&lt;p&gt;$$
+\begin{align}
+  \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] 
+  &amp;amp;= \mathbf{E}_{q_\phi(z)} \left[ -\log \frac{q_\phi(z)}{p_\theta(z)} + \log \frac{p_\theta(x^{(i)}, z)}{p_\theta(z)} \right] \\
+  &amp;amp;= - \text{KL}(q_\phi(z) || p_\theta(z) ) +  \mathbf{E}_{q_\phi(z)} \left[ \log p_\theta(x^{(i)}| z) \right] 
+\end{align}
+$$&lt;/p&gt;
+
+&lt;p&gt;事前分布$p_\theta(z)$に単純な分布を仮定すれば、任意の分布$q_\phi(z)$のKLダイバージェンスが近づく(=単純になる)ような制約としても使えるので、モデルの複雑さを抑える正則化的な効果もあると言われています。第二項はサンプリングは必要になりますが、分散は小さいので少ない回数(1回くらい)で良いようです。&lt;/p&gt;
+
+&lt;p&gt;ついでに $q$ 分布は正規化さえされていれば、本当に何でもいいので VAE などでは $q_\phi(z|x)$のように観測変数$x$から潜在変数$z$を推論するエンコーダを使い、デコーダ$p_\theta(x|z)$と同時にELBOを最大化するように訓練します。このとき $p_\theta(z)$はただの標準正規分布だったりします。&lt;/p&gt;
+
+&lt;p&gt;参考文献&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Diederik P Kingma, Max Welling, &amp;quot;Auto-Encoding Variational Bayes,&amp;quot; https://arxiv.org/abs/1312.6114&lt;/li&gt;
+&lt;li&gt;Eric Jang, Shixiang Gu, Ben Poole, &amp;quot;Categorical Reparameterization with Gumbel-Softmax,&amp;quot; https://arxiv.org/abs/1611.01144&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 02 Aug 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/08/02/024.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/08/02/024.html</guid>
+        
+        <category>MachineLearning</category>
+        
+        
+      </item>
     
       <item>
         <title>Haskell で Tensorflow (GPU) を使う</title>
@@ -356,6 +476,75 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
       </item>
     
       <item>
+        <title>D言語と Policy に基づく設計</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-nvrtc&quot;&gt;https://github.com/ShigekiKarita/d-nvrtc&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;d-nvrtc (dnv) という CUDA のD言語用ラッパーを作りました。この規模のライブラリを D 言語で書いたのは初めてで、面白いノウハウが溜まったので久々に記事を書いています。 d-nvrtc の売り (目標) は D 言語の持つ強い静的型付けと GC の手軽さで簡単に高速な CUDA プログラミングができることです。現在はこんな感じで動作します。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;dnv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std.stdio&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std.random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;std.range&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gen&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;generate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uniform&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;take&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// CUDA メモリも GC で管理&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&amp;quot;saxpy&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numElements&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blockDim&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blockIdx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threadIdx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numElements&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;saxpy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TypedKernel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;saxpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 引数が型が違うとコンパイルエラー&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ai&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ci&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;to_cpu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;to_cpu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;to_cpu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ai&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ci&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;属性を持つクラスの冗長性&lt;/h2&gt;
+
+&lt;p&gt;CUDAカーネルクラス &lt;code&gt;Kernel&lt;/code&gt; には 2 つの属性があります。1 つは NVRTC をラップしたクラス &lt;code&gt;Compiler&lt;/code&gt; の型検査による属性 (静的・動的・無し) です。もう 1 つはCUDAカーネルを呼び出すクラス &lt;code&gt;Launcher&lt;/code&gt; による属性 (e.g., 要素数によるもの・動的共有メモリを使うもの・ユーザ定義) といった具合です。&lt;/p&gt;
+
+&lt;p&gt;ここで問題となるのは、例に上げただけでも $3 \times 3 = 9$ 通りのパターンを実装する必要があります。継承なりで重複をさけることはできるものの、 冗長であり命名の面倒さが発生します。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StaticCompiler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Compiler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DynamicSharedLauncher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Launcher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// ひどい名前のクラス&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StaticDynamicSharedKernel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Kernel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Compiler&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compiler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;StaticCompiler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Launcher&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;launcher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SharedLauncher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 何通りもの似たようなクラス&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Policy とは&lt;/h2&gt;
+
+&lt;h2&gt;Policy による冗長性の解決&lt;/h2&gt;
+
+&lt;h2&gt;Policy 間のブラックリスト&lt;/h2&gt;
+
+&lt;h2&gt;D言語における依存性注入&lt;/h2&gt;
+
+&lt;p&gt;Scala などでは依存性注入 (DI) というパターンがでてくる。
+これは D 言語の interface とよくにた trait (D言語のそれとは違う) の多重継承によって
+柔軟な設計と疎結合性を実現している。
+先に述べたブラックリスト的な機能を実現する方法は&lt;/p&gt;
+</description>
+        <pubDate>Sat, 04 Feb 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</guid>
+        
+        
+      </item>
+    
+      <item>
         <title>gh-pages引っ越し</title>
         <description>&lt;p&gt;久々に更新しました。実は&lt;a href=&quot;/2016/08/12/020.html&quot;&gt;一つ前の日記&lt;/a&gt;をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが...、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。&lt;/p&gt;
 
@@ -624,180 +813,6 @@ C オブジェクトとのリンクが上手く行かず詰まったので、試
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/01/02/017.html</guid>
         
         <category>GCC</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>D言語で unzip</title>
-        <description>&lt;p&gt;D言語の標準ライブラリ Phobos には Haskell などでは有名な zip という関数が存在します。が、その逆となる unzip が存在しません...。&lt;/p&gt;
-
-&lt;p&gt;というわけで作りました。Range でもありませんし、非効率な実装ですが、D言語のメタプログラミングのしやすさが実感できました。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;traits&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;typecons&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...)()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TypeList&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TypeList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unqual&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringof&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;[],&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.$-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;int[],double[],string[]&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unzip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;mixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;Tuple!(&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;toListTypes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;) result;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AliasSeq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zipped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;c&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unzip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tuple&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;code&gt;foreach (j, T; AliasSeq!Ts)&lt;/code&gt; のところに、&lt;code&gt;enumerate&lt;/code&gt; を使うとコンパイル通らないのがハマりどころです。
-あと&lt;code&gt;mixin(s);&lt;/code&gt;するときは&lt;code&gt;pragma(msg, s)&lt;/code&gt;とするとコンパイル時にprint debugできて楽ですね。&lt;/p&gt;
-
-&lt;h2&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/D-Programming-Language/phobos/blob/64f43ce42cb133a63ff71a7a7e3bdf4076b98300/std/range/package.d#L3403&quot;&gt;Phobos の zip 実装部分 (2015/12)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;追記&lt;/h2&gt;
-
-&lt;p&gt;何度目かわかりませんが、ローカルの jekyll をアップデートした際に壊れてしまいました...。
-そろそろこのフォーマットで書き散らかすのもキツいので、年内には MDwiki に移行する計画です。
-それに向けてブログ用として、小さなツールを D 言語で書いているこの頃です。&lt;/p&gt;
-</description>
-        <pubDate>Wed, 23 Dec 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/12/23/016.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/12/23/016.html</guid>
-        
-        <category>D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Haskell Accelerate で CUDA プログラミング (紹介と導入)</title>
-        <description>&lt;h2&gt;紹介&lt;/h2&gt;
-
-&lt;p&gt;随分前から注目していた &lt;a href=&quot;https://hackage.haskell.org/package/accelerate&quot;&gt;Accelerate&lt;/a&gt; というライブラリ、なんと Haskell 中の EDSL --- Python でいう Copperhead みたいな本物の Haskell --- で CUDA プログラミングが可能という代物です。&lt;/p&gt;
-
-&lt;p&gt;なんといってもトップページにある以下のベクトル内積を算出する極めてシンプルなコード&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-haskell&quot; data-lang=&quot;haskell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;::&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Vector&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Acc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Scalar&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nf&quot;&gt;dotp&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fold&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zipWith&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product&quot;&gt;これが CUBLAS に匹敵する性能を叩き出すという話です。&lt;/a&gt;。 C++ の STL アルゴリズムを実装した thrust などでも &lt;a href=&quot;http://www.orangeowlsolutions.com/archives/790&quot;&gt;CUBLAS を使うほうが速い&lt;/a&gt; のが通説ですが、これはにわかには信じられない...。&lt;/p&gt;
-
-&lt;h2&gt;導入&lt;/h2&gt;
-
-&lt;p&gt;結局ベンチマークは CUBLAS の FFI ライブラリがまだ動かせてないので試してないんですが、簡単なサンプルだけ動かしてみました。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/first-accelerate&quot;&gt;ShigekiKarita/first-accelerate&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;動かすときに詰まったのは、 &lt;code&gt;accelerate-cuda&lt;/code&gt; がインラインの C コード で &lt;code&gt;{&lt;/code&gt; の次にかかれた&lt;code&gt;/* コメント */&lt;/code&gt;がパースに失敗してコケる点でした。そこで最新版HEADにコメント部分を削除しただけのパッチを当てました。ビルドツールに &lt;a href=&quot;http://qiita.com/tanakh/items/6866d0f570d0547df026&quot;&gt;stack&lt;/a&gt; を使ってる場合は&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git@github.com:ShigekiKarita/accelerate-cuda.git&lt;/span&gt;
-    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;648e683d191d0c402c217174d44f85650cbf3f66&lt;/span&gt;
-&lt;span class=&quot;p p-Indicator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;git@github.com:AccelerateHS/accelerate.git&lt;/span&gt;
-    &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;l l-Scalar l-Scalar-Plain&quot;&gt;15aedff344232893c89e513c1caf4bcf699a2b86&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを &lt;code&gt;cabal sandbox add-source DLしたフォルダ&lt;/code&gt; で cabal sandbox に教えると使ってくれます。&lt;/p&gt;
-
-&lt;h2&gt;開発環境&lt;/h2&gt;
-
-&lt;p&gt;ghc-mod は cabal と連携して Emacs やその他エディタを IDE にしてくれる Haskell 開発にはかかせないツールですが、いまのところ stack や CUDA とは動作しません。なので私は次のように stack と cabal を使い分けています&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;cabal : &lt;code&gt;accelerate-cuda&lt;/code&gt; を &lt;code&gt;dependencies&lt;/code&gt; から外して &lt;code&gt;Data.Array.Accelerate.Interpreter&lt;/code&gt; (CUDAなしで計算をエミュレートするモード) を使い ghc-mod でのコーディングに使う&lt;/li&gt;
-&lt;li&gt;stack : &lt;code&gt;accelerate-cuda&lt;/code&gt; を &lt;code&gt;dependencies&lt;/code&gt; に追加して &lt;code&gt;Data.Array.Accelerate.CUDA&lt;/code&gt; (CUDAで計算するモード) を使い端末から動作やテストするときに使う&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt;追記&lt;/h3&gt;
-
-&lt;p&gt;もう少し Haskell や CUDA 関係のノウハウがたまったら、次回以降は Wiki 的なものにそれなりに体系だててメモしたいなと思います。そろそろこのブログ形式も見難くなってきました。汗&lt;/p&gt;
-</description>
-        <pubDate>Fri, 16 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/10/16/015.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/16/015.html</guid>
-        
-        <category>Haskell</category>
-        
-        <category>CUDA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>D言語でコンパイル時に「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた</title>
-        <description>&lt;p&gt;元ネタ &lt;a href=&quot;http://blog.64p.org/entry/2015/05/27/095844&quot;&gt;Perl6で「ソフトウェアエンジニアならば1時間以内に解けなければいけない5つの問題」の5問目を解いてみた&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;D言語にはコンパイル時 eval という mixin があるので使ってみた。コードをみれば分かるが、とくに mixin を使う必要はないけど使いたかったから...&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conv&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdio&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;pure&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;+&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;~&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb&quot;&gt;http://melpon.org/wandbox/permlink/iIi2AfUHluM55heb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;実際元ネタの perl 5 の方が速い (ダメ)。竹内関数みたいな形なのでコンパイル時引数に lazy 的な細工すれば早くなるかも&lt;/p&gt;
-</description>
-        <pubDate>Wed, 14 Oct 2015 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2015/10/14/014.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2015/10/14/014.html</guid>
-        
-        <category>D</category>
         
         
       </item>

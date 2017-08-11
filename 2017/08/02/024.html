@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Coq の Notation すごい</title>
-  <meta name="description" content="全体 List.v">
+  <title>周辺尤度下界(ELBO)の導出</title>
+  <meta name="description" content="周辺尤度(Marginal log-likelihood, Evidence)はパラメタの良さを測るときに使われる重要な尤度です(経験ベイズや、変分ベイズなど)。いまいち、導出の道筋がよくわかっていなかったので、メモしています。">
 
   <link rel="stylesheet" href="/blog/css/main.css">
-  <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2015/06/14/002.html">
+  <link rel="canonical" href="http://shigekikarita.github.io/blog/blog/2017/08/02/024.html">
   <link rel="alternate" type="application/rss+xml" title="カリ工大 - karitech" href="http://shigekikarita.github.io/blog/blog/feed.xml" />
   <!-- mathjax config similar to math.stackexchange -->
 
@@ -79,44 +79,73 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Coq の Notation すごい</h1>
+    <h1 class="post-title">周辺尤度下界(ELBO)の導出</h1>
     <p class="post-meta">
-        Jun 14, 2015
+        Aug 2, 2017
         
         
         
-          <a href="/blog/tags.html#tag_Coq">Coq</a>
+          <a href="/blog/tags.html#tag_MachineLearning">MachineLearning</a>
         
     </p>
   </header>
 
   <article class="post-content">
-    <p>全体 <a href="https://gist.github.com/ShigekiKarita/d4cee6908abf9751a5fd">List.v</a></p>
+    <p>周辺尤度(Marginal log-likelihood, Evidence)はパラメタの良さを測るときに使われる重要な尤度です(経験ベイズや、変分ベイズなど)。いまいち、導出の道筋がよくわかっていなかったので、メモしています。</p>
 
-<p>Coq の教材<a href="http://proofcafe.org/sf/">「ソフトウェアの基礎」</a>、 2 回目もやりました。そろそろ機能紹介が主になってきたような、練習問題で定理証明も少なくなるのかな？ Coq の記述言語 Gallina が随分と自由度が高く思えてきます。例えば次のように糖衣構文を自在に定義できます。</p>
+<p>独立同分布(i.i.d.)なデータセット $x^{(1)}, \dots, x^{(I)}$ に対してパラメタ$\theta$を持つ生成モデル$p_{\theta}(x)$の周辺尤度は$\log p_{\theta} (x^{(1)}, \dots, x^{(I)}) = \sum_{i} \log p_{\theta}(x^{(i)}) $と表すことができます。任意のパラメタ$\phi$を持つ確率分布$ \int_z q_\phi(z) dz = 1 $ に対して各因子は次のようになります。</p>
 
-<figure class="highlight"><pre><code class="language-coq" data-lang="coq"><span></span><span class="c">(* リストの糖衣構文 *)</span>
-<span class="kn">Notation</span> <span class="s2">&quot;x :: l&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">cons</span> <span class="n">x</span> <span class="n">l</span><span class="o">)</span> <span class="o">(</span><span class="n">at</span> <span class="n">level</span> <span class="mi">60</span><span class="o">,</span> <span class="k">right</span> <span class="n">associativity</span><span class="o">).</span>
-<span class="kn">Notation</span> <span class="s2">&quot;[ ]&quot;</span> <span class="o">:=</span> <span class="n">nil</span><span class="o">.</span>
-<span class="kn">Notation</span> <span class="s2">&quot;[ x , .. , y ]&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">cons</span> <span class="n">x</span> <span class="o">..</span> <span class="o">(</span><span class="n">cons</span> <span class="n">y</span> <span class="n">nil</span><span class="o">)</span> <span class="o">..).</span>
+<p>$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) &amp;= \log p_{\theta}(x^{(i)}) \int_{z} q(z) dz \\
+  &amp;= \mathrm{KL}(q_\phi(z) || p_\theta(z|x^{(i)}) ) + \int_z q_\phi(z) \log \frac{p_\theta(z|x^{(i)})}{q_\phi(z)} dz  + \int_{z} q(z)  \log p(x^{(i)}) dz \\
+  &amp;= \mathrm{KL}(q_\phi(z) || p_\theta(z|x^{(i)}) ) + \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+\end{align}
+$$</p>
 
-<span class="c">(* リストの結合 *)</span>
-<span class="kn">Fixpoint</span> <span class="n">app</span> <span class="o">(</span><span class="n">lhs</span> <span class="n">rhs</span><span class="o">:</span> <span class="n">natlist</span><span class="o">):</span> <span class="n">natlist</span> <span class="o">:=</span>
-  <span class="k">match</span> <span class="n">lhs</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="n">nil</span> <span class="o">=&gt;</span> <span class="n">rhs</span>
-    <span class="o">|</span> <span class="n">head</span> <span class="o">::</span> <span class="n">tail</span> <span class="o">=&gt;</span> <span class="n">head</span> <span class="o">::</span> <span class="o">(</span><span class="n">app</span> <span class="n">tail</span> <span class="n">rhs</span><span class="o">)</span>
-  <span class="k">end</span><span class="o">.</span>
+<p>いきなりでてきた確率変数$z$は潜在変数と呼ばれ、観測できない$z$(文字認識だと認識したいテキストとか、とくに意味のない特徴量など)によって観測データ$x$(文字認識だとテキストの写ってる画像とか)が生成されるという説明が多い気がします。今回は連続値として記載していますが離散値でも$\sum_z$に記法を変えれば全く同じ議論ができます。</p>
 
-<span class="kn">Notation</span> <span class="s2">&quot;x ++ y&quot;</span> <span class="o">:=</span> <span class="o">(</span><span class="n">app</span> <span class="n">x</span> <span class="n">y</span><span class="o">)</span> <span class="o">(</span><span class="n">at</span> <span class="n">level</span> <span class="mi">60</span><span class="o">,</span> <span class="k">right</span> <span class="n">associativity</span><span class="o">).</span></code></pre></figure>
+<p>同じくいきなり出てきた確率分布間の非類似度であるKLダイバージェンス $\mathrm{KL}(q || p) =  \int_z q(z) \log \frac{p(z)}{q(z)} dz$ は解析的に計算できる分布は限られています。そこで、Gibbsの不等式(Jensen の不等式に由来)とよばれるKLダイバージェンスが非負である性質によって得られる、期待値のみで表した周辺尤度下界(ELBO)</p>
 
-<p>似たような Haskell だとリストの結合はこんな感じ <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#recursive-data-structures">出典 Learn You a Haskell for Great Good!</a></p>
+<p>$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) 
+  &amp;= \mathrm{KL}(q_\phi(z) || p_{\theta}(z | x^{(i)})) + \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+  &amp;\geq \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right]
+\end{align}
+$$</p>
 
-<figure class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span></span><span class="kr">infixr</span> <span class="mi">5</span>  <span class="o">++</span>
-<span class="p">(</span><span class="o">++</span><span class="p">)</span> <span class="ow">::</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
-<span class="kt">[]</span>     <span class="o">++</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">ys</span>
-<span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="o">++</span> <span class="n">ys</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="p">(</span><span class="n">xs</span> <span class="o">++</span> <span class="n">ys</span><span class="p">)</span></code></pre></figure>
+<p>を用いて、期待値の中身の分布からランダムにサンプリングした平均値による近似計算(Monte-Carloサンプリングと呼ばれる)するといったテクニックがよく使われます(任意の分布が計算できるMCサンプリングを使うために、期待値だけの式にしたかったからKLダイバージェンスの項を取り出したとも言える)。</p>
 
-<p>Coq の <code>at level .. associativity</code> というのは Haskell の <code>infixr, infixl</code> と同じで結合の強さを指定するんですが、随分と大きい値ですね。そんなに沢山の演算子を併用するんでしょうか。それにしても、<code>&quot;[ x , .. , y ]&quot;</code> のような直感的な書き方で字句を拡張できるなんて...。ユーザが扱える表現力が高いのは良いことだと思います。</p>
+<p>$$
+\begin{align}
+  \log p_{\theta}(x^{(i)}) &amp;\geq \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] \\
+  &amp;\approx \frac{1}{J} \sum_{j=1}^{J}  \left\{ -\log q_\phi(z^{(j)}) + \log p_\theta(x^{(i)}, z^{(j)}) \right\}, \, z^{(j)} \sim  q_\phi(z)
+\end{align}
+$$</p>
+
+<h2>最近の技術</h2>
+
+<p>実際のところ、このままだとサンプリングによる近似の粗さ(分散の大きさ)が問題になります。近年、Variational autoencoder (VAE) などの手法では事前分布の$q_\phi(z), p_\theta(z)$をKLダイバージェンスが解析的に求まる分布(例. 正規分布, 多項分布など)に限定して、解析的に求まる項を導入することで対処します。</p>
+
+<p>$$
+\begin{align}
+  \mathbf{E}_{q_\phi(z)} \left[ -\log q_\phi(z) + \log p_\theta(x^{(i)}, z) \right] 
+  &amp;= \mathbf{E}_{q_\phi(z)} \left[ -\log \frac{q_\phi(z)}{p_\theta(z)} + \log \frac{p_\theta(x^{(i)}, z)}{p_\theta(z)} \right] \\
+  &amp;= - \text{KL}(q_\phi(z) || p_\theta(z) ) +  \mathbf{E}_{q_\phi(z)} \left[ \log p_\theta(x^{(i)}| z) \right] 
+\end{align}
+$$</p>
+
+<p>事前分布$p_\theta(z)$に単純な分布を仮定すれば、任意の分布$q_\phi(z)$のKLダイバージェンスが近づく(=単純になる)ような制約としても使えるので、モデルの複雑さを抑える正則化的な効果もあると言われています。第二項はサンプリングは必要になりますが、分散は小さいので少ない回数(1回くらい)で良いようです。</p>
+
+<p>ついでに $q$ 分布は正規化さえされていれば、本当に何でもいいので VAE などでは $q_\phi(z|x)$のように観測変数$x$から潜在変数$z$を推論するエンコーダを使い、デコーダ$p_\theta(x|z)$と同時にELBOを最大化するように訓練します。このとき $p_\theta(z)$はただの標準正規分布だったりします。</p>
+
+<p>参考文献</p>
+
+<ul>
+<li>Diederik P Kingma, Max Welling, &quot;Auto-Encoding Variational Bayes,&quot; https://arxiv.org/abs/1312.6114</li>
+<li>Eric Jang, Shixiang Gu, Ben Poole, &quot;Categorical Reparameterization with Gumbel-Softmax,&quot; https://arxiv.org/abs/1611.01144</li>
+</ul>
 
   </article>
 </div>
