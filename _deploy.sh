@@ -1,6 +1,6 @@
 #!sh
 fname=`tempfile`_site
-jekyll build && \
+bundle exec jekyll build && \
     cp -r _site $fname && \
     git checkout gh-pages && \
     ls | xargs rm -r && \
