@@ -118,7 +118,7 @@
   <span class="k">assert</span><span class="o">(</span><span class="n">ai</span> <span class="o">+</span> <span class="n">bi</span> <span class="o">==</span> <span class="n">ci</span><span class="o">);</span>
 <span class="o">}</span></code></pre></figure>
 
-<h2>属性を持つクラスの冗長性</h2>
+<h2 id="part-b966c6d7198f4d0f">属性を持つクラスの冗長性</h2>
 
 <p>CUDAカーネルクラス <code>Kernel</code> には 2 つの属性があります。1 つは NVRTC をラップしたクラス <code>Compiler</code> の型検査による属性 (静的・動的・無し) です。もう 1 つはCUDAカーネルを呼び出すクラス <code>Launcher</code> による属性 (e.g., 要素数によるもの・動的共有メモリを使うもの・ユーザ定義) といった具合です。</p>
 
@@ -136,13 +136,13 @@
 <span class="c1">// 何通りもの似たようなクラス</span>
 <span class="o">...</span></code></pre></figure>
 
-<h2>Policy とは</h2>
+<h2 id="policy">Policy とは</h2>
 
-<h2>Policy による冗長性の解決</h2>
+<h2 id="policy">Policy による冗長性の解決</h2>
 
-<h2>Policy 間のブラックリスト</h2>
+<h2 id="policy">Policy 間のブラックリスト</h2>
 
-<h2>D言語における依存性注入</h2>
+<h2 id="d">D言語における依存性注入</h2>
 
 <p>Scala などでは依存性注入 (DI) というパターンがでてくる。
 これは D 言語の interface とよくにた trait (D言語のそれとは違う) の多重継承によって

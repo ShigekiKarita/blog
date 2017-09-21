@@ -93,7 +93,7 @@
   </header>
 
   <article class="post-content">
-    <h2>紹介</h2>
+    <h2 id="part-6542fd93d63">紹介</h2>
 
 <p>随分前から注目していた <a href="https://hackage.haskell.org/package/accelerate">Accelerate</a> というライブラリ、なんと Haskell 中の EDSL --- Python でいう Copperhead みたいな本物の Haskell --- で CUDA プログラミングが可能という代物です。</p>
 
@@ -104,7 +104,7 @@
 
 <p><a href="https://github.com/AccelerateHS/accelerate/wiki/CUDA-Benchmarks#dot-product">これが CUBLAS に匹敵する性能を叩き出すという話です。</a>。 C++ の STL アルゴリズムを実装した thrust などでも <a href="http://www.orangeowlsolutions.com/archives/790">CUBLAS を使うほうが速い</a> のが通説ですが、これはにわかには信じられない...。</p>
 
-<h2>導入</h2>
+<h2 id="part-6542acef337">導入</h2>
 
 <p>結局ベンチマークは CUBLAS の FFI ライブラリがまだ動かせてないので試してないんですが、簡単なサンプルだけ動かしてみました。</p>
 
@@ -122,7 +122,7 @@
 
 <p>と指定してあげるとちゃんと動くと思います。 stack じゃなくて cabal 使う人は DL したフォルダを <code>cabal sandbox add-source DLしたフォルダ</code> で cabal sandbox に教えると使ってくれます。</p>
 
-<h2>開発環境</h2>
+<h2 id="part-2ea808999f32227c">開発環境</h2>
 
 <p>ghc-mod は cabal と連携して Emacs やその他エディタを IDE にしてくれる Haskell 開発にはかかせないツールですが、いまのところ stack や CUDA とは動作しません。なので私は次のように stack と cabal を使い分けています</p>
 
@@ -131,7 +131,7 @@
 <li>stack : <code>accelerate-cuda</code> を <code>dependencies</code> に追加して <code>Data.Array.Accelerate.CUDA</code> (CUDAで計算するモード) を使い端末から動作やテストするときに使う</li>
 </ul>
 
-<h3>追記</h3>
+<h3 id="part-65432f7b3b1">追記</h3>
 
 <p>もう少し Haskell や CUDA 関係のノウハウがたまったら、次回以降は Wiki 的なものにそれなりに体系だててメモしたいなと思います。そろそろこのブログ形式も見難くなってきました。汗</p>
 

@@ -99,9 +99,9 @@
 
 <p>本稿では、そこに書いてない便利な使い方をまとめます。</p>
 
-<h2>ローカルにあるライブラリとの連携</h2>
+<h2 id="part-e41ddc498d57956d">ローカルにあるライブラリとの連携</h2>
 
-<h3>- dub パッケージの利用</h3>
+<h3 id="dub">- dub パッケージの利用</h3>
 
 <p>DUB プロジェクトでは主に DUB リポジトリに登録されたリモートなパッケージをよく使うと思いますが、ローカルに用意した DUB パッケージを追加するときは、<code>dub.json</code>にバージョンではなくパスを書きます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="s">&quot;dependencies&quot;</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">{</span>
@@ -115,7 +115,7 @@
 
 <p><a href="https://github.com/ShigekiKarita/d-svm/tree/410f45281fbc1eb3eaebc7f7845b5c5fc5eb0812">fork して自前パッチを当てたmirパッケージを使用したd-svmパッケージの例</a></p>
 
-<h3>- ライブラリファイル(*.so等)の利用</h3>
+<h3 id="so">- ライブラリファイル(*.so等)の利用</h3>
 
 <p>例えばデータベースや CUDA ライブラリなどパスの通ったものを、
 リンカオプション<code>-lcuda</code>をつけて渡したいことがあります。
@@ -134,7 +134,7 @@
 <p>ちなみに<code>-J</code>オプションはコンパイル時にファイルを読む<code>import(filename)</code>でパスを通すオプションで、
 コンパイル時にCヘッダーファイルを読んでD言語用のラッパーを生成するときなどに使います。</p>
 
-<h2>単体テストの実行</h2>
+<h2 id="part-a5c2b444bdb49814">単体テストの実行</h2>
 
 <p>D 言語には言語機能として、単体テスト(unittest)やカバレッジ計測がサポートされています。</p>
 <div class="highlight"><pre><code class="language-D" data-lang="D"><span></span><span class="k">import</span> <span class="n">mir</span><span class="p">.</span><span class="n">ndslice</span><span class="p">;</span>
@@ -157,7 +157,7 @@
 </code></pre></div>
 <p>コマンド <code>dub test</code>や<code>dub test -b unittest-cov</code>で、パッケージ内全体のテスト実行やカバレッジ計測(結果は<code>*.lst</code>ファイルに出力)できます。これだけでも十分に便利ですが、外部のサービスと連携するとさらに便利です。</p>
 
-<h2>外部サービスとの連携</h2>
+<h2 id="part-caea59bd08892d85">外部サービスとの連携</h2>
 
 <p>BitbucketやGitHubリポジトリのREADMEによく、このようなバッジ</p>
 
@@ -169,7 +169,7 @@
 テストのカバレッジを見やすくしてくれる Coveralls というサービスをよく使います。
 さらに他の人からも簡単に使えるように、dubのWebページに登録することも多いでしょう。</p>
 
-<h3>- Travis CI, Coveralls</h3>
+<h3 id="travis-ci-coveralls">- Travis CI, Coveralls</h3>
 
 <p><a href="https://travis-ci.org/">Travis CI</a>, <a href="https://coveralls.io/">Coveralls</a>
 にGitHubなどのアカウントでログインして既存のリポジトリを追加できます。
@@ -200,7 +200,7 @@ Coverallsとの連携には doveralls というツールがおすすめです。
 $ dub <span class="nb">test</span> -b unittest-cov
 $ dub run doveralls -- -t &lt;coverallsのrepo_token&gt;
 </code></pre></div>
-<h3>- DUB レポジトリの登録</h3>
+<h3 id="dub">- DUB レポジトリの登録</h3>
 
 <p>DUB ではアカウントを作って下記のページから自作パッケージを追加できます。
 GitHubとBitbucketに登録されているリポジトリから登録できます。</p>
@@ -213,7 +213,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 
 <p><a href="https://dlang.org/spec/module.html">https://dlang.org/spec/module.html</a></p>
 
-<h2>ドキュメントの生成</h2>
+<h2 id="part-37ab541df0746509">ドキュメントの生成</h2>
 
 <p>D 言語には Javadoc みたいなコード中のコメント(ddoc)によるドキュメント生成が、unittestみたいに言語機能としてサポートされています。</p>
 
@@ -258,7 +258,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 <p>ちなみにGithub では Pages という設定で、<code>docs</code>ディレクトリにhtmlファイルを置くと
 ウェブページをホストしてくれるので便利です。</p>
 
-<h2>まとめ</h2>
+<h2 id="part-37868fa865b7179">まとめ</h2>
 
 <p>DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。DUBはパッケージマネージャとしては優秀ですが、ビルドシステムとしてはMakeなどと比べると制限がつよくて、シェルスクリプトなどが<code>dub.json</code>にかけると便利かなとは思います。D言語は言語機能として便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)がサポートされているのは最高ですね。</p>
 

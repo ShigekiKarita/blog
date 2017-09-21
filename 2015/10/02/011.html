@@ -91,7 +91,7 @@
   </header>
 
   <article class="post-content">
-    <h2>Haskell の入門書</h2>
+    <h2 id="haskell">Haskell の入門書</h2>
 
 <ul>
 <li><p><a href="http://learnyouahaskell.com/chapters">Learn You a Haskell for Great Good!</a></p>
@@ -102,15 +102,15 @@
 <p>これもオーム社の本、かなり難しい。上の本だけではあまり分からない実用的な Haskell としての破壊的な変更や配列の使い方などがサクッと把握できるので良いです。そこそこ前後の章で依存してるのでつまみ食いしにくい</p></li>
 </ul>
 
-<h2>Haskell のプロジェクト構築</h2>
+<h2 id="haskell">Haskell のプロジェクト構築</h2>
 
-<h3>1.環境構築</h3>
+<h3 id="1">1.環境構築</h3>
 
 <p>とりあえず HaskellPlatform で入れると良いと思う。 Ubuntu や Linux を使っているなら下記の方法で最新の環境(ghc+cabal)が手に入る。少なくとも GHC7.8 にしないと GHCi などで補完が効かないので辛い</p>
 
 <p><a href="https://gist.github.com/yantonov/10083524">https://gist.github.com/yantonov/10083524</a></p>
 
-<h3>2.Cabal</h3>
+<h3 id="2-cabal">2.Cabal</h3>
 
 <p>プロジェクト管理ツール。ライブラリ依存関係の解決もしてくれるビルドツール。とにかくよく依存関係が壊れるので sandbox を使うと良い。</p>
 
@@ -118,7 +118,7 @@
 
 <p>とくに引っかかるポイントはないと思う。最近は stack という人力で依存関係を整理してくれたデータベースを用いたツールも良いとされる</p>
 
-<h3>3.テストフレームワーク</h3>
+<h3 id="3">3.テストフレームワーク</h3>
 
 <p>Haskell のデファクトスタンダートな開発環境 GHC-mod の作者の解説がわかりやすく、travis との連携についても解説されており良い。とにかく楽である。</p>
 
@@ -126,7 +126,7 @@
 
 <p>QuickCheck のようなフレームワークは今やだいたいどの言語にもあるが、Haskell発祥らしい。テストスイートへの登録にラムダ式を使うのは OCaml の OUnit みたいだ。兄弟的な OCaml にも似たようなものがあると思ったが、現状あまり綺麗にはかけなさそうで残念に思う。</p>
 
-<h3>4.Coverage 計測</h3>
+<h3 id="4-coverage">4.Coverage 計測</h3>
 
 <p>これも既に標準的な方法があるそうで，HPC というものを使う。Coveralls と連携するならかなり便利なラッパーライブラリがある</p>
 
@@ -134,7 +134,7 @@
 
 <p>とくに理由がなければ Usage - Travis CI の中で sandbox を使う方法をとるのが良いと思います。あと Travis の ghc は 7.6 が2015.10.2現在の標準なのできちんと usage の通りに 7.8 を指定しないと失敗しました</p>
 
-<h2>最後に</h2>
+<h2 id="part-3786dca33124ee5">最後に</h2>
 
 <p>上記を実践したのが下記レポジトリ。個人的にすぐ忘れる Tips なども少しメモしています。増えたら整理したい</p>
 

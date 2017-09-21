@@ -99,7 +99,7 @@
 
 <p><a href="https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md">https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md</a></p>
 
-<h3>Dockerfileの変更</h3>
+<h3 id="dockerfile">Dockerfileの変更</h3>
 
 <p>tensorflow-haskellの<a href="https://github.com/tensorflow/haskell/blob/master/docker/Dockerfile">Dockerfile</a>では、CPU用のイメージとビルド済みライブラリを使っています。書き換えた後のdiff はこんな感じで、</p>
 <div class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span>3c3
@@ -127,7 +127,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 </code></pre></div>
 <p>CPUで実行されてしまいました。これはGPU デバイスが見つからなかったということです。</p>
 
-<h3>nvidia-docker の準備</h3>
+<h3 id="nvidia-docker">nvidia-docker の準備</h3>
 
 <p>というわけで、<code>nvidia-docker</code>を使います。nvidia-docker は docker 上のコンテナ(仮想OS)で、実OS側のGPUを使える凄いやつです。</p>
 
@@ -135,7 +135,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 
 <p>やはりREADMEに書いてあるような数行のインストールをします。<code>nvidia-docker run --rm nvidia/cuda nvidia-smi</code>でホスト側のデバイスがでてくれば成功です。</p>
 
-<h3>nvidia-docker の使い方</h3>
+<h3 id="nvidia-docker">nvidia-docker の使い方</h3>
 
 <p>こちらの解説 <a href="http://qiita.com/toshitanian/items/8aaca6b867099ebd442d">「nvidia-dockerは何をしているのか」</a> によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `<code>--docker-run-args</code>を使うと nvidia-docker 相当のことができます。</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>stack --docker --docker-run-args &quot;$(curl -s http://localhost:3476/docker/cli)&quot; --docker-image=$IMAGE_NAME build --exec Main
@@ -152,7 +152,7 @@ I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -&gt; (device: 0, name: GeForce GTX 760, pci bus id: 0000:01:00.0)
 </code></pre></div>
-<h3>GPUをオフにしたい</h3>
+<h3 id="gpu">GPUをオフにしたい</h3>
 
 <p>GPUを使わないときなど、一々dockerイメージを切り替えるのも不便です。
 Tensorflow自体あまり詳しくないのですが、<code>CUDA_VISIBLE_DEVICES</code>環境変数を<code>NO_DEVICE</code>にセットすることで、GPUの利用を禁止できます。

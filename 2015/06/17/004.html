@@ -92,7 +92,7 @@
     <p>少し日にちが開いてしまいました。研究室の用事(報告会と海外出張の準備)が忙しいのと、このサイトで使っている Ruby の静的生成ツール Jekyll が自宅で使うマシンで稼働させると次のようなエラーがでて困っていました。</p>
 
 <blockquote>
-<p>Dependency Error:  Yikes! It looks like you don&#39;t have jekyll-sass-converter or one of its dependencies installed. In order to use Jekyll as currently configured, you&#39;ll need to install this gem. The full error message from Ruby is: &#39;/home/karita/.rbenv/versions/2.1.5/lib/ruby/2.1.0/x86<em>64-linux/digest/sha1.so: undefined symbol: rb</em>Digest<em>SHA1</em>Init - /home/karita/.rbenv/versions/2.1.5/lib/ruby/2.1.0/x86_64-linux/digest/sha1.so&#39; If you run into trouble, you can find helpful resources at http://jekyllrb.com/help/!</p>
+<p>Dependency Error:  Yikes! It looks like you don&#39;t have jekyll-sass-converter or one of its dependencies installed. In order to use Jekyll as currently configured, you&#39;ll need to install this gem. The full error message from Ruby is: &#39;/home/karita/.rbenv/versions/2.1.5/lib/ruby/2.1.0/x86_64-linux/digest/sha1.so: undefined symbol: rb_Digest_SHA1_Init - /home/karita/.rbenv/versions/2.1.5/lib/ruby/2.1.0/x86_64-linux/digest/sha1.so&#39; If you run into trouble, you can find helpful resources at <a href="http://jekyllrb.com/help/">http://jekyllrb.com/help/</a>!</p>
 </blockquote>
 
 <p>他の gem なども色々見ると結局は <code>.../lib/ruby/2.1.0/x86_64-linux/digest</code> 以下の <code>*.so</code> が全部リンクできていないという話でした。なお Ruby 自体は rbenv で普通にビルドできています。</p>

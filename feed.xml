@@ -6,9 +6,337 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 12 Aug 2017 00:40:56 +0900</pubDate>
-    <lastBuildDate>Sat, 12 Aug 2017 00:40:56 +0900</lastBuildDate>
-    <generator>Jekyll v3.4.3</generator>
+    <pubDate>Fri, 22 Sep 2017 03:29:40 +0900</pubDate>
+    <lastBuildDate>Fri, 22 Sep 2017 03:29:40 +0900</lastBuildDate>
+    <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>D言語で数値計算 mir-algorithm</title>
+        <description>&lt;h2 id=&quot;mir&quot;&gt;mir とは&lt;/h2&gt;
+
+&lt;p&gt;mir は Python における numpy のような汎用な数値計算のためのライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては &lt;code&gt;std.experimental.ndislice&lt;/code&gt; として標準ライブラリに登場しました．最近，私自身も&lt;a href=&quot;https://github.com/orgs/libmir/people&quot;&gt;mirグループ&lt;/a&gt;の一員になったので，宣伝もかねて紹介します．&lt;/p&gt;
+
+&lt;h2 id=&quot;mir&quot;&gt;mir の構成&lt;/h2&gt;
+
+&lt;p&gt;mir は numpy と違って複数の独立したライブラリの集合体です．きっと今後も沢山の派生ライブラリが登場するでしょう．主要なライブラリとして以下でしょうか．&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://mir.dlang.io/&quot;&gt;mir-algorithm&lt;/a&gt; かつて &lt;code&gt;std.experimental.ndslice&lt;/code&gt; だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(&lt;code&gt;@nogc&lt;/code&gt;)で動作します．C++でいうEigenみたいな感じです．&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://docs.random.dlang.io/latest/mir_random.html&quot;&gt;mir-random&lt;/a&gt; 多次元に関わらず各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://docs.mir.dlang.io/latest/mir_glas.html&quot;&gt;mir-glas&lt;/a&gt; IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．こっちのglasは古い&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;他にも&lt;a href=&quot;https://github.com/kaleidicassociates/lubeck&quot;&gt;BLAS,LAPACKのラッパーライブラリ&lt;/a&gt;，&lt;a href=&quot;https://github.com/libmir/dcompute&quot;&gt;D言語とLLVMでCUDAを書くDCompute&lt;/a&gt;や，&lt;a href=&quot;https://github.com/libmir/dcv&quot;&gt;C++のOpenCVライクな画像処理ライブラリDCV&lt;/a&gt;があります．mir開発者とユーザには大変アクティブな方が多く，活発にPRなどを通して交流しているようです．&lt;/p&gt;
+
+&lt;p&gt;今回はmirの中心となる ndslice （numpyでいうndarray） を実装している mir-algorithm パッケージについて説明します．&lt;/p&gt;
+
+&lt;h2 id=&quot;ndslice&quot;&gt;ndslice 入門&lt;/h2&gt;
+
+&lt;p&gt;基本的には&lt;code&gt;import mir.ndslice;&lt;/code&gt;とすれば殆どの機能が使えます．とりあえず簡単に内積でも計算してみましょう．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numeric&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotProduct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 標準ライブラリの内積実装&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndslice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotFor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sliced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sliced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dotFor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotProduct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;多重配列&lt;code&gt;double[][]&lt;/code&gt;の要素アクセス&lt;code&gt;d[i][j]&lt;/code&gt;と違って，&lt;code&gt;d[i, j]&lt;/code&gt;として要素アクセスできることに注意してください．また，D言語の配列との相互変換は &lt;code&gt;sliced&lt;/code&gt; (D array -&amp;gt; ndslice) と &lt;code&gt;ndarray&lt;/code&gt; (ndslice -&amp;gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SliceKind&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ptrdiff_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;まずN次元配列における&lt;code&gt;Slice&lt;/code&gt;の中身は &lt;code&gt;_lengths, _strides, _iterator&lt;/code&gt; の３つです．
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;size_t[N] _lengths&lt;/code&gt; 各次元の長さ&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ptrdiff_t[S] _strides&lt;/code&gt; 連続したメモリの配列上にSliceが扱うデータが並ぶ間隔&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Iterator _iterator&lt;/code&gt; データ開始時点のポインタ．rangeの場合はshellと呼ばれる初期値から現在位置へのシフト&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;SliceKind (enum) は以下の三種類です，上記の &lt;code&gt;ptrdiff_t[S] _strides&lt;/code&gt;の個数&lt;code&gt;S&lt;/code&gt;に応じて変わります
+
+&lt;ul&gt;
+&lt;li&gt;Universal: N次元配列のストライドがN個ある&lt;/li&gt;
+&lt;li&gt;Canonical: N(&amp;gt;=2)次元配列のストライドがN-1個ある&lt;/li&gt;
+&lt;li&gt;Contiguous: ストライド0個のフラットな1次元配列&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;packs は後述します．基本的にはベクトルなら &lt;code&gt;[1]&lt;/code&gt;，行列なら&lt;code&gt;[2]&lt;/code&gt;という階数のようなものです．&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;part-d63bb57a00fe6ea1&quot;&gt;ストライドについて&lt;/h3&gt;
+
+&lt;p&gt;ところでnumpyやBLASを使ったことが無い人は，ストライド(strides)という概念に馴染みがないと思います．たとえば二次元(行列)の多重配列&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[][]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;は行列の各行でメモリが不連続に配置されており計算機的に不利なので，連続したメモリに「データの中身(0, 1, ..., 5)」を配置して，同時に「各次元の長さ=lengths」と「各次元のデータが配置される間隔＝strides」を保持します&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 連続したメモリ領域&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(...)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sa&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Canonical 形式&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Universal 形式&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;strides[0]=3&lt;/code&gt;とは例えば各行の先頭要素は，連続データ &lt;code&gt;data&lt;/code&gt; から3つおき (0, 3) にとります．つまり下記のように _strides は連続したメモリを指す_iteratorから各要素(&lt;code&gt;i = 0.._lengths[0], j = 0.._lengths[1]&lt;/code&gt;)にアクセスするために使うのです．&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Canonical形式: &lt;code&gt;sa[i, j] = _iterator[_strides[0] * i + j]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Universal形式: &lt;code&gt;sa[i, j] = _iterator[_strides[0] * i + _strides[1] * j]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;普通に考えるとContiguousなスライスのように(strideと等しい)lengthだけで多次元データを表現できるので十分な気がしますが，Universalなスライスなら&lt;code&gt;data&lt;/code&gt;を全く変更／再配置せずに&lt;code&gt;transposed&lt;/code&gt;で0-1次元目の軸を入れ替えたり&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[][]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 上と等価な a のスライス, a.sliced.universal.transposed!(1, 0)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sat&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;さらに&lt;code&gt;reversed&lt;/code&gt;で1次元目の向きを逆順にしたりできるのです．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[][]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at1r1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 上と等価な a のスライス a.universal.tranposed!(1, 0).reversed!1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sa&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// shell として&amp;amp;data[0]から移動したことに注意&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;このようにmir-algorithmのSlice処理関数は，主に Universal 方式を対象としており (任意のSliceから&lt;code&gt;universal&lt;/code&gt;関数で変換できる)，配列データ&lt;code&gt;data&lt;/code&gt;は全く変化・コピーせず，&lt;code&gt;_lengths, _strides, _iterators&lt;/code&gt;だけを変化・コピーするので効率が良いです．例えば4000x4000みたいな大きな行列(2階の多次元配列)ても， &lt;code&gt;2(_lengths) + 2(_stides) + 1(_iterator) = 5&lt;/code&gt; 個分の変数を扱うだけで済むのです．&lt;/p&gt;
+
+&lt;p&gt;また，&lt;code&gt;Iterator&lt;/code&gt; は単純な&lt;code&gt;double*&lt;/code&gt;などの配列の先頭ポインタだけでなく抽象化されてます．Expression templateとして遅延評価計算を入れたり(&lt;a href=&quot;http://mir.dlang.io/mir_ndslice_iterator.html&quot;&gt;MapIteratorなど&lt;/a&gt;)，Sliceの高階配列などの複雑な構造が可能になっています．この辺は関数型プログラミングみたいでカッコイイですね．&lt;/p&gt;
+
+&lt;h2 id=&quot;part-1d4db9418d9d07af&quot;&gt;高階関数を使う&lt;/h2&gt;
+
+&lt;p&gt;mir-algorithm の真価は ndslice だけではありません，&lt;code&gt;map&lt;/code&gt; &lt;code&gt;reduce&lt;/code&gt; &lt;code&gt;zip&lt;/code&gt; などの高階関数を使いましょう．DCVの作者によると，ライブラリ内の平均で 676.7% もの高速化をするそうです．&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.mir.dlang.io/ndslice/algorithm/optimization/2016/12/12/writing-efficient-numerical-code.html&quot;&gt;http://blog.mir.dlang.io/ndslice/algorithm/optimization/2016/12/12/writing-efficient-numerical-code.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;それでは普通の配列と比べて多次元だと使い方が違うのでしょうか？&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;algorithm&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdmap&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdreduce&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndslice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndslice&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ndmap&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ndreduce&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 普通の配列と map/reduce&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr1d&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;arr1d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdmap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a * 2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdreduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a + b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writeln&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// mir のスライスと map/reduce&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr2d&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr1d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sliced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// [[1, 2, 3], [4, 5, 6]]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mapped&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr2d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndmap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a * 2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ndreduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a + b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mapped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writeln&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;reduceの第一引数が初期値をとる以外は全く同じです．多次元をフラットにして普通の配列のように要素毎の処理をしてます．ということで，次元を指定して処理するにはどうすれば良いのでしょうか？&lt;/p&gt;
+
+&lt;h3 id=&quot;pack-slice-packs&quot;&gt;pack 関数と Slice.packs&lt;/h3&gt;
+
+&lt;p&gt;ここで，後回しにした &lt;code&gt;packs&lt;/code&gt; の概念がでてきます．&lt;code&gt;pack(size_t p, ...)(Slice(...) s)&lt;/code&gt;関数は&lt;code&gt;s.packs[0]&lt;/code&gt;の中にある最後のp次元スライスを要素とするスライス(高階スライス)に変換します．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SliceKind&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+
+&lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Contiguous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IotaIterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iota&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Contiguous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IotaIterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;それでは高階関数 &lt;code&gt;each&lt;/code&gt; で writeln して，指定した次元毎に処理できるか確認しましょう．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iota&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;writeln&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;-&amp;gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// a はスカラーの要素&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* 出力&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 0&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 3&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 4&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; 5&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;iota&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;writeln&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;-&amp;gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// a は1次元目ベクトルの要素&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* 出力&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; [0, 1]&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; [2, 3]&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;-&amp;gt; [4, 5]&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;個人的な意見ですが，慣れるまでは &lt;code&gt;map&lt;/code&gt; などのlazyな関数は型エラーが半端無くわかりにくく，LDCなどのコンパイラはよくICEを起こしてしまいます．そのため，序盤でDCVの作者のようにforeachなどでプロトタイプやテストを作ったあと，lazyな関数に置き換えていくコーディングをおすすめします．&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 高階関数で書きなおした内積&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotHF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a * b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;fast&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;unittest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sliced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sliced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dotHF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotProduct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;ldc-intrinsics-ldc-attuributes&quot;&gt;ldc.intrinsics, ldc.attuributes&lt;/h2&gt;
+
+&lt;p&gt;リファレンスのコンパイラDMDも十分速いと思っていますが，数値計算のコードではGCCベースのGDCやLLVMベースのLDCがよく使われています．少し高度な内容になりますが，mir関連のソースコードを読むと，かなりの確率で遭遇するLDC(LLVM製Dコンパイラ)独自の拡張があります．&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wiki.dlang.org/LDC-specific_language_changes&quot;&gt;https://wiki.dlang.org/LDC-specific_language_changes&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;とくによく使われているのが以下です．アグレッシブな最適化のための機能なのでテスト／ベンチマークコードを準備して使いましょう！&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;llvmのmath関数 (fabsなど)，この辺はLDC以外のコンパイラにも互換性を持たせた &lt;a href=&quot;http://docs.algorithm.dlang.io/latest/mir_math_common.html&quot;&gt;mir.math.common&lt;/a&gt;を使うと良いです&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@fastmath&lt;/code&gt;: 関数にこの属性をつけると，&lt;a href=&quot;http://johanengelen.github.io/ldc/2016/10/11/Math-performance-LDC.html&quot;&gt;アグレッシブな数学演算の最適化(例. foreachのベクトル化，掛け算足し算の一体化など)&lt;/a&gt;を行うようです．個別に最適化を指定する属性(&lt;code&gt;@llvmAttr(&amp;quot;unsafe-fp-math&amp;quot;, &amp;quot;true&amp;quot;)&lt;/code&gt;)より，こちらの属性が推奨されています．こちらもLDC以外のコンパイラに互換性を持たせた &lt;a href=&quot;https://github.com/libmir/mir-algorithm/blob/master/source/mir/internal/utility.d#L39-L48&quot;&gt;mir.internal.utility&lt;/a&gt;を使っています．&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;T llvm_expect(T)(T val, T expected_val) if (__traits(isIntegral, T))&lt;/code&gt;: ドキュメントはありませんが&lt;a href=&quot;https://github.com/ldc-developers/druntime/blob/release-1.4.x/src/ldc/intrinsics.di#L481&quot;&gt;ソースコード&lt;/a&gt;によると，整数値&lt;code&gt;val&lt;/code&gt;と&lt;code&gt;expected_val&lt;/code&gt;が等しいときに処理が分岐するようなコードの最適化に使うようです．&lt;a href=&quot;https://github.com/libmir/mir-glas/blob/cf4a2b47203720932ba161955a8de9b1b415e484/source/glas/internal/gemm.d#L72&quot;&gt;mir-glasで引数によって行列積の計算をサボるところ&lt;/a&gt;などで使われています．&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;part-3786dca33124ee5&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;今回作った内積を行列積&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// GEMM Pseudo_code: `C := alpha A × B + beta C`.&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gemm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotFun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;asl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bsl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;C&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;csl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;csl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;foreach&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;csl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;csl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotFun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bsl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;$,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beta&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;csl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;に組み込んで紹介した機能と速度を検証してみます．&lt;a href=&quot;https://github.com/libmir/mir-glas/blob/master/bench/gemm_report.d&quot;&gt;ベンチマークのコードはmir-glasの物&lt;/a&gt;を元にしました．&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;10^2行列積の速度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&quot;text-align: left&quot;&gt;実装&lt;/th&gt;
+&lt;th style=&quot;text-align: right&quot;&gt;速度 (nsec)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;forループの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;1300&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;900&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;800&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;ul&gt;
+&lt;li&gt;100^2行列積の速度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&quot;text-align: left&quot;&gt;実装&lt;/th&gt;
+&lt;th style=&quot;text-align: right&quot;&gt;速度 (nsec)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;forループの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;691600&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;587100&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装&lt;/td&gt;
+&lt;td style=&quot;text-align: right&quot;&gt;585700&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;ul&gt;
+&lt;li&gt;CPUの情報&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; lscpu
+&lt;span class=&quot;go&quot;&gt;Architecture:          x86_64&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU op-mode(s):        32-bit, 64-bit&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Byte Order:            Little Endian&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU(s):                8&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;On-line CPU(s) list:   0-7&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Thread(s) per core:    2&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Core(s) per socket:    4&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Socket(s):             1&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;NUMA node(s):          1&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Vendor ID:             GenuineIntel&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU family:            6&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Model:                 60&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Model name:            Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Stepping:              3&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU MHz:               4200.000&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU max MHz:           4200.0000&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;CPU min MHz:           800.0000&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;BogoMIPS:              7000.10&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Virtualization:        VT-x&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;L1d cache:             32K&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;L1i cache:             32K&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;L2 cache:              256K&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;L3 cache:              8192K&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;NUMA node0 CPU(s):     0-7&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;標準ライブラリは&lt;a href=&quot;https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716&quot;&gt;謎最適化(unrolling?)&lt;/a&gt;をしているので速いのだと思います．この結果からすると速くて綺麗な高階関数を使った実装を積極的に使いたいですね．&lt;/p&gt;
+
+&lt;p&gt;最後にベンチマークのコードはこちらです &lt;a href=&quot;https://github.com/ShigekiKarita/mir-intro&quot;&gt;https://github.com/ShigekiKarita/mir-intro&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;part-654304ea700&quot;&gt;蛇足&lt;/h2&gt;
+
+&lt;p&gt;最後に，私の mir を使ったプロジェクトを宣伝させてください&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも考えています&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-ssvm&quot;&gt;d-ssvm&lt;/a&gt;: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 22 Sep 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/09/22/026.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/09/22/026.html</guid>
+        
+        <category>D</category>
+        
+        
+      </item>
     
       <item>
         <title>Theano + PyMC3 で Variational Auto Encoder</title>
@@ -98,7 +426,7 @@ $$&lt;/p&gt;
 \end{align}
 $$&lt;/p&gt;
 
-&lt;h2&gt;最近の技術&lt;/h2&gt;
+&lt;h2 id=&quot;part-18466c1308d556dd&quot;&gt;最近の技術&lt;/h2&gt;
 
 &lt;p&gt;実際のところ、このままだとサンプリングによる近似の粗さ(分散の大きさ)が問題になります。近年、Variational autoencoder (VAE) などの手法では事前分布の$q_\phi(z), p_\theta(z)$をKLダイバージェンスが解析的に求まる分布(例. 正規分布, 多項分布など)に限定して、解析的に求まる項を導入することで対処します。&lt;/p&gt;
 
@@ -117,8 +445,8 @@ $$&lt;/p&gt;
 &lt;p&gt;参考文献&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Diederik P Kingma, Max Welling, &amp;quot;Auto-Encoding Variational Bayes,&amp;quot; https://arxiv.org/abs/1312.6114&lt;/li&gt;
-&lt;li&gt;Eric Jang, Shixiang Gu, Ben Poole, &amp;quot;Categorical Reparameterization with Gumbel-Softmax,&amp;quot; https://arxiv.org/abs/1611.01144&lt;/li&gt;
+&lt;li&gt;Diederik P Kingma, Max Welling, &amp;quot;Auto-Encoding Variational Bayes,&amp;quot; &lt;a href=&quot;https://arxiv.org/abs/1312.6114&quot;&gt;https://arxiv.org/abs/1312.6114&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Eric Jang, Shixiang Gu, Ben Poole, &amp;quot;Categorical Reparameterization with Gumbel-Softmax,&amp;quot; &lt;a href=&quot;https://arxiv.org/abs/1611.01144&quot;&gt;https://arxiv.org/abs/1611.01144&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;a href=&quot;/blog/2017/08/10/025.html&quot;&gt;続き： Theano + PyMC3 で Variational Auto Encoder&lt;/a&gt;&lt;/p&gt;
@@ -142,7 +470,7 @@ $$&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&quot;&gt;https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3&gt;Dockerfileの変更&lt;/h3&gt;
+&lt;h3 id=&quot;dockerfile&quot;&gt;Dockerfileの変更&lt;/h3&gt;
 
 &lt;p&gt;tensorflow-haskellの&lt;a href=&quot;https://github.com/tensorflow/haskell/blob/master/docker/Dockerfile&quot;&gt;Dockerfile&lt;/a&gt;では、CPU用のイメージとビルド済みライブラリを使っています。書き換えた後のdiff はこんな感じで、&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-diff&quot; data-lang=&quot;diff&quot;&gt;&lt;span&gt;&lt;/span&gt;3c3
@@ -170,7 +498,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;CPUで実行されてしまいました。これはGPU デバイスが見つからなかったということです。&lt;/p&gt;
 
-&lt;h3&gt;nvidia-docker の準備&lt;/h3&gt;
+&lt;h3 id=&quot;nvidia-docker&quot;&gt;nvidia-docker の準備&lt;/h3&gt;
 
 &lt;p&gt;というわけで、&lt;code&gt;nvidia-docker&lt;/code&gt;を使います。nvidia-docker は docker 上のコンテナ(仮想OS)で、実OS側のGPUを使える凄いやつです。&lt;/p&gt;
 
@@ -178,7 +506,7 @@ I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:152] no NVIDIA GPU device 
 
 &lt;p&gt;やはりREADMEに書いてあるような数行のインストールをします。&lt;code&gt;nvidia-docker run --rm nvidia/cuda nvidia-smi&lt;/code&gt;でホスト側のデバイスがでてくれば成功です。&lt;/p&gt;
 
-&lt;h3&gt;nvidia-docker の使い方&lt;/h3&gt;
+&lt;h3 id=&quot;nvidia-docker&quot;&gt;nvidia-docker の使い方&lt;/h3&gt;
 
 &lt;p&gt;こちらの解説 &lt;a href=&quot;http://qiita.com/toshitanian/items/8aaca6b867099ebd442d&quot;&gt;「nvidia-dockerは何をしているのか」&lt;/a&gt; によると, nvidia-docker は docker コマンドに対していい感じに引数を作って渡してるだけみたいです。というわけで、stack の `&lt;code&gt;--docker-run-args&lt;/code&gt;を使うと nvidia-docker 相当のことができます。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&lt;span&gt;&lt;/span&gt;stack --docker --docker-run-args &amp;quot;$(curl -s http://localhost:3476/docker/cli)&amp;quot; --docker-image=$IMAGE_NAME build --exec Main
@@ -195,7 +523,7 @@ I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y 
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -&amp;gt; (device: 0, name: GeForce GTX 760, pci bus id: 0000:01:00.0)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;GPUをオフにしたい&lt;/h3&gt;
+&lt;h3 id=&quot;gpu&quot;&gt;GPUをオフにしたい&lt;/h3&gt;
 
 &lt;p&gt;GPUを使わないときなど、一々dockerイメージを切り替えるのも不便です。
 Tensorflow自体あまり詳しくないのですが、&lt;code&gt;CUDA_VISIBLE_DEVICES&lt;/code&gt;環境変数を&lt;code&gt;NO_DEVICE&lt;/code&gt;にセットすることで、GPUの利用を禁止できます。
@@ -223,9 +551,9 @@ stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/c
 
 &lt;p&gt;本稿では、そこに書いてない便利な使い方をまとめます。&lt;/p&gt;
 
-&lt;h2&gt;ローカルにあるライブラリとの連携&lt;/h2&gt;
+&lt;h2 id=&quot;part-e41ddc498d57956d&quot;&gt;ローカルにあるライブラリとの連携&lt;/h2&gt;
 
-&lt;h3&gt;- dub パッケージの利用&lt;/h3&gt;
+&lt;h3 id=&quot;dub&quot;&gt;- dub パッケージの利用&lt;/h3&gt;
 
 &lt;p&gt;DUB プロジェクトでは主に DUB リポジトリに登録されたリモートなパッケージをよく使うと思いますが、ローカルに用意した DUB パッケージを追加するときは、&lt;code&gt;dub.json&lt;/code&gt;にバージョンではなくパスを書きます。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&quot;p p-Indicator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p p-Indicator&quot;&gt;{&lt;/span&gt;
@@ -239,7 +567,7 @@ stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/c
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-svm/tree/410f45281fbc1eb3eaebc7f7845b5c5fc5eb0812&quot;&gt;fork して自前パッチを当てたmirパッケージを使用したd-svmパッケージの例&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3&gt;- ライブラリファイル(*.so等)の利用&lt;/h3&gt;
+&lt;h3 id=&quot;so&quot;&gt;- ライブラリファイル(*.so等)の利用&lt;/h3&gt;
 
 &lt;p&gt;例えばデータベースや CUDA ライブラリなどパスの通ったものを、
 リンカオプション&lt;code&gt;-lcuda&lt;/code&gt;をつけて渡したいことがあります。
@@ -258,7 +586,7 @@ stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/c
 &lt;p&gt;ちなみに&lt;code&gt;-J&lt;/code&gt;オプションはコンパイル時にファイルを読む&lt;code&gt;import(filename)&lt;/code&gt;でパスを通すオプションで、
 コンパイル時にCヘッダーファイルを読んでD言語用のラッパーを生成するときなどに使います。&lt;/p&gt;
 
-&lt;h2&gt;単体テストの実行&lt;/h2&gt;
+&lt;h2 id=&quot;part-a5c2b444bdb49814&quot;&gt;単体テストの実行&lt;/h2&gt;
 
 &lt;p&gt;D 言語には言語機能として、単体テスト(unittest)やカバレッジ計測がサポートされています。&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-D&quot; data-lang=&quot;D&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndslice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -281,7 +609,7 @@ stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/c
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;コマンド &lt;code&gt;dub test&lt;/code&gt;や&lt;code&gt;dub test -b unittest-cov&lt;/code&gt;で、パッケージ内全体のテスト実行やカバレッジ計測(結果は&lt;code&gt;*.lst&lt;/code&gt;ファイルに出力)できます。これだけでも十分に便利ですが、外部のサービスと連携するとさらに便利です。&lt;/p&gt;
 
-&lt;h2&gt;外部サービスとの連携&lt;/h2&gt;
+&lt;h2 id=&quot;part-caea59bd08892d85&quot;&gt;外部サービスとの連携&lt;/h2&gt;
 
 &lt;p&gt;BitbucketやGitHubリポジトリのREADMEによく、このようなバッジ&lt;/p&gt;
 
@@ -293,7 +621,7 @@ stack の引数に &lt;code&gt;--docker-env CUDA_VISIBLE_DEVICES=NO_DEVICE&lt;/c
 テストのカバレッジを見やすくしてくれる Coveralls というサービスをよく使います。
 さらに他の人からも簡単に使えるように、dubのWebページに登録することも多いでしょう。&lt;/p&gt;
 
-&lt;h3&gt;- Travis CI, Coveralls&lt;/h3&gt;
+&lt;h3 id=&quot;travis-ci-coveralls&quot;&gt;- Travis CI, Coveralls&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://travis-ci.org/&quot;&gt;Travis CI&lt;/a&gt;, &lt;a href=&quot;https://coveralls.io/&quot;&gt;Coveralls&lt;/a&gt;
 にGitHubなどのアカウントでログインして既存のリポジトリを追加できます。
@@ -324,7 +652,7 @@ Coverallsとの連携には doveralls というツールがおすすめです。
 $ dub &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; -b unittest-cov
 $ dub run doveralls -- -t &amp;lt;coverallsのrepo_token&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;- DUB レポジトリの登録&lt;/h3&gt;
+&lt;h3 id=&quot;dub&quot;&gt;- DUB レポジトリの登録&lt;/h3&gt;
 
 &lt;p&gt;DUB ではアカウントを作って下記のページから自作パッケージを追加できます。
 GitHubとBitbucketに登録されているリポジトリから登録できます。&lt;/p&gt;
@@ -337,7 +665,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 
 &lt;p&gt;&lt;a href=&quot;https://dlang.org/spec/module.html&quot;&gt;https://dlang.org/spec/module.html&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2&gt;ドキュメントの生成&lt;/h2&gt;
+&lt;h2 id=&quot;part-37ab541df0746509&quot;&gt;ドキュメントの生成&lt;/h2&gt;
 
 &lt;p&gt;D 言語には Javadoc みたいなコード中のコメント(ddoc)によるドキュメント生成が、unittestみたいに言語機能としてサポートされています。&lt;/p&gt;
 
@@ -382,7 +710,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 &lt;p&gt;ちなみにGithub では Pages という設定で、&lt;code&gt;docs&lt;/code&gt;ディレクトリにhtmlファイルを置くと
 ウェブページをホストしてくれるので便利です。&lt;/p&gt;
 
-&lt;h2&gt;まとめ&lt;/h2&gt;
+&lt;h2 id=&quot;part-37868fa865b7179&quot;&gt;まとめ&lt;/h2&gt;
 
 &lt;p&gt;DUBはあまりドキュメント化されていない部分もあって、stackoverflowやgithubリポジトリを掘り返しながら、まとめました。DUBはパッケージマネージャとしては優秀ですが、ビルドシステムとしてはMakeなどと比べると制限がつよくて、シェルスクリプトなどが&lt;code&gt;dub.json&lt;/code&gt;にかけると便利かなとは思います。D言語は言語機能として便利な機能(単体テスト、カバレッジ計測、ドキュメント生成)がサポートされているのは最高ですね。&lt;/p&gt;
 </description>
@@ -508,7 +836,7 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
   &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ai&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ci&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h2&gt;属性を持つクラスの冗長性&lt;/h2&gt;
+&lt;h2 id=&quot;part-b966c6d7198f4d0f&quot;&gt;属性を持つクラスの冗長性&lt;/h2&gt;
 
 &lt;p&gt;CUDAカーネルクラス &lt;code&gt;Kernel&lt;/code&gt; には 2 つの属性があります。1 つは NVRTC をラップしたクラス &lt;code&gt;Compiler&lt;/code&gt; の型検査による属性 (静的・動的・無し) です。もう 1 つはCUDAカーネルを呼び出すクラス &lt;code&gt;Launcher&lt;/code&gt; による属性 (e.g., 要素数によるもの・動的共有メモリを使うもの・ユーザ定義) といった具合です。&lt;/p&gt;
 
@@ -526,13 +854,13 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
 &lt;span class=&quot;c1&quot;&gt;// 何通りもの似たようなクラス&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h2&gt;Policy とは&lt;/h2&gt;
+&lt;h2 id=&quot;policy&quot;&gt;Policy とは&lt;/h2&gt;
 
-&lt;h2&gt;Policy による冗長性の解決&lt;/h2&gt;
+&lt;h2 id=&quot;policy&quot;&gt;Policy による冗長性の解決&lt;/h2&gt;
 
-&lt;h2&gt;Policy 間のブラックリスト&lt;/h2&gt;
+&lt;h2 id=&quot;policy&quot;&gt;Policy 間のブラックリスト&lt;/h2&gt;
 
-&lt;h2&gt;D言語における依存性注入&lt;/h2&gt;
+&lt;h2 id=&quot;d&quot;&gt;D言語における依存性注入&lt;/h2&gt;
 
 &lt;p&gt;Scala などでは依存性注入 (DI) というパターンがでてくる。
 これは D 言語の interface とよくにた trait (D言語のそれとは違う) の多重継承によって
@@ -772,49 +1100,6 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         <category>Python</category>
         
         <category>CUDA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>64 bit 環境の GCC で 32 bit (i386) アセンブラをリンク</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/blog/assets/30os.png&quot; alt=&quot;30os&quot;&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-make&quot; data-lang=&quot;make&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# Makefile の設定&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;CC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gcc -m32
-&lt;span class=&quot;nv&quot;&gt;LD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ld -m elf_i386 --oformat binary
-&lt;span class=&quot;nv&quot;&gt;AS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;as --32 -march&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;i386
-&lt;span class=&quot;nv&quot;&gt;QEMU&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;qemu-system-i386 -m &lt;span class=&quot;m&quot;&gt;32&lt;/span&gt; -localtime -vga std -fda&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;クロスコンパイルするので &lt;code&gt;sudo apt-get install gcc-multilib&lt;/code&gt; が必要です。&lt;/p&gt;
-
-&lt;p&gt;Cコンパイラとして &lt;code&gt;$(CC)&lt;/code&gt;, リンカとして &lt;code&gt;$(LD)&lt;/code&gt;, アセンブラとして &lt;code&gt;$(AS)&lt;/code&gt; を使ってください。
-gcc にも ld, as フロントエンドとして同じ機能がある筈ですが、該当オプションの渡し方が違うみたいで素直に ld, as 使いました。
-QEMU は自作 OS イメージ(*.img)のシミュレーション用で、&lt;code&gt;-m 32&lt;/code&gt; は 32 bit 環境とかではなく 32 MB メモリを使うという意味です。&lt;/p&gt;
-
-&lt;p&gt;...&lt;/p&gt;
-
-&lt;h1&gt;あけましておめでとうございます。&lt;/h1&gt;
-
-&lt;p&gt;という具合に私のプログラミング書き初め (?) は GNU アセンブラ でした。
-マイナビ出版の電子書籍が年末年始セールにて、
-&lt;a href=&quot;http://tatsu-zine.com/books/make-your-own-os-in30days&quot;&gt;30日でできる! OS自作入門&lt;/a&gt;
-を半額で購入したのがきっかけです。&lt;/p&gt;
-
-&lt;p&gt;この本は 2006 年に発行されたので、まだ 64 bit 環境が一般的でなく、
-解説に従うと 32 bit のアセンブラを C 言語とリンクして動かさなくてはいけません。
-好みの問題ですが、GNU アセンブラで書いてみたかったので検索したところ、
-&lt;a href=&quot;http://cyberbird.indiesj.com/x86%E3%80%80os%E8%87%AA%E4%BD%9C%E5%85%A5%E9%96%80/?pageNo=3&quot;&gt;こちらのブログ&lt;/a&gt; が見つかりました。
-これで順調に読んでいけるぞ、と思いきや、上記の 32 bit のアセンブラ命令と gcc でコンパイルした
-C オブジェクトとのリンクが上手く行かず詰まったので、試行錯誤した結果をメモしました。&lt;/p&gt;
-
-&lt;p&gt;ところで、バイナリ用語(略語)の elf (Executable &amp;amp; Linking Format) とか dwarf (Debug With Arbitrary Record Format) っていうオタクな感じがセンス良いですね。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 02 Jan 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2016/01/02/017.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/01/02/017.html</guid>
-        
-        <category>GCC</category>
         
         
       </item>

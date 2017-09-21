@@ -93,7 +93,7 @@
   <article class="post-content">
     <p>この前、 Exceptional C++ 読んだ時にメモしておこうと思って忘れてたので今度こそ。</p>
 
-<h3>例外安全における重要な保証</h3>
+<h3 id="part-11a0e99a01d8f407">例外安全における重要な保証</h3>
 
 <ol>
 <li>基本的な保証 : リソースをリークしないこと。</li>
@@ -101,7 +101,7 @@
 <li>nothrow 保証 : 完全に例外を投げないこと。とくにデストラクタや swap 関数はこれが必要。</li>
 </ol>
 
-<h3>標準例外規則</h3>
+<h3 id="part-411a6672c8728ac0">標準例外規則</h3>
 
 <ol>
 <li>デストラクタ・<code>operator delete</code>は例外を投げない。つまり <code>throw()</code> を指定すること。(補足：C++11以降は <code>noexcept</code> キーワードを使うとわかりやすい)</li>
@@ -118,7 +118,7 @@
 
 <p>例外中立を実現するには try/catch を除去するリソース管理の技法(copy&amp;swapなど)が紹介されています。なお、例外安全と例外中立は、標準ライブラリのコンテナに保証される性質です。この本は例外処理以外にもいろんな規則 (Liskov Substitution Principle とか) やイディオム (pimpl とか) がでてきて、いかに C++ が複雑な言語か思い知らされる本です。補足として、現在ではこの本の中心となる nothrow  保証な swap 関数を実装する他に move semantics を利用する手もあります。</p>
 
-<h3>参考</h3>
+<h3 id="part-65428734206">参考</h3>
 
 <ul>
 <li><a href="http://d.hatena.ne.jp/gintenlabo/20130604/1370362451">C++11時代のクラス設計に関する提案</a></li>

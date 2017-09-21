@@ -93,7 +93,7 @@
   <article class="post-content">
     <p>ピアソンが丸善になったりで、現在C++ in-Depthシリーズは入手困難ですが、大学の図書館にあったので読みました。全然知らなかったことや、逆にC++11/14 だとこう書けるかなという部分もあると思ったので少しメモします。</p>
 
-<h3>項目37 : AUTO_PTR</h3>
+<h3 id="37-auto_ptr">項目37 : AUTO_PTR</h3>
 
 <p><code>std::auto_ptr&lt;T&gt;</code> を使うように書かれていますが、非推奨なのでやめましょう。現在ではもっと良いスマートポインタが用意されています。例えば本文中で紹介されるPimplへのポインタにはコピーを禁止する<code>std::unique_ptr&lt;T&gt;</code>を使います。</p>
 
@@ -109,7 +109,7 @@
     <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
 <span class="p">}</span></code></pre></figure>
 
-<h3>C++ の設計と進化</h3>
+<h3 id="c">C++ の設計と進化</h3>
 
 <p>「例外処理」の目的や(理想的な)実装は上記の本が詳しい。これも絶版なのが残念。常にC言語や過去のC++との互換性に悩まされてきた歴史が面白い。</p>
 
