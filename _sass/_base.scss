@@ -209,3 +209,22 @@ pre {
     margin-right: auto;
     display: block
 }
+
+
+/**
+ * table
+ */
+
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:1px solid $grey-color;
+}
+
+th{
+    border:1px solid $grey-color;
+}
+
+td{
+    border:1px solid $grey-color;
+}
