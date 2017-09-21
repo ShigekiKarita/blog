@@ -1,5 +1,6 @@
-#!sh
+#!/usr/bin/env zsh
 fname=`tempfile`_site
+echo $fname
 bundle exec jekyll build && \
     cp -r _site $fname && \
     git checkout gh-pages && \
