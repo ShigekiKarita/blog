@@ -395,7 +395,7 @@
 <span class="go">L3 cache:              8192K</span>
 <span class="go">NUMA node0 CPU(s):     0-7</span>
 </code></pre></div>
-<p>標準ライブラリは<a href="https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716">謎最適化(unrolling?)</a>をしているので速いのだと思います．この結果からすると速くて綺麗な高階関数を使った実装を積極的に使いたいですね．</p>
+<p>標準ライブラリは<a href="https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716">謎最適化(unrolling?)</a>をしているので速いのだと思います．この結果からすると高階関数を使った実装は速くて綺麗なので，積極的に採用したいですね．</p>
 
 <p>最後にベンチマークのコードはこちらです <a href="https://github.com/ShigekiKarita/mir-intro">https://github.com/ShigekiKarita/mir-intro</a></p>
 
@@ -404,7 +404,7 @@
 <p>最後に，私の mir を使ったプロジェクトを宣伝させてください</p>
 
 <ul>
-<li><a href="https://github.com/ShigekiKarita/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．<a href="https://github.com/ShigekiKarita/numir/issues/11">近々mir入りも考えています</a></li>
+<li><a href="https://github.com/ShigekiKarita/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと<a href="https://github.com/ShigekiKarita/numir/issues/11">近々mir入りも考えています</a></li>
 <li><a href="https://github.com/ShigekiKarita/d-ssvm">d-ssvm</a>: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です</li>
 </ul>
 

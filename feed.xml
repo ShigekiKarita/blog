@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 22 Sep 2017 03:29:40 +0900</pubDate>
-    <lastBuildDate>Fri, 22 Sep 2017 03:29:40 +0900</lastBuildDate>
+    <pubDate>Fri, 22 Sep 2017 03:35:02 +0900</pubDate>
+    <lastBuildDate>Fri, 22 Sep 2017 03:35:02 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -316,7 +316,7 @@
 &lt;span class=&quot;go&quot;&gt;L3 cache:              8192K&lt;/span&gt;
 &lt;span class=&quot;go&quot;&gt;NUMA node0 CPU(s):     0-7&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;標準ライブラリは&lt;a href=&quot;https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716&quot;&gt;謎最適化(unrolling?)&lt;/a&gt;をしているので速いのだと思います．この結果からすると速くて綺麗な高階関数を使った実装を積極的に使いたいですね．&lt;/p&gt;
+&lt;p&gt;標準ライブラリは&lt;a href=&quot;https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716&quot;&gt;謎最適化(unrolling?)&lt;/a&gt;をしているので速いのだと思います．この結果からすると高階関数を使った実装は速くて綺麗なので，積極的に採用したいですね．&lt;/p&gt;
 
 &lt;p&gt;最後にベンチマークのコードはこちらです &lt;a href=&quot;https://github.com/ShigekiKarita/mir-intro&quot;&gt;https://github.com/ShigekiKarita/mir-intro&lt;/a&gt;&lt;/p&gt;
 
@@ -325,7 +325,7 @@
 &lt;p&gt;最後に，私の mir を使ったプロジェクトを宣伝させてください&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも考えています&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも考えています&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-ssvm&quot;&gt;d-ssvm&lt;/a&gt;: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です&lt;/li&gt;
 &lt;/ul&gt;
 </description>
