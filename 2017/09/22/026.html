@@ -93,20 +93,20 @@
   <article class="post-content">
     <h2 id="mir">mir とは</h2>
 
-<p>mir は Python における numpy のような汎用な数値計算のためのライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては <code>std.experimental.ndislice</code> として標準ライブラリに登場しました．最近，私自身も<a href="https://github.com/orgs/libmir/people">mirグループ</a>の一員になったので，宣伝もかねて紹介します．</p>
+<p>mir は Python における numpy のような汎用な数値計算のD言語ライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては <code>std.experimental.ndislice</code> として標準ライブラリに登場しました．先日，私自身も<a href="https://github.com/orgs/libmir/people">mirグループ</a>の一員になったので，宣伝もかねて紹介します．</p>
 
 <h2 id="mir">mir の構成</h2>
 
-<p>mir は numpy と違って複数の独立したライブラリの集合体です．きっと今後も沢山の派生ライブラリが登場するでしょう．主要なライブラリとして以下でしょうか．</p>
+<p>mir は numpy と違って複数の独立したライブラリの集合体です．現在の主要なライブラリは以下でしょうか．標準ライブラリPhobosと同様にBSL-1.0ライセンスです．</p>
 
 <ul>
 <li><a href="http://mir.dlang.io/">mir-algorithm</a> かつて <code>std.experimental.ndslice</code> だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(<code>@nogc</code>)で動作します．C++でいうEigenみたいな感じです．</li>
 <li><a href="http://docs.random.dlang.io/latest/mir_random.html">mir-random</a> 多次元に関わらず各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．</li>
 <li><a href="http://docs.mir.dlang.io/latest/mir_glas.html">mir-glas</a> IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．</li>
-<li><a href="https://github.com/libmir/mir">mir</a> かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．こっちのglasは古い</li>
+<li><a href="https://github.com/libmir/mir">mir</a> かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．</li>
 </ul>
 
-<p>他にも<a href="https://github.com/kaleidicassociates/lubeck">BLAS,LAPACKのラッパーライブラリ</a>，<a href="https://github.com/libmir/dcompute">D言語とLLVMでCUDAを書くDCompute</a>や，<a href="https://github.com/libmir/dcv">C++のOpenCVライクな画像処理ライブラリDCV</a>があります．mir開発者とユーザには大変アクティブな方が多く，活発にPRなどを通して交流しているようです．</p>
+<p>他にも<a href="https://github.com/kaleidicassociates/lubeck">BLAS,LAPACKのラッパーライブラリ</a>，<a href="https://github.com/libmir/dcompute">D言語とLLVMでCUDAを書くDCompute</a>や，<a href="https://github.com/libmir/dcv">C++のOpenCVライクな画像処理ライブラリDCV</a>があり，中々充実しています．</p>
 
 <p>今回はmirの中心となる ndslice （numpyでいうndarray） を実装している mir-algorithm パッケージについて説明します．</p>
 
@@ -132,7 +132,7 @@
    <span class="k">assert</span><span class="p">(</span><span class="n">dotFor</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="p">==</span> <span class="n">dotProduct</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>多重配列<code>double[][]</code>の要素アクセス<code>d[i][j]</code>と違って，<code>d[i, j]</code>として要素アクセスできることに注意してください．また，D言語の配列との相互変換は <code>sliced</code> (D array -&gt; ndslice) と <code>ndarray</code> (ndslice -&gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．</p>
+<p>多重配列<code>double[][]</code>の要素アクセス<code>d[i][j]</code>と違って，<code>d[i, j]</code>として要素アクセスできることに注意してください．また，D言語の配列との相互変換は <code>sliced</code> (D array -&gt; ndslice) と <code>ndarray</code> (ndslice -&gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．<a href="https://github.com/libmir/mir-algorithm/blob/62456df7f6522c4d92071f3adc0604549be26e15/source/mir/ndslice/slice.d#L600">ソースコード</a></p>
 <div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="k">struct</span> <span class="n">Slice</span><span class="p">(</span><span class="n">SliceKind</span> <span class="n">kind</span><span class="p">,</span> <span class="nb">size_t</span><span class="p">[]</span> <span class="n">packs</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">...</span>
     <span class="k">public</span> <span class="nb">size_t</span><span class="p">[</span><span class="n">N</span><span class="p">]</span> <span class="n">_lengths</span><span class="p">;</span>
@@ -147,14 +147,14 @@
 <ul>
 <li><code>size_t[N] _lengths</code> 各次元の長さ</li>
 <li><code>ptrdiff_t[S] _strides</code> 連続したメモリの配列上にSliceが扱うデータが並ぶ間隔</li>
-<li><code>Iterator _iterator</code> データ開始時点のポインタ．rangeの場合はshellと呼ばれる初期値から現在位置へのシフト</li>
+<li><code>Iterator _iterator</code> データ開始時点のポインタ．</li>
 </ul></li>
 <li>SliceKind (enum) は以下の三種類です，上記の <code>ptrdiff_t[S] _strides</code>の個数<code>S</code>に応じて変わります
 
 <ul>
 <li>Universal: N次元配列のストライドがN個ある</li>
 <li>Canonical: N(&gt;=2)次元配列のストライドがN-1個ある</li>
-<li>Contiguous: ストライド0個のフラットな1次元配列</li>
+<li>Contiguous: ストライドを持たない(lengthsから自明な)N次元配列</li>
 </ul></li>
 <li>packs は後述します．基本的にはベクトルなら <code>[1]</code>，行列なら<code>[2]</code>という階数のようなものです．</li>
 </ul>
@@ -173,8 +173,11 @@
 <span class="n">Slice</span><span class="p">!(...)</span> <span class="n">sa</span> <span class="p">=</span> <span class="p">{</span>
   <span class="n">_iterator</span><span class="p">:</span> <span class="p">&amp;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
   <span class="n">_lengths</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-  <span class="n">_strides</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="c1">// Canonical 形式</span>
-  <span class="n">_strides</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span> <span class="c1">// Universal 形式</span>
+
+  <span class="c1">// Canonical 形式</span>
+  <span class="n">_strides</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+  <span class="c1">// Universal 形式</span>
+  <span class="n">_strides</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><code>strides[0]=3</code>とは例えば各行の先頭要素は，連続データ <code>data</code> から3つおき (0, 3) にとります．つまり下記のように _strides は連続したメモリを指す_iteratorから各要素(<code>i = 0.._lengths[0], j = 0.._lengths[1]</code>)にアクセスするために使うのです．</p>
@@ -184,7 +187,7 @@
 <li>Universal形式: <code>sa[i, j] = _iterator[_strides[0] * i + _strides[1] * j]</code></li>
 </ul>
 
-<p>普通に考えるとContiguousなスライスのように(strideと等しい)lengthだけで多次元データを表現できるので十分な気がしますが，Universalなスライスなら<code>data</code>を全く変更／再配置せずに<code>transposed</code>で0-1次元目の軸を入れ替えたり</p>
+<p>普通に考えるとContiguousなスライスのようにlengthだけで多次元データのデータ配置を表現できるので十分な気がしますが，とくにUniversalなスライスなら<code>data</code>を全く変更／再配置せずに<code>transposed</code>で0-1次元目の軸を入れ替えたり</p>
 <div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="kt">double</span><span class="p">[][]</span> <span class="n">at1</span> <span class="p">=</span> <span class="p">[</span>
   <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
@@ -212,9 +215,9 @@
   <span class="n">_strides</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">-</span><span class="mi">3</span><span class="p">]</span>
 <span class="p">};</span>
 </code></pre></div>
-<p>このようにmir-algorithmのSlice処理関数は，主に Universal 方式を対象としており (任意のSliceから<code>universal</code>関数で変換できる)，配列データ<code>data</code>は全く変化・コピーせず，<code>_lengths, _strides, _iterators</code>だけを変化・コピーするので効率が良いです．例えば4000x4000みたいな大きな行列(2階の多次元配列)ても， <code>2(_lengths) + 2(_stides) + 1(_iterator) = 5</code> 個分の変数を扱うだけで済むのです．</p>
+<p>このようにmir-algorithmのSlice処理関数は，主に Universal 方式 (任意のSliceから<code>universal</code>関数で変換できる)，を使うことで配列データ<code>data</code>は全く変化・コピーせず，<code>_lengths, _strides, _iterators</code>だけを変化・コピーするので効率が良いです．例えば4000x4000みたいな大きな行列(2階の多次元配列)ても， <code>2(_lengths) + 2(_stides) + 1(_iterator) = 5</code> 個分の変数を扱うだけで済みます．D言語ではstructは値型ですが、スライス自体は小さなオブジェクトなのでmirの関数では引数にrefをつけずコピー渡しをしています．</p>
 
-<p>また，<code>Iterator</code> は単純な<code>double*</code>などの配列の先頭ポインタだけでなく抽象化されてます．Expression templateとして遅延評価計算を入れたり(<a href="http://mir.dlang.io/mir_ndslice_iterator.html">MapIteratorなど</a>)，Sliceの高階配列などの複雑な構造が可能になっています．この辺は関数型プログラミングみたいでカッコイイですね．</p>
+<p>さらに，<code>Iterator</code> は単純な<code>double*</code>などの配列の先頭ポインタだけでなく、もっと抽象化されてます．Expression templateとして遅延評価計算を入れたり(<a href="http://mir.dlang.io/mir_ndslice_iterator.html">具体例はこのページを参照</a>)，Sliceの高階配列などの複雑な構造が可能になっています．この辺は関数型プログラミングみたいでカッコイイですね．</p>
 
 <h2 id="part-1d4db9418d9d07af">高階関数を使う</h2>
 
@@ -238,15 +241,17 @@
 <span class="k">auto</span> <span class="n">mapped</span> <span class="p">=</span> <span class="n">arr2d</span><span class="p">.</span><span class="n">ndmap</span><span class="p">!</span><span class="s">&quot;a * 2&quot;</span><span class="p">;</span>
 <span class="n">ndreduce</span><span class="p">!</span><span class="s">&quot;a + b&quot;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mapped</span><span class="p">).</span><span class="n">writeln</span><span class="p">;</span>
 </code></pre></div>
-<p>reduceの第一引数が初期値をとる以外は全く同じです．多次元をフラットにして普通の配列のように要素毎の処理をしてます．ということで，次元を指定して処理するにはどうすれば良いのでしょうか？</p>
+<p>reduceの第一引数が初期値をとる以外は全く同じです．多次元をフラットにして普通の配列のように要素毎の処理をしてます．それならば次元を指定して処理するにはどうすれば良いのでしょうか？</p>
 
 <h3 id="pack-slice-packs">pack 関数と Slice.packs</h3>
 
 <p>ここで，後回しにした <code>packs</code> の概念がでてきます．<code>pack(size_t p, ...)(Slice(...) s)</code>関数は<code>s.packs[0]</code>の中にある最後のp次元スライスを要素とするスライス(高階スライス)に変換します．</p>
-<div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="k">struct</span> <span class="n">Slice</span><span class="p">(</span><span class="n">SliceKind</span> <span class="n">kind</span><span class="p">,</span> <span class="nb">size_t</span><span class="p">[]</span> <span class="n">packs</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">packs</span><span class="p">.</span><span class="n">sum</span> <span class="p">&lt;</span> <span class="mi">255</span><span class="p">);</span> 
-
+<div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="c1">// Sliceの二番目の型引数が packs、最初は4階のスライス</span>
 <span class="n">Slice</span><span class="p">!(</span><span class="n">Contiguous</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">IotaIterator</span><span class="p">!</span><span class="nb">size_t</span><span class="p">)</span> <span class="n">a</span> <span class="p">=</span> <span class="n">iota</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+<span class="c1">// 後ろから2階分をpackしたので2階スライスの2階スライス</span>
 <span class="n">Slice</span><span class="p">!(</span><span class="n">Contiguous</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">IotaIterator</span><span class="p">!</span><span class="nb">size_t</span><span class="p">)</span> <span class="n">b</span> <span class="p">=</span> <span class="n">a</span><span class="p">.</span><span class="n">pack</span><span class="p">!</span><span class="mi">2</span><span class="p">;</span>
+<span class="c1">// 3 x 4 スライスの要素は 5 x 6 スライス</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">shape</span> <span class="p">==</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]);</span>
 <span class="k">assert</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">].</span><span class="n">shape</span> <span class="p">==</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]);</span>
 </code></pre></div>
 <p>それでは高階関数 <code>each</code> で writeln して，指定した次元毎に処理できるか確認しましょう．</p>
@@ -300,9 +305,9 @@
 <li><code>T llvm_expect(T)(T val, T expected_val) if (__traits(isIntegral, T))</code>: ドキュメントはありませんが<a href="https://github.com/ldc-developers/druntime/blob/release-1.4.x/src/ldc/intrinsics.di#L481">ソースコード</a>によると，整数値<code>val</code>と<code>expected_val</code>が等しいときに処理が分岐するようなコードの最適化に使うようです．<a href="https://github.com/libmir/mir-glas/blob/cf4a2b47203720932ba161955a8de9b1b415e484/source/glas/internal/gemm.d#L72">mir-glasで引数によって行列積の計算をサボるところ</a>などで使われています．</li>
 </ul>
 
-<h2 id="part-3786dca33124ee5">最後に</h2>
+<h2 id="part-2c5fafe9b605ecc7">実験結果</h2>
 
-<p>今回作った内積を行列積</p>
+<p>今回作った内積(dotFor, dotHF)と標準ライブラリの dotProduct を行列積</p>
 <div class="highlight"><pre><code class="language-d" data-lang="d"><span></span><span class="c1">// GEMM Pseudo_code: `C := alpha A × B + beta C`.</span>
 <span class="kt">void</span> <span class="n">gemm</span><span class="p">(</span><span class="k">alias</span> <span class="n">dotFun</span><span class="p">,</span> <span class="n">C</span><span class="p">)(</span><span class="n">C</span> <span class="n">alpha</span><span class="p">,</span>
                            <span class="n">Slice</span><span class="p">!(</span><span class="n">Universal</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="k">const</span><span class="p">(</span><span class="n">C</span><span class="p">)*)</span> <span class="n">asl</span><span class="p">,</span>
@@ -315,6 +320,9 @@
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
+
+<span class="c1">// 使い方</span>
+<span class="c1">// gemm!dotFor(1.0, a.universal, b.universal, 0.0, c.universal)</span>
 </code></pre></div>
 <p>に組み込んで紹介した機能と速度を検証してみます．<a href="https://github.com/libmir/mir-glas/blob/master/bench/gemm_report.d">ベンチマークのコードはmir-glasの物</a>を元にしました．</p>
 
@@ -329,15 +337,15 @@
 </tr>
 </thead><tbody>
 <tr>
-<td style="text-align: left">forループの実装</td>
+<td style="text-align: left">forループの実装 dotFor</td>
 <td style="text-align: right">1300</td>
 </tr>
 <tr>
-<td style="text-align: left">std.numericの実装</td>
+<td style="text-align: left">std.numericの実装 dotProduct</td>
 <td style="text-align: right">900</td>
 </tr>
 <tr>
-<td style="text-align: left">高階関数の実装</td>
+<td style="text-align: left">高階関数の実装 dotHF</td>
 <td style="text-align: right">800</td>
 </tr>
 </tbody></table>
@@ -353,15 +361,15 @@
 </tr>
 </thead><tbody>
 <tr>
-<td style="text-align: left">forループの実装</td>
+<td style="text-align: left">forループの実装 dotFor</td>
 <td style="text-align: right">691600</td>
 </tr>
 <tr>
-<td style="text-align: left">std.numericの実装</td>
+<td style="text-align: left">std.numericの実装 dotProduct</td>
 <td style="text-align: right">587100</td>
 </tr>
 <tr>
-<td style="text-align: left">高階関数の実装</td>
+<td style="text-align: left">高階関数の実装 dotHF</td>
 <td style="text-align: right">585700</td>
 </tr>
 </tbody></table>
@@ -395,18 +403,20 @@
 <span class="go">L3 cache:              8192K</span>
 <span class="go">NUMA node0 CPU(s):     0-7</span>
 </code></pre></div>
-<p>標準ライブラリは<a href="https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716">謎最適化(unrolling?)</a>をしているので速いのだと思います．この結果からすると高階関数を使った実装は速くて綺麗なので，積極的に採用したいですね．</p>
+<p>標準ライブラリのdotProductは<a href="https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716">最適化(unrolling?)</a>をしているので速いですね．一方，高階関数を使った実装dotHFは速くて綺麗なので，積極的に採用したいですね．</p>
 
-<p>実際のベンチマークのコードはこちらです <a href="https://github.com/ShigekiKarita/mir-intro">https://github.com/ShigekiKarita/mir-intro</a></p>
+<p>実際のベンチマークのコードはこちらです <a href="https://github.com/ShigekiKarita/mir-intro">https://github.com/ShigekiKarita/mir-intro</a>．本当はLLVM4の(AVX命令)バグがなければ，mir-glasのgemmも比較したかったのですが，LDCを別のLLVMでビルドするのが面倒だったんで辞めました．</p>
 
 <h2 id="part-654304ea700">蛇足</h2>
 
 <p>私の mir を使ったプロジェクトを宣伝です．</p>
 
 <ul>
-<li><a href="https://github.com/ShigekiKarita/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと<a href="https://github.com/ShigekiKarita/numir/issues/11">近々mir入りも考えています</a></li>
+<li><a href="https://github.com/ShigekiKarita/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと<a href="https://github.com/ShigekiKarita/numir/issues/11">近々mir入りも予定しています</a></li>
 <li><a href="https://github.com/ShigekiKarita/d-ssvm">d-ssvm</a>: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です</li>
 </ul>
+
+<p>そのうち，今回触れられなかった<a href="http://mir.dlang.io/mir_ndslice_iterator.html">Iterator</a>や，<a href="http://mir.dlang.io/mir_ndslice_field.html">Field</a>について解説したいと思います．それでは．</p>
 
   </article>
 </div>

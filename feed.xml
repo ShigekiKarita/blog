@@ -6,28 +6,28 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 22 Sep 2017 03:43:14 +0900</pubDate>
-    <lastBuildDate>Fri, 22 Sep 2017 03:43:14 +0900</lastBuildDate>
+    <pubDate>Fri, 22 Sep 2017 19:24:19 +0900</pubDate>
+    <lastBuildDate>Fri, 22 Sep 2017 19:24:19 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>D言語で数値計算 mir-algorithm</title>
         <description>&lt;h2 id=&quot;mir&quot;&gt;mir とは&lt;/h2&gt;
 
-&lt;p&gt;mir は Python における numpy のような汎用な数値計算のためのライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては &lt;code&gt;std.experimental.ndislice&lt;/code&gt; として標準ライブラリに登場しました．最近，私自身も&lt;a href=&quot;https://github.com/orgs/libmir/people&quot;&gt;mirグループ&lt;/a&gt;の一員になったので，宣伝もかねて紹介します．&lt;/p&gt;
+&lt;p&gt;mir は Python における numpy のような汎用な数値計算のD言語ライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては &lt;code&gt;std.experimental.ndislice&lt;/code&gt; として標準ライブラリに登場しました．先日，私自身も&lt;a href=&quot;https://github.com/orgs/libmir/people&quot;&gt;mirグループ&lt;/a&gt;の一員になったので，宣伝もかねて紹介します．&lt;/p&gt;
 
 &lt;h2 id=&quot;mir&quot;&gt;mir の構成&lt;/h2&gt;
 
-&lt;p&gt;mir は numpy と違って複数の独立したライブラリの集合体です．きっと今後も沢山の派生ライブラリが登場するでしょう．主要なライブラリとして以下でしょうか．&lt;/p&gt;
+&lt;p&gt;mir は numpy と違って複数の独立したライブラリの集合体です．現在の主要なライブラリは以下でしょうか．標準ライブラリPhobosと同様にBSL-1.0ライセンスです．&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://mir.dlang.io/&quot;&gt;mir-algorithm&lt;/a&gt; かつて &lt;code&gt;std.experimental.ndslice&lt;/code&gt; だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(&lt;code&gt;@nogc&lt;/code&gt;)で動作します．C++でいうEigenみたいな感じです．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://docs.random.dlang.io/latest/mir_random.html&quot;&gt;mir-random&lt;/a&gt; 多次元に関わらず各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://docs.mir.dlang.io/latest/mir_glas.html&quot;&gt;mir-glas&lt;/a&gt; IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．こっちのglasは古い&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;他にも&lt;a href=&quot;https://github.com/kaleidicassociates/lubeck&quot;&gt;BLAS,LAPACKのラッパーライブラリ&lt;/a&gt;，&lt;a href=&quot;https://github.com/libmir/dcompute&quot;&gt;D言語とLLVMでCUDAを書くDCompute&lt;/a&gt;や，&lt;a href=&quot;https://github.com/libmir/dcv&quot;&gt;C++のOpenCVライクな画像処理ライブラリDCV&lt;/a&gt;があります．mir開発者とユーザには大変アクティブな方が多く，活発にPRなどを通して交流しているようです．&lt;/p&gt;
+&lt;p&gt;他にも&lt;a href=&quot;https://github.com/kaleidicassociates/lubeck&quot;&gt;BLAS,LAPACKのラッパーライブラリ&lt;/a&gt;，&lt;a href=&quot;https://github.com/libmir/dcompute&quot;&gt;D言語とLLVMでCUDAを書くDCompute&lt;/a&gt;や，&lt;a href=&quot;https://github.com/libmir/dcv&quot;&gt;C++のOpenCVライクな画像処理ライブラリDCV&lt;/a&gt;があり，中々充実しています．&lt;/p&gt;
 
 &lt;p&gt;今回はmirの中心となる ndslice （numpyでいうndarray） を実装している mir-algorithm パッケージについて説明します．&lt;/p&gt;
 
@@ -53,7 +53,7 @@
    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dotFor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotProduct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;多重配列&lt;code&gt;double[][]&lt;/code&gt;の要素アクセス&lt;code&gt;d[i][j]&lt;/code&gt;と違って，&lt;code&gt;d[i, j]&lt;/code&gt;として要素アクセスできることに注意してください．また，D言語の配列との相互変換は &lt;code&gt;sliced&lt;/code&gt; (D array -&amp;gt; ndslice) と &lt;code&gt;ndarray&lt;/code&gt; (ndslice -&amp;gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．&lt;/p&gt;
+&lt;p&gt;多重配列&lt;code&gt;double[][]&lt;/code&gt;の要素アクセス&lt;code&gt;d[i][j]&lt;/code&gt;と違って，&lt;code&gt;d[i, j]&lt;/code&gt;として要素アクセスできることに注意してください．また，D言語の配列との相互変換は &lt;code&gt;sliced&lt;/code&gt; (D array -&amp;gt; ndslice) と &lt;code&gt;ndarray&lt;/code&gt; (ndslice -&amp;gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．&lt;a href=&quot;https://github.com/libmir/mir-algorithm/blob/62456df7f6522c4d92071f3adc0604549be26e15/source/mir/ndslice/slice.d#L600&quot;&gt;ソースコード&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SliceKind&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -68,14 +68,14 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;size_t[N] _lengths&lt;/code&gt; 各次元の長さ&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;ptrdiff_t[S] _strides&lt;/code&gt; 連続したメモリの配列上にSliceが扱うデータが並ぶ間隔&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Iterator _iterator&lt;/code&gt; データ開始時点のポインタ．rangeの場合はshellと呼ばれる初期値から現在位置へのシフト&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Iterator _iterator&lt;/code&gt; データ開始時点のポインタ．&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;SliceKind (enum) は以下の三種類です，上記の &lt;code&gt;ptrdiff_t[S] _strides&lt;/code&gt;の個数&lt;code&gt;S&lt;/code&gt;に応じて変わります
 
 &lt;ul&gt;
 &lt;li&gt;Universal: N次元配列のストライドがN個ある&lt;/li&gt;
 &lt;li&gt;Canonical: N(&amp;gt;=2)次元配列のストライドがN-1個ある&lt;/li&gt;
-&lt;li&gt;Contiguous: ストライド0個のフラットな1次元配列&lt;/li&gt;
+&lt;li&gt;Contiguous: ストライドを持たない(lengthsから自明な)N次元配列&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;packs は後述します．基本的にはベクトルなら &lt;code&gt;[1]&lt;/code&gt;，行列なら&lt;code&gt;[2]&lt;/code&gt;という階数のようなものです．&lt;/li&gt;
 &lt;/ul&gt;
@@ -94,8 +94,11 @@
 &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(...)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sa&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Canonical 形式&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Universal 形式&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Canonical 形式&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Universal 形式&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;code&gt;strides[0]=3&lt;/code&gt;とは例えば各行の先頭要素は，連続データ &lt;code&gt;data&lt;/code&gt; から3つおき (0, 3) にとります．つまり下記のように _strides は連続したメモリを指す_iteratorから各要素(&lt;code&gt;i = 0.._lengths[0], j = 0.._lengths[1]&lt;/code&gt;)にアクセスするために使うのです．&lt;/p&gt;
@@ -105,7 +108,7 @@
 &lt;li&gt;Universal形式: &lt;code&gt;sa[i, j] = _iterator[_strides[0] * i + _strides[1] * j]&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;普通に考えるとContiguousなスライスのように(strideと等しい)lengthだけで多次元データを表現できるので十分な気がしますが，Universalなスライスなら&lt;code&gt;data&lt;/code&gt;を全く変更／再配置せずに&lt;code&gt;transposed&lt;/code&gt;で0-1次元目の軸を入れ替えたり&lt;/p&gt;
+&lt;p&gt;普通に考えるとContiguousなスライスのようにlengthだけで多次元データのデータ配置を表現できるので十分な気がしますが，とくにUniversalなスライスなら&lt;code&gt;data&lt;/code&gt;を全く変更／再配置せずに&lt;code&gt;transposed&lt;/code&gt;で0-1次元目の軸を入れ替えたり&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[][]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
@@ -133,9 +136,9 @@
   &lt;span class=&quot;n&quot;&gt;_strides&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;このようにmir-algorithmのSlice処理関数は，主に Universal 方式を対象としており (任意のSliceから&lt;code&gt;universal&lt;/code&gt;関数で変換できる)，配列データ&lt;code&gt;data&lt;/code&gt;は全く変化・コピーせず，&lt;code&gt;_lengths, _strides, _iterators&lt;/code&gt;だけを変化・コピーするので効率が良いです．例えば4000x4000みたいな大きな行列(2階の多次元配列)ても， &lt;code&gt;2(_lengths) + 2(_stides) + 1(_iterator) = 5&lt;/code&gt; 個分の変数を扱うだけで済むのです．&lt;/p&gt;
+&lt;p&gt;このようにmir-algorithmのSlice処理関数は，主に Universal 方式 (任意のSliceから&lt;code&gt;universal&lt;/code&gt;関数で変換できる)，を使うことで配列データ&lt;code&gt;data&lt;/code&gt;は全く変化・コピーせず，&lt;code&gt;_lengths, _strides, _iterators&lt;/code&gt;だけを変化・コピーするので効率が良いです．例えば4000x4000みたいな大きな行列(2階の多次元配列)ても， &lt;code&gt;2(_lengths) + 2(_stides) + 1(_iterator) = 5&lt;/code&gt; 個分の変数を扱うだけで済みます．D言語ではstructは値型ですが、スライス自体は小さなオブジェクトなのでmirの関数では引数にrefをつけずコピー渡しをしています．&lt;/p&gt;
 
-&lt;p&gt;また，&lt;code&gt;Iterator&lt;/code&gt; は単純な&lt;code&gt;double*&lt;/code&gt;などの配列の先頭ポインタだけでなく抽象化されてます．Expression templateとして遅延評価計算を入れたり(&lt;a href=&quot;http://mir.dlang.io/mir_ndslice_iterator.html&quot;&gt;MapIteratorなど&lt;/a&gt;)，Sliceの高階配列などの複雑な構造が可能になっています．この辺は関数型プログラミングみたいでカッコイイですね．&lt;/p&gt;
+&lt;p&gt;さらに，&lt;code&gt;Iterator&lt;/code&gt; は単純な&lt;code&gt;double*&lt;/code&gt;などの配列の先頭ポインタだけでなく、もっと抽象化されてます．Expression templateとして遅延評価計算を入れたり(&lt;a href=&quot;http://mir.dlang.io/mir_ndslice_iterator.html&quot;&gt;具体例はこのページを参照&lt;/a&gt;)，Sliceの高階配列などの複雑な構造が可能になっています．この辺は関数型プログラミングみたいでカッコイイですね．&lt;/p&gt;
 
 &lt;h2 id=&quot;part-1d4db9418d9d07af&quot;&gt;高階関数を使う&lt;/h2&gt;
 
@@ -159,15 +162,17 @@
 &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mapped&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr2d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndmap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a * 2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;ndreduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;a + b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mapped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writeln&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;reduceの第一引数が初期値をとる以外は全く同じです．多次元をフラットにして普通の配列のように要素毎の処理をしてます．ということで，次元を指定して処理するにはどうすれば良いのでしょうか？&lt;/p&gt;
+&lt;p&gt;reduceの第一引数が初期値をとる以外は全く同じです．多次元をフラットにして普通の配列のように要素毎の処理をしてます．それならば次元を指定して処理するにはどうすれば良いのでしょうか？&lt;/p&gt;
 
 &lt;h3 id=&quot;pack-slice-packs&quot;&gt;pack 関数と Slice.packs&lt;/h3&gt;
 
 &lt;p&gt;ここで，後回しにした &lt;code&gt;packs&lt;/code&gt; の概念がでてきます．&lt;code&gt;pack(size_t p, ...)(Slice(...) s)&lt;/code&gt;関数は&lt;code&gt;s.packs[0]&lt;/code&gt;の中にある最後のp次元スライスを要素とするスライス(高階スライス)に変換します．&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SliceKind&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
-
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// Sliceの二番目の型引数が packs、最初は4階のスライス&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Contiguous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IotaIterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iota&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// 後ろから2階分をpackしたので2階スライスの2階スライス&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Contiguous&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IotaIterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// 3 x 4 スライスの要素は 5 x 6 スライス&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;それでは高階関数 &lt;code&gt;each&lt;/code&gt; で writeln して，指定した次元毎に処理できるか確認しましょう．&lt;/p&gt;
@@ -221,9 +226,9 @@
 &lt;li&gt;&lt;code&gt;T llvm_expect(T)(T val, T expected_val) if (__traits(isIntegral, T))&lt;/code&gt;: ドキュメントはありませんが&lt;a href=&quot;https://github.com/ldc-developers/druntime/blob/release-1.4.x/src/ldc/intrinsics.di#L481&quot;&gt;ソースコード&lt;/a&gt;によると，整数値&lt;code&gt;val&lt;/code&gt;と&lt;code&gt;expected_val&lt;/code&gt;が等しいときに処理が分岐するようなコードの最適化に使うようです．&lt;a href=&quot;https://github.com/libmir/mir-glas/blob/cf4a2b47203720932ba161955a8de9b1b415e484/source/glas/internal/gemm.d#L72&quot;&gt;mir-glasで引数によって行列積の計算をサボるところ&lt;/a&gt;などで使われています．&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;part-3786dca33124ee5&quot;&gt;最後に&lt;/h2&gt;
+&lt;h2 id=&quot;part-2c5fafe9b605ecc7&quot;&gt;実験結果&lt;/h2&gt;
 
-&lt;p&gt;今回作った内積を行列積&lt;/p&gt;
+&lt;p&gt;今回作った内積(dotFor, dotHF)と標準ライブラリの dotProduct を行列積&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// GEMM Pseudo_code: `C := alpha A × B + beta C`.&lt;/span&gt;
 &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gemm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotFun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
                            &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Universal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)*)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;asl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -236,6 +241,9 @@
         &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 使い方&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// gemm!dotFor(1.0, a.universal, b.universal, 0.0, c.universal)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;に組み込んで紹介した機能と速度を検証してみます．&lt;a href=&quot;https://github.com/libmir/mir-glas/blob/master/bench/gemm_report.d&quot;&gt;ベンチマークのコードはmir-glasの物&lt;/a&gt;を元にしました．&lt;/p&gt;
 
@@ -250,15 +258,15 @@
 &lt;/tr&gt;
 &lt;/thead&gt;&lt;tbody&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;forループの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;forループの実装 dotFor&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;1300&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装 dotProduct&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;900&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装 dotHF&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;800&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
@@ -274,15 +282,15 @@
 &lt;/tr&gt;
 &lt;/thead&gt;&lt;tbody&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;forループの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;forループの実装 dotFor&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;691600&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;std.numericの実装 dotProduct&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;587100&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装&lt;/td&gt;
+&lt;td style=&quot;text-align: left&quot;&gt;高階関数の実装 dotHF&lt;/td&gt;
 &lt;td style=&quot;text-align: right&quot;&gt;585700&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
@@ -316,18 +324,20 @@
 &lt;span class=&quot;go&quot;&gt;L3 cache:              8192K&lt;/span&gt;
 &lt;span class=&quot;go&quot;&gt;NUMA node0 CPU(s):     0-7&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;標準ライブラリは&lt;a href=&quot;https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716&quot;&gt;謎最適化(unrolling?)&lt;/a&gt;をしているので速いのだと思います．この結果からすると高階関数を使った実装は速くて綺麗なので，積極的に採用したいですね．&lt;/p&gt;
+&lt;p&gt;標準ライブラリのdotProductは&lt;a href=&quot;https://github.com/dlang/phobos/blob/master/std/numeric.d#L1716&quot;&gt;最適化(unrolling?)&lt;/a&gt;をしているので速いですね．一方，高階関数を使った実装dotHFは速くて綺麗なので，積極的に採用したいですね．&lt;/p&gt;
 
-&lt;p&gt;実際のベンチマークのコードはこちらです &lt;a href=&quot;https://github.com/ShigekiKarita/mir-intro&quot;&gt;https://github.com/ShigekiKarita/mir-intro&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;実際のベンチマークのコードはこちらです &lt;a href=&quot;https://github.com/ShigekiKarita/mir-intro&quot;&gt;https://github.com/ShigekiKarita/mir-intro&lt;/a&gt;．本当はLLVM4の(AVX命令)バグがなければ，mir-glasのgemmも比較したかったのですが，LDCを別のLLVMでビルドするのが面倒だったんで辞めました．&lt;/p&gt;
 
 &lt;h2 id=&quot;part-654304ea700&quot;&gt;蛇足&lt;/h2&gt;
 
 &lt;p&gt;私の mir を使ったプロジェクトを宣伝です．&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも考えています&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも予定しています&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-ssvm&quot;&gt;d-ssvm&lt;/a&gt;: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;そのうち，今回触れられなかった&lt;a href=&quot;http://mir.dlang.io/mir_ndslice_iterator.html&quot;&gt;Iterator&lt;/a&gt;や，&lt;a href=&quot;http://mir.dlang.io/mir_ndslice_field.html&quot;&gt;Field&lt;/a&gt;について解説したいと思います．それでは．&lt;/p&gt;
 </description>
         <pubDate>Fri, 22 Sep 2017 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2017/09/22/026.html</link>
