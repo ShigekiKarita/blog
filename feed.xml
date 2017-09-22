@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 22 Sep 2017 19:24:19 +0900</pubDate>
-    <lastBuildDate>Fri, 22 Sep 2017 19:24:19 +0900</lastBuildDate>
+    <pubDate>Fri, 22 Sep 2017 19:38:27 +0900</pubDate>
+    <lastBuildDate>Fri, 22 Sep 2017 19:38:27 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -53,7 +53,7 @@
    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dotFor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dotProduct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;多重配列&lt;code&gt;double[][]&lt;/code&gt;の要素アクセス&lt;code&gt;d[i][j]&lt;/code&gt;と違って，&lt;code&gt;d[i, j]&lt;/code&gt;として要素アクセスできることに注意してください．また，D言語の配列との相互変換は &lt;code&gt;sliced&lt;/code&gt; (D array -&amp;gt; ndslice) と &lt;code&gt;ndarray&lt;/code&gt; (ndslice -&amp;gt; D array) で出来ます．ただしD言語の(多重)配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．&lt;a href=&quot;https://github.com/libmir/mir-algorithm/blob/62456df7f6522c4d92071f3adc0604549be26e15/source/mir/ndslice/slice.d#L600&quot;&gt;ソースコード&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;D言語の配列との相互変換は &lt;code&gt;sliced&lt;/code&gt; (D array -&amp;gt; ndslice) と &lt;code&gt;ndarray&lt;/code&gt; (ndslice -&amp;gt; D array) で出来ます．ただしD言語の配列と違って，ndsliceの型は(C++のEigenほどではないですが)少し複雑です．&lt;a href=&quot;https://github.com/libmir/mir-algorithm/blob/62456df7f6522c4d92071f3adc0604549be26e15/source/mir/ndslice/slice.d#L600&quot;&gt;ソースコード&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-d&quot; data-lang=&quot;d&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SliceKind&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;packs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;size_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_lengths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
