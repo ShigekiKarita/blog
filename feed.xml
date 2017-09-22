@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 22 Sep 2017 19:38:27 +0900</pubDate>
-    <lastBuildDate>Fri, 22 Sep 2017 19:38:27 +0900</lastBuildDate>
+    <pubDate>Fri, 22 Sep 2017 19:42:40 +0900</pubDate>
+    <lastBuildDate>Fri, 22 Sep 2017 19:42:40 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -27,9 +27,7 @@
 &lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;他にも&lt;a href=&quot;https://github.com/kaleidicassociates/lubeck&quot;&gt;BLAS,LAPACKのラッパーライブラリ&lt;/a&gt;，&lt;a href=&quot;https://github.com/libmir/dcompute&quot;&gt;D言語とLLVMでCUDAを書くDCompute&lt;/a&gt;や，&lt;a href=&quot;https://github.com/libmir/dcv&quot;&gt;C++のOpenCVライクな画像処理ライブラリDCV&lt;/a&gt;があり，中々充実しています．&lt;/p&gt;
-
-&lt;p&gt;今回はmirの中心となる ndslice （numpyでいうndarray） を実装している mir-algorithm パッケージについて説明します．&lt;/p&gt;
+&lt;p&gt;他にも&lt;a href=&quot;https://github.com/kaleidicassociates/lubeck&quot;&gt;BLAS,LAPACKのラッパーライブラリ&lt;/a&gt;，&lt;a href=&quot;https://github.com/libmir/dcompute&quot;&gt;D言語とLLVMでCUDAを書くDCompute&lt;/a&gt;や，&lt;a href=&quot;https://github.com/libmir/dcv&quot;&gt;C++のOpenCVライクな画像処理ライブラリDCV&lt;/a&gt;があり，中々充実しています．これらのライブラリはmir-algorithmに実装されている多次元配列 ndslice （numpyでいうndarray）を共通のデータ構造にしています．&lt;/p&gt;
 
 &lt;h2 id=&quot;ndslice&quot;&gt;ndslice 入門&lt;/h2&gt;
 
