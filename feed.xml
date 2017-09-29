@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 30 Sep 2017 02:01:45 +0900</pubDate>
-    <lastBuildDate>Sat, 30 Sep 2017 02:01:45 +0900</lastBuildDate>
+    <pubDate>Sat, 30 Sep 2017 02:08:33 +0900</pubDate>
+    <lastBuildDate>Sat, 30 Sep 2017 02:08:33 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -30,11 +30,11 @@
 &lt;li&gt;ドキュメント自体は未完成でもいい&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Travisは元からやってたので特に問題なかった．ddocはDMD標準のやつを使っているだけなので難しくなかった．Appveyorは@wilzbachさんの設定が万能．&lt;/p&gt;
+&lt;p&gt;Travisは元からやってたので特に問題なかった．ddocは&lt;a href=&quot;https://dlang.org/spec/ddoc.html&quot;&gt;DMD標準ジェネレータ&lt;/a&gt;と&lt;a href=&quot;https://docs.travis-ci.com/user/deployment&quot;&gt;Travis公式のデプロイ方法&lt;/a&gt;を使っているだけなので難しくなかった．Appveyorは@wilzbachさんの設定が万能．&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/dlang-community/dfmt/blob/master/appveyor.yml&quot;&gt;dfmt/appveyor.yml&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;一部テストに numpy を使う必要があったので面倒だったけど、&lt;a href=&quot;http://help.appveyor.com/discussions/questions/6802-appveyor-with-conda&quot;&gt;minicondaを使うと簡単&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;一部テストに numpy を使う必要があったので面倒だったけど、&lt;a href=&quot;http://help.appveyor.com/discussions/questions/6802-appveyor-with-conda&quot;&gt;minicondaを使うと簡単&lt;/a&gt;．余談だが，docstringとかdoctestが言語機能に入っているD言語とPythonは中々筋がいいなと思う．&lt;/p&gt;
 
 &lt;h2 id=&quot;organization&quot;&gt;個人リポジトリからOrganizationへの移行&lt;/h2&gt;
 

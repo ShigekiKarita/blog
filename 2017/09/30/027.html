@@ -109,11 +109,11 @@
 <li>ドキュメント自体は未完成でもいい</li>
 </ul>
 
-<p>Travisは元からやってたので特に問題なかった．ddocはDMD標準のやつを使っているだけなので難しくなかった．Appveyorは@wilzbachさんの設定が万能．</p>
+<p>Travisは元からやってたので特に問題なかった．ddocは<a href="https://dlang.org/spec/ddoc.html">DMD標準ジェネレータ</a>と<a href="https://docs.travis-ci.com/user/deployment">Travis公式のデプロイ方法</a>を使っているだけなので難しくなかった．Appveyorは@wilzbachさんの設定が万能．</p>
 
 <p><a href="https://github.com/dlang-community/dfmt/blob/master/appveyor.yml">dfmt/appveyor.yml</a></p>
 
-<p>一部テストに numpy を使う必要があったので面倒だったけど、<a href="http://help.appveyor.com/discussions/questions/6802-appveyor-with-conda">minicondaを使うと簡単</a></p>
+<p>一部テストに numpy を使う必要があったので面倒だったけど、<a href="http://help.appveyor.com/discussions/questions/6802-appveyor-with-conda">minicondaを使うと簡単</a>．余談だが，docstringとかdoctestが言語機能に入っているD言語とPythonは中々筋がいいなと思う．</p>
 
 <h2 id="organization">個人リポジトリからOrganizationへの移行</h2>
 
