@@ -101,7 +101,7 @@
 
 <ul>
 <li><a href="http://mir.dlang.io/">mir-algorithm</a> かつて <code>std.experimental.ndslice</code> だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(<code>@nogc</code>)で動作します．C++でいうEigenみたいな感じです．</li>
-<li><a href="http://docs.random.dlang.io/latest/mir_random.html">mir-random</a> 多次元に関わらず各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．</li>
+<li><a href="http://docs.random.dlang.io/latest/mir_random.html">mir-random</a> 各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．C++11にあるアルゴリズムがすべて実装されているらしい．</li>
 <li><a href="http://docs.mir.dlang.io/latest/mir_glas.html">mir-glas</a> IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．</li>
 <li><a href="https://github.com/libmir/mir">mir</a> かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．</li>
 </ul>
@@ -410,7 +410,7 @@
 <p>私の mir を使ったプロジェクトを宣伝です．</p>
 
 <ul>
-<li><a href="https://github.com/ShigekiKarita/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと<a href="https://github.com/ShigekiKarita/numir/issues/11">近々mir入りも予定しています</a></li>
+<li><a href="https://github.com/libmir/numir">numir</a>: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと<a href="https://github.com/libmir/numir/issues/11">近々mir入りも予定しています</a> → 入りました</li>
 <li><a href="https://github.com/ShigekiKarita/d-ssvm">d-ssvm</a>: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です</li>
 </ul>
 

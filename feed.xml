@@ -6,9 +6,76 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 22 Sep 2017 19:42:40 +0900</pubDate>
-    <lastBuildDate>Fri, 22 Sep 2017 19:42:40 +0900</lastBuildDate>
+    <pubDate>Sat, 30 Sep 2017 02:01:45 +0900</pubDate>
+    <lastBuildDate>Sat, 30 Sep 2017 02:01:45 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>numir が libmir 入りしました</title>
+        <description>&lt;p&gt;新リポジトリ &lt;a href=&quot;https://github.com/libmir/numir&quot;&gt;https://github.com/libmir/numir&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;mir&quot;&gt;mir の人から要求されたこと&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/libmir/numir/issues/11&quot;&gt;Issue #11&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Seeing that this project gains in importance, how do you feel about moving it to the libmir organization?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;ちなみにnumirは今の時点でもDUBのDL数19というホソボソやってるライブラリである．&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;appveyor と travis でのテスト&lt;/li&gt;
+&lt;li&gt;ddocドキュメントの自動生成&lt;/li&gt;
+&lt;li&gt;ドキュメント自体は未完成でもいい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Travisは元からやってたので特に問題なかった．ddocはDMD標準のやつを使っているだけなので難しくなかった．Appveyorは@wilzbachさんの設定が万能．&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/dlang-community/dfmt/blob/master/appveyor.yml&quot;&gt;dfmt/appveyor.yml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;一部テストに numpy を使う必要があったので面倒だったけど、&lt;a href=&quot;http://help.appveyor.com/discussions/questions/6802-appveyor-with-conda&quot;&gt;minicondaを使うと簡単&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;organization&quot;&gt;個人リポジトリからOrganizationへの移行&lt;/h2&gt;
+
+&lt;p&gt;Github外のサービスを使っていたので切り替えが必要だった．&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Travis: テスト実行もドキュメント生成も「本当に」何もせずに動いてしまった．便利&lt;/li&gt;
+&lt;li&gt;Coveralls: 移行後のリポジトリの登録が必要&lt;/li&gt;
+&lt;li&gt;Appveyor: 移行後のリポジトリの登録が必要&lt;/li&gt;
+&lt;li&gt;DUB: 移行後のリポジトリの登録が必要&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;とくに移行前とリポジトリ登録の方法は変わらなかった．情報量なくてすみません...&lt;/p&gt;
+
+&lt;h2 id=&quot;part-37868f09a1cf28d&quot;&gt;その他&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;x86環境でバグが有り，テストしてなかったので、TravisとAppveyor CIに追加して修正しました．ユーザが少ないのでサポートは手厚いです&lt;/li&gt;
+&lt;li&gt;random 系の関数 (permutationなど) を追加しました．&lt;/li&gt;
+&lt;li&gt;mir の作者が Netflix のニューラルネットライブラリに &lt;a href=&quot;https://github.com/Netflix/vectorflow/issues/11&quot;&gt;mir を使う issue 立てていた&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;part-8f452990dcd03fb7&quot;&gt;今後の展望&lt;/h2&gt;
+
+&lt;p&gt;書かないと忘れるので...&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-ssvm&quot;&gt;d-ssvm&lt;/a&gt; を充実させながら、&lt;a href=&quot;https://docs.scipy.org/doc/scipy/reference/tutorial/optimize.html&quot;&gt;scipy.optimize&lt;/a&gt; みたいなやつを作りたい&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/dijk&quot;&gt;グラフ処理のライブラリ&lt;/a&gt;を作りたい (mirとは関係ないかも)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/BlackEdder/ggplotd&quot;&gt;ggplotd&lt;/a&gt;をmirフレンドリーにしたライブラリを作りたい&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.scipy.org/doc/scipy/reference/signal.html&quot;&gt;scipy.signal&lt;/a&gt;みたいな信号処理の関数も追加したい&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 30 Sep 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/09/30/027.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/09/30/027.html</guid>
+        
+        <category>D</category>
+        
+        
+      </item>
     
       <item>
         <title>D言語で数値計算 mir-algorithm</title>
@@ -22,7 +89,7 @@
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://mir.dlang.io/&quot;&gt;mir-algorithm&lt;/a&gt; かつて &lt;code&gt;std.experimental.ndslice&lt;/code&gt; だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(&lt;code&gt;@nogc&lt;/code&gt;)で動作します．C++でいうEigenみたいな感じです．&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://docs.random.dlang.io/latest/mir_random.html&quot;&gt;mir-random&lt;/a&gt; 多次元に関わらず各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://docs.random.dlang.io/latest/mir_random.html&quot;&gt;mir-random&lt;/a&gt; 各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．C++11にあるアルゴリズムがすべて実装されているらしい．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://docs.mir.dlang.io/latest/mir_glas.html&quot;&gt;mir-glas&lt;/a&gt; IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．&lt;/li&gt;
 &lt;/ul&gt;
@@ -331,7 +398,7 @@
 &lt;p&gt;私の mir を使ったプロジェクトを宣伝です．&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと&lt;a href=&quot;https://github.com/ShigekiKarita/numir/issues/11&quot;&gt;近々mir入りも予定しています&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/libmir/numir&quot;&gt;numir&lt;/a&gt;: numpyライクなAPIで mir-algorithm や mir-random を使いたいというライブラリです．独自にNPYファイルの入出力サポートもしています．あと&lt;a href=&quot;https://github.com/libmir/numir/issues/11&quot;&gt;近々mir入りも予定しています&lt;/a&gt; → 入りました&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/d-ssvm&quot;&gt;d-ssvm&lt;/a&gt;: support vector machineをD言語とmirで実装し（はじめ）たライブラリです．まだ単純なオンラインの勾配法による最適化しかありませんが...おかげでいまのところ高速です&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -1036,78 +1103,6 @@ jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt
         <category>Python</category>
         
         <category>MachineLearning</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>numpy と cupy を簡単に使うデコレータ</title>
-        <description>&lt;p&gt;久しぶりです。修論も終わり、出張の準備も落ち着いたので、ちょっとした tips とかまた書き溜めていこうと思います。サイト名も急な思いつきで変更しました...^^;&lt;/p&gt;
-
-&lt;p&gt;ところで、python で高速な数値計算を実現する numpy、それと大体互換性のある &lt;a href=&quot;http://docs.chainer.org/en/stable/cupy-reference&quot;&gt;cupy&lt;/a&gt; というGPU用ライブラリが便利で愛用してます。しかし、ちょっとした関数を書くとき、引数が numpy の array か、 cupy なのか教えてくれる (より正確には cupy の array があれば cupy モジュールを、それ以外は numpy を返す) &lt;code&gt;cupy.get_array_module&lt;/code&gt; という関数名を思い出して、タイプするのは、ほぼボイラープレートなので面倒でした。そこで多くの場合、私はデコレータを使って、関数の&amp;quot;見えない&amp;quot;引数である &lt;code&gt;xp&lt;/code&gt; により  numpy と cupy を切り替えてます。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;host_device&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;functools&lt;/span&gt;
-    &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cupy&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@functools.wraps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wrapper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_array_module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# ボイラープレート&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrapper&lt;/span&gt;
-
-
-&lt;span class=&quot;nd&quot;&gt;@host_device&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; import numpy, cupy&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; i = numpy.random.randn(2,3,4)&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; n = cupy.asarray(sigmoid(i))&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; c = sigmoid(cupy.asarray(i))&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;gt;&amp;gt;&amp;gt; cupy.testing.assert_array_equal(n, c)&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vm&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;doctest&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;doctest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testmod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;例示しやすいので doctest で書きましたが、要素毎の操作する関数などテストパターンを共通化してもいいかもしれません。それもデコレータで書いてみましょう&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test_elementwise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__debug__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# 最適化オプション(-O)無し、定義時の一度だけ実行&lt;/span&gt;
-        &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cupy&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numpy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;cupy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;testing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assert_array_almost_equal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;lt;{}&amp;gt; is ok&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;vm&quot;&gt;__name__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;
-
-
-&lt;span class=&quot;nd&quot;&gt;@test_elementwise&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;relu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&quot;nd&quot;&gt;@test_elementwise&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 順番に注意&lt;/span&gt;
-&lt;span class=&quot;nd&quot;&gt;@host_device&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;ipython 等で使ってみると、assert はデコレータ内で debug 時に一度だけ実行されて以降は呼ばれないことが &lt;code&gt;print&lt;/code&gt; により確認できます (単体テストは一瞬で終わるべきと思っている私はこの些細な debug 時オーバーヘッドを気にしません)。
-ちなみにデコレータは後に記述されたものから順に適用されます。その理由は一番下の関数本体から定義されるからだと推測しますが、控えめに言ってデコレータ記法って言語設計ミスだと思います。&lt;/p&gt;
-
-&lt;p&gt;最後に今回は挙げなかった &lt;code&gt;@host_device&lt;/code&gt; のようなデコレータの使い道として、cupy に numpy 非互換な挙動があればデコレータ内の&lt;code&gt;wrapper&lt;/code&gt; で &lt;code&gt;return&lt;/code&gt; する際に吸収することもできます。ただ、もし非互換な挙動を見つけたら &lt;a href=&quot;https://github.com/pfnet/chainer/issues/new&quot;&gt;issue を報告&lt;/a&gt;した方がいいのかも&lt;/p&gt;
-</description>
-        <pubDate>Sat, 27 Feb 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2016/02/27/018.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/02/27/018.html</guid>
-        
-        <category>Python</category>
-        
-        <category>CUDA</category>
         
         
       </item>
