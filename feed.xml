@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 13 Oct 2017 13:08:49 +0900</pubDate>
-    <lastBuildDate>Fri, 13 Oct 2017 13:08:49 +0900</lastBuildDate>
+    <pubDate>Fri, 13 Oct 2017 13:09:23 +0900</pubDate>
+    <lastBuildDate>Fri, 13 Oct 2017 13:09:23 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -81,7 +81,7 @@
         <title>D言語で数値計算 mir-algorithm</title>
         <description>&lt;h2 id=&quot;mir&quot;&gt;mir とは&lt;/h2&gt;
 
-&lt;p&gt;mir は Python における numpy のような汎用な数値計算のD言語ライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては &lt;code&gt;std.experimental.ndislice&lt;/code&gt; として標準ライブラリに登場しました．先日，私自身も&lt;a href=&quot;https://github.com/orgs/libmir/people&quot;&gt;mirグループ&lt;/a&gt;の一員になったので，宣伝もかねて紹介します．&lt;/p&gt;
+&lt;p&gt;mir は Python における numpy のような汎用な数値計算のD言語ライブラリです．もともとD言語は複素数サポートがあったり，標準ライブラリPhobosにも高速なFFTや内積計算が実装されてるので，数値計算に使っている人は多いと思います．mirもかつては &lt;code&gt;std.experimental.ndslice&lt;/code&gt; として標準ライブラリに登場しました．先日，私自身も&lt;a href=&quot;https://github.com/orgs/libmir/people&quot;&gt;mirグループ&lt;/a&gt;の一員になったので，宣伝もかねて紹介します．&lt;/p&gt;
 
 &lt;h2 id=&quot;mir&quot;&gt;mir の構成&lt;/h2&gt;
 
