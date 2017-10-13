@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 30 Sep 2017 02:08:33 +0900</pubDate>
-    <lastBuildDate>Sat, 30 Sep 2017 02:08:33 +0900</lastBuildDate>
+    <pubDate>Fri, 13 Oct 2017 13:08:49 +0900</pubDate>
+    <lastBuildDate>Fri, 13 Oct 2017 13:08:49 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -88,7 +88,7 @@
 &lt;p&gt;mir は numpy と違って複数の独立したライブラリの集合体です．現在の主要なライブラリは以下でしょうか．標準ライブラリPhobosと同様にBSL-1.0ライセンスです．&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://mir.dlang.io/&quot;&gt;mir-algorithm&lt;/a&gt; かつて &lt;code&gt;std.experimental.ndslice&lt;/code&gt; だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(&lt;code&gt;@nogc&lt;/code&gt;)で動作します．C++でいうEigenみたいな感じです．&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://docs.algorithm.dlang.io/latest/index.html&quot;&gt;mir-algorithm&lt;/a&gt; かつて &lt;code&gt;std.experimental.ndslice&lt;/code&gt; だった多次元の汎用なデータ構造とアルゴリズムのライブラリです．殆どの処理が遅延評価でGC無し(&lt;code&gt;@nogc&lt;/code&gt;)で動作します．C++でいうEigenみたいな感じです．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://docs.random.dlang.io/latest/mir_random.html&quot;&gt;mir-random&lt;/a&gt; 各種乱数生成のアルゴリズムが標準ライブラリよりも充実しています．C++11にあるアルゴリズムがすべて実装されているらしい．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://docs.mir.dlang.io/latest/mir_glas.html&quot;&gt;mir-glas&lt;/a&gt; IntelMKLやOpenBLASより，高速という触れ込みのBLASライブラリです．D言語ndslice用のAPI以外にもC言語やFortran用のAPIがあります．&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/libmir/mir&quot;&gt;mir&lt;/a&gt; かつて中心的な存在だったリポジトリ．sparse配列や演算などが入っているが，あんまりメンテされていない．&lt;/li&gt;
