@@ -99,13 +99,7 @@
 <h2 id="intel-mkl">Intel MKLのインストール</h2>
 
 <p>Anacondaを使うのが一番簡単だと思います。<code>conda install mkl</code> とかで一瞬です。
-デフォルトだと<code>~/anaconda3/lib/libmkl_rt.so</code>とかにできているので</p>
-<div class="highlight"><pre><code class="language-console" data-lang="console"><span></span><span class="gp">$</span> <span class="nb">cd</span> ~/anaconda3/lib
-<span class="gp">$</span> ln -s libmkl_rt.so libblas.so
-<span class="gp">$</span> ln -s libmkl_rt.so libcblas.so
-<span class="gp">$</span> ln -s libmkl_rt.so liblapack.so
-</code></pre></div>
-<p>としてmir-blasやmir-lapackが使うライブラリ名にして、<code>LIBRARY_PATH</code>, <code>LD_LIBRARY_PATH</code>を通しておきます。</p>
+デフォルトだと<code>~/anaconda3/lib/libmkl_rt.so</code>とかにできていて、anaconda を activate しているときは<code>LD_LIBRARY_PATH</code>パスが通っているはずです。</p>
 
 <h2 id="lubeck">Lubeck</h2>
 
@@ -114,6 +108,16 @@
 
 <p><a href="https://github.com/ShigekiKarita/mir-intro/tree/lubeck">https://github.com/ShigekiKarita/mir-intro/tree/lubeck</a></p>
 
+<p>自前のプロジェクトには<code>dub.json</code>にこんな感じで追記します。</p>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span><span class="p">{</span>
+    <span class="err">...,</span>
+    <span class="nt">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;lubeck&quot;</span><span class="p">:</span> <span class="s2">&quot;~&gt;0.0.4&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;libs&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;mkl_rt&quot;</span> <span class="p">],</span>
+    <span class="err">...</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>使い方は a と b の ndslice の行列積を c に格納するには、<code>c[] = mtimes(a, b);</code>という感じで計算します。</p>
 
 <p>こちらが、実行結果です。</p>

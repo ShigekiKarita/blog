@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 28 Oct 2017 00:17:59 +0900</pubDate>
-    <lastBuildDate>Sat, 28 Oct 2017 00:17:59 +0900</lastBuildDate>
+    <pubDate>Sat, 28 Oct 2017 00:26:16 +0900</pubDate>
+    <lastBuildDate>Sat, 28 Oct 2017 00:26:16 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -20,13 +20,7 @@
 &lt;h2 id=&quot;intel-mkl&quot;&gt;Intel MKLのインストール&lt;/h2&gt;
 
 &lt;p&gt;Anacondaを使うのが一番簡単だと思います。&lt;code&gt;conda install mkl&lt;/code&gt; とかで一瞬です。
-デフォルトだと&lt;code&gt;~/anaconda3/lib/libmkl_rt.so&lt;/code&gt;とかにできているので&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~/anaconda3/lib
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; ln -s libmkl_rt.so libblas.so
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; ln -s libmkl_rt.so libcblas.so
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; ln -s libmkl_rt.so liblapack.so
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;としてmir-blasやmir-lapackが使うライブラリ名にして、&lt;code&gt;LIBRARY_PATH&lt;/code&gt;, &lt;code&gt;LD_LIBRARY_PATH&lt;/code&gt;を通しておきます。&lt;/p&gt;
+デフォルトだと&lt;code&gt;~/anaconda3/lib/libmkl_rt.so&lt;/code&gt;とかにできていて、anaconda を activate しているときは&lt;code&gt;LD_LIBRARY_PATH&lt;/code&gt;パスが通っているはずです。&lt;/p&gt;
 
 &lt;h2 id=&quot;lubeck&quot;&gt;Lubeck&lt;/h2&gt;
 
@@ -35,6 +29,16 @@
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/mir-intro/tree/lubeck&quot;&gt;https://github.com/ShigekiKarita/mir-intro/tree/lubeck&lt;/a&gt;&lt;/p&gt;
 
+&lt;p&gt;自前のプロジェクトには&lt;code&gt;dub.json&lt;/code&gt;にこんな感じで追記します。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;err&quot;&gt;...,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;quot;lubeck&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;~&amp;gt;0.0.4&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;libs&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;mkl_rt&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;使い方は a と b の ndslice の行列積を c に格納するには、&lt;code&gt;c[] = mtimes(a, b);&lt;/code&gt;という感じで計算します。&lt;/p&gt;
 
 &lt;p&gt;こちらが、実行結果です。&lt;/p&gt;
