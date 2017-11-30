@@ -6,8 +6,8 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 30 Nov 2017 20:36:12 +0900</pubDate>
-    <lastBuildDate>Thu, 30 Nov 2017 20:36:12 +0900</lastBuildDate>
+    <pubDate>Thu, 30 Nov 2017 20:39:29 +0900</pubDate>
+    <lastBuildDate>Thu, 30 Nov 2017 20:39:29 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -16,9 +16,9 @@
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples&quot;&gt;https://github.com/ShigekiKarita/cupy-examples&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;掲載記事では最初に cupy で&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/median.py&quot;&gt;中央値を求めるプログラム&lt;/a&gt;を書きながら、基本的な使い方を解説してます。限られた紙面では、CUDAの概念はとても説明できませんでしたが、それでも解きたい問題にシンプルにアプローチできるのが、numpyに由来するcupyの良いところですね。CUDA学習者におすすめするのは&lt;a href=&quot;https://book.impress.co.jp/books/1115101001&quot;&gt;CUDA C プロフェッショナル プログラミング&lt;/a&gt;です。&lt;/p&gt;
+&lt;p&gt;掲載記事では最初に cupy で&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/median.py&quot;&gt;中央値を求めるプログラム&lt;/a&gt;を書きながら、基本的な使い方を解説してます。限られた紙面では、CUDAの概念はとても説明できませんでしたが、それでも解きたい問題にシンプルにアプローチできるのが、numpyに由来するcupyの良いところですね。もし、CUDAそのものに興味があれば、&lt;a href=&quot;https://book.impress.co.jp/books/1115101001&quot;&gt;CUDA C プロフェッショナル プログラミング&lt;/a&gt;をおすすめします。&lt;/p&gt;
 
-&lt;p&gt;後半は cupy を使ったニューラルネットワークライブラリの chainer で、方策勾配という少し変わった強化学習法のプログラムを書いています。なんとなく見栄えが良いかなと思って、&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/atari.py&quot;&gt;パックマンの高スコアなゲームAI学習のプログラム&lt;/a&gt;を作りましたが、よりシンプルな&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/pole.py&quot;&gt;ポールの姿勢制御プログラム&lt;/a&gt;もありますので、興味のある方はぜひ、雑誌と併せてご覧ください。方策勾配についても、紙面では全く説明できませんでしたが、そのうちマルコフ決定過程などの基本的な概念と導出をブログで解説できたらと思います。いまのところ、私のおすすめする学習資料は&lt;a href=&quot;http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html&quot;&gt;UCLの講義資料&lt;/a&gt;です。Youtubeに講義動画もあります。&lt;/p&gt;
+&lt;p&gt;後半は cupy を使ったニューラルネットワークライブラリの chainer で、方策勾配という少し変わった強化学習法のプログラムを書いています。なんとなく見栄えが良いかなと思って、&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/atari.py&quot;&gt;パックマンの高スコアなゲームAI学習のプログラム&lt;/a&gt;を作りましたが、よりシンプルな&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/pole.py&quot;&gt;ポールの姿勢制御プログラム&lt;/a&gt;もありますので、興味のある方はぜひ、雑誌と併せてご覧ください。方策勾配についても、紙面では全く説明できませんでしたが、そのうちマルコフ決定過程などの基本的な概念と導出をブログで解説できたらと思います。おすすめな学習資料は&lt;a href=&quot;http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html&quot;&gt;UCLの講義資料&lt;/a&gt;です。Youtubeに講義動画もあります。&lt;/p&gt;
 </description>
         <pubDate>Thu, 30 Nov 2017 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2017/11/30/001.html</link>
