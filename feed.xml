@@ -6,9 +6,28 @@
 </description>
     <link>http://shigekikarita.github.io/blog/blog/</link>
     <atom:link href="http://shigekikarita.github.io/blog/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 28 Oct 2017 00:29:05 +0900</pubDate>
-    <lastBuildDate>Sat, 28 Oct 2017 00:29:05 +0900</lastBuildDate>
+    <pubDate>Thu, 30 Nov 2017 20:25:35 +0900</pubDate>
+    <lastBuildDate>Thu, 30 Nov 2017 20:25:35 +0900</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Interface に寄稿しました</title>
+        <description>&lt;p&gt;先週末発売のInterface誌で、numpy ライクな GPGPUライブラリ cupy の紹介記事を Interface で書きました。毎月愛読している雑誌に自分の名前が載ってるのは不思議なものですね。記事中のソースコードは許可をもらって GitHub にあげてます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples&quot;&gt;https://github.com/ShigekiKarita/cupy-examples&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;掲載記事では最初に cupy で&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/median.py&quot;&gt;中央値を求めるプログラム&lt;/a&gt;を書きながら、基本的な使い方を解説してます。限られた紙面では、GPGPUの概念はとても説明できませんでしたが、それでも解きたい問題にシンプルにアプローチできるのが、numpyに由来するcupyの良いところですね。&lt;/p&gt;
+
+&lt;p&gt;後半は cupy を使ったニューラルネットワークライブラリの chainer で、方策勾配という少し変わった強化学習法のプログラムを書いています。なんとなく見栄えが良いかなと思って、&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/atari.py&quot;&gt;パックマンの高スコアなゲームAI学習のプログラム&lt;/a&gt;を作りましたが、よりシンプルな&lt;a href=&quot;https://github.com/ShigekiKarita/cupy-examples/blob/master/pole.py&quot;&gt;ポールの姿勢制御プログラム&lt;/a&gt;もありますので、興味のある方はぜひ、雑誌と併せてご覧ください。方策勾配についても、紙面では全く説明できませんでしたが、そのうちマルコフ決定過程など基本的な概念と導出などブログで解説できたらと思います。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 30 Nov 2017 00:00:00 +0900</pubDate>
+        <link>http://shigekikarita.github.io/blog/blog/2017/11/30/001.html</link>
+        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/11/30/001.html</guid>
+        
+        <category>cupy</category>
+        
+        
+      </item>
     
       <item>
         <title>MirのndsliceでMKLを使う</title>
@@ -993,46 +1012,6 @@ GitHubとBitbucketに登録されているリポジトリから登録できま�
         <pubDate>Sat, 04 Feb 2017 00:00:00 +0900</pubDate>
         <link>http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</link>
         <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2017/02/04/021.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>gh-pages引っ越し</title>
-        <description>&lt;p&gt;久々に更新しました。実は&lt;a href=&quot;/blog/2016/08/12/020.html&quot;&gt;一つ前の日記&lt;/a&gt;をアップロードしたとき、github pagesが何も受け付けてくれなくて途方に暮れてました。エラーメッセージ(E-Mail)も全然詳細がなく「もうクソ記事は書くな」というGitHub様からのお告げじゃないかと思い、存在を忘れることにしたのですが...、悔しいのでリベンジしました。以下が対処法です。詳細は master ブランチみてください。&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;jekyll は静的ジェネレータなので、&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/gh-pages&quot;&gt;gh-pages (githubで特別にウェブページとして使われる名前) ブランチ&lt;/a&gt;に &lt;code&gt;jekyll build&lt;/code&gt; 生成したサイトをプッシュ&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/ShigekiKarita/blog/tree/master&quot;&gt;master ブランチ&lt;/a&gt;は普通に Markdown のファイルなどソース置き場にする&lt;/li&gt;
-&lt;li&gt;上記を(すごく雑に)自動化した。&lt;a href=&quot;https://github.com/ShigekiKarita/blog/blob/master/_deploy.sh&quot;&gt;スクリプト&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;ついでに &lt;a href=&quot;http://shigekikarita.github.io&quot;&gt;shigekikarita.github.io&lt;/a&gt; 直下から &lt;code&gt;/blog&lt;/code&gt;サブディレクトリに引っ越し。直下には MDwiki を置いて、ここへのリンクと整理したメモ用に使います...(ここは未整理メモ置き場)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;ch&quot;&gt;#!sh&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;fname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tempfile&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;_site
-jekyll build &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    cp -r _site &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git checkout gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    ls &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; xargs rm -r &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    cp -r &lt;span class=&quot;nv&quot;&gt;$fname&lt;/span&gt;/* . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    touch .nojekyll &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git add . &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git commit -m &lt;span class=&quot;s2&quot;&gt;&amp;quot;gen&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git push origin gh-pages &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    git checkout master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;未だよくわからないけど、まずまず動いたから良しとしたもの&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;_config.yml&lt;/code&gt;: baseurl とか url とかよくわからない...、 Markdown中の &lt;code&gt;/assets/*.png&lt;/code&gt; とかは全部ダメになっている気がする。&lt;code&gt;\{\{ site.url }}/assets/*.png&lt;/code&gt; みたいに書きなおすべきか...&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;.nojekyll&lt;/code&gt;: これがないとgithub pages側で(超不親切な)jekyllが動くので置いたが、master/gh-pagesどちらに必要なのか、そもそもgh-pagesでjekyll動いてたの知らなかった&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Wed, 30 Nov 2016 00:00:00 +0900</pubDate>
-        <link>http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</link>
-        <guid isPermaLink="true">http://shigekikarita.github.io/blog/blog/2016/11/30/020.html</guid>
-        
-        <category>Jekyll</category>
         
         
       </item>
